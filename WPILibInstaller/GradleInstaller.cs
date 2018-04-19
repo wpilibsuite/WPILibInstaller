@@ -31,7 +31,6 @@ namespace WPILibInstaller
 
         public override async Task CheckForInstall()
         {
-            /*
             var javaPath = Path.Combine(jdkDir, "bin", "gradle.bat");
 
             var javaTask = await TaskEx.Run(() =>
@@ -67,9 +66,6 @@ namespace WPILibInstaller
                     doInstall.Checked = true;
                 }
             }
-
-    */
-            doInstall.Checked = false;
         }
 
         public override async Task<bool> DoInstall(ProgressBar progBar, Button displayButton, CancellationToken token)
@@ -79,7 +75,7 @@ namespace WPILibInstaller
             if (doInstall.Checked)
             {
                 displayButton.Text = "Installing Gradle";
-                //await ZipTools.UnzipToDirectory(Path.Combine(resourceRoot, jConfig.Zip), jdkDir, progBar, true);
+                await ZipTools.UnzipToDirectory(Path.Combine(resourceRoot, jConfig.Zip), jdkDir, progBar, true);
                 displayButton.Text = "Finished installing Gradle";
             }
 
