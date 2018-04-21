@@ -77,7 +77,7 @@ namespace WPILibInstaller
             if (doInstall.Checked)
             {
                 displayButton.Text = "Installing Java";
-                await ZipTools.UnzipToDirectory(Path.Combine(resourceRoot, jConfig.Zip), jdkDir, progBar);
+                await ZipTools.UnzipToDirectory(Path.Combine(resourceRoot, jConfig.Zip), jdkDir, progBar, true);
                 displayButton.Text = "Finished installing java";
             }
 

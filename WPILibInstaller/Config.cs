@@ -44,7 +44,8 @@ namespace WPILibInstaller
 
     public class GradleConfig
     {
-        public string Version { get; set; }
+        public string FolderName { get; set; }
+        public string Hash { get; set; }
         public string Zip { get; set; }
     }
 }

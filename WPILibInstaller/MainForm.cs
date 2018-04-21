@@ -66,6 +66,7 @@ namespace WPILibInstaller
             checkers.Add(new GradleInstaller(gradleCheck, config.Gradle, ResourcesFolder, config.DefaultInstallLocation));
             checkers.Add(new CppInstaller(cppCheck, config.CppCompiler, ResourcesFolder, config.DefaultInstallLocation));
             checkers.Add(new EnvironmentSetters(allUsers, config.DefaultInstallLocation, ResourcesFolder, config.Year));
+            checkers.Add(new VsCodeExtensionInstallers(vscodeExtCheckBox, config.VsCodeExtensions, ResourcesFolder));
 
             await TaskEx.WhenAll(checkers.Select(x => x.CheckForInstall()));
 

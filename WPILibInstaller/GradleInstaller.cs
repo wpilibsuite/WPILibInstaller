@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,19 +19,34 @@ namespace WPILibInstaller
         GradleConfig jConfig;
         string resourceRoot;
         string installLoc;
-        string jdkDir;
+        string wrapperDir;
 
         public GradleInstaller(CheckBox doInstall, GradleConfig jConfig, string resourceRoot, string installLoc)
         {
             this.doInstall = doInstall;
             this.jConfig = jConfig;
             this.resourceRoot = resourceRoot;
-            this.installLoc = installLoc;
-            jdkDir = Path.Combine(installLoc, "gradle");
+
+            var homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+            wrapperDir = Path.Combine(homeDir, ".gradle", "wrapper", "dists", jConfig.FolderName, jConfig.Hash, jConfig.Zip);
+
+            ;
+            //jdkDir = Path.Combine(installLoc, "gradle");
         }
 
         public override async Task CheckForInstall()
         {
+            if (File.Exists(wrapperDir))
+            {
+                doInstall.Checked = false;
+            }
+            else
+            {
+                doInstall.Checked = true;
+            }
+
+            /*
             var javaPath = Path.Combine(jdkDir, "bin", "gradle.bat");
 
             var javaTask = await TaskEx.Run(() =>
@@ -66,6 +82,7 @@ namespace WPILibInstaller
                     doInstall.Checked = true;
                 }
             }
+            */
         }
 
         public override async Task<bool> DoInstall(ProgressBar progBar, Button displayButton, CancellationToken token)
@@ -75,7 +92,14 @@ namespace WPILibInstaller
             if (doInstall.Checked)
             {
                 displayButton.Text = "Installing Gradle";
-                await ZipTools.UnzipToDirectory(Path.Combine(resourceRoot, jConfig.Zip), jdkDir, progBar, true);
+                Directory.CreateDirectory(Path.GetDirectoryName(wrapperDir));
+                using (var ostream = new FileStream(wrapperDir, FileMode.Create, FileAccess.Write))
+                using (var istream = new FileStream(Path.Combine(resourceRoot, jConfig.Zip), FileMode.Open, FileAccess.Read))
+                {
+                    await istream.CopyToAsync(ostream, 4096, token);
+                }
+                //File.Copy()
+                //await ZipTools.UnzipToDirectory(Path.Combine(resourceRoot, jConfig.Zip), jdkDir, progBar, true);
                 displayButton.Text = "Finished installing Gradle";
             }
 
