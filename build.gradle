@@ -1,0 +1,72 @@
+import com.google.gson.GsonBuilder
+import org.gradle.wrapper.*
+
+buildscript {
+    dependencies {
+        classpath files('gradle/wrapper/gradle-wrapper.jar')
+        classpath 'com.google.code.gson:gson:2.2.4'
+    }
+}
+
+plugins {
+    id 'java'
+    id "com.ullink.msbuild" version "2.21" apply false
+     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '2.1'
+}
+
+wrapper {
+    gradleVersion = '4.9'
+}
+
+apply from: 'scripts/gradlew.gradle'
+apply from: 'scripts/installer.gradle'
+apply from: 'scripts/tools.gradle'
+
+def configFile = file("$buildDir/config.json")
+
+def configFileTask = tasks.register('generateConfigFile', Task) { Task task ->
+    task.outputs.file configFile
+
+    def configurations = []
+    configurations << gradleConfigTaskSetup()
+
+
+    configurations.each {
+        it.first(task)
+    }
+
+    doLast {
+        def config = [:]
+
+        configurations.each {
+            it.second(config)
+        }
+
+        def gbuilder = new GsonBuilder()
+        gbuilder.setPrettyPrinting()
+        def json = gbuilder.create().toJson(config)
+
+        configFile.parentFile.mkdirs()
+
+        configFile.text = json
+    }
+}
+
+
+tasks.register('generateInstaller', Zip) {
+    baseName 'installerZip'
+    destinationDir buildDir
+    duplicatesStrategy 'exclude'
+
+    dependsOn configFileTask
+    inputs.file configFile
+
+    it.from (configFile) {
+        into '/resources'
+    }
+
+    gradleZipTaskSetup(it)
+    msBuildSetup(it)
+    toolsSetup(it)
+
+}

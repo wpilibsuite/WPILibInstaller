@@ -1,0 +1,42 @@
+configurations {
+  wpiLibTools
+}
+
+dependencies {
+  wpiLibTools 'edu.wpi.first.shuffleboard:app:+'
+  wpiLibTools 'edu.wpi.first.wpilib:OutlineViewer:+'
+  wpiLibTools 'edu.wpi.first.wpilib:SmartDashboard:+'
+  wpiLibTools 'edu.wpi.first.wpilib:RobotBuilder:+'
+}
+
+def zipToolsTask = tasks.register('zipTools', Zip) {
+  baseName 'tools'
+  destinationDir buildDir
+
+  duplicatesStrategy 'exclude'
+
+  configurations.wpiLibTools.files.each {
+    if (it.name.startsWith('app')) {
+      from (it) {
+        into '/'
+        rename { 'ShuffleBoard.jar' }
+      }
+    } else {
+      def str = it.name.substring(0, it.name.indexOf('-')) + '.jar'
+      from (it) {
+        into '/'
+        rename { str }
+      }
+    }
+  }
+}
+
+ext.toolsSetup = { Zip zip->
+  zip.dependsOn zipToolsTask
+  zip.inputs.file zipToolsTask.get().archivePath
+
+  zip.from (zipToolsTask.get().archivePath) {
+    into '/resources'
+  }
+
+}

@@ -1,7 +1,7 @@
 ﻿{
-  "DefaultInstallLocation": "C:\\Users\\Public\\frc2018",
-  "Year": "2018",
-  "CurrentVersion":  "2018.0.1",
+  "DefaultInstallLocation": "C:\\Users\\Public\\frc2019",
+  "Year": "2019",
+  "CurrentVersion":  "2019.0.0-beta1",
   "CppCompiler": {
     "Version": "5.5.0",
     "Zip": "FRC-2018-Windows-Toolchain-5.5.zip"

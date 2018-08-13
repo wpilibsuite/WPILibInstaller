@@ -1,0 +1,27 @@
+apply plugin: 'com.ullink.msbuild'
+
+msbuild {
+  solutionFile 'WPILibInstaller.sln'
+
+  targets = ['Clean', 'Rebuild']
+
+  parameters.configuration = 'release'
+}
+
+def installerFile = file('WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
+def permissionSetter = file('ElevatedPermissionSetter/bin/Release/ElevatedPermissionSetter.exe')
+
+
+ext.msBuildSetup = { Zip zip->
+  zip.dependsOn msbuild
+  zip.inputs.file installerFile
+  zip.inputs.file permissionSetter
+
+  zip.from (installerFile) {
+    into '/'
+  }
+
+  zip.from (permissionSetter) {
+    into '/resources'
+  }
+}
