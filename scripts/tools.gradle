@@ -9,6 +9,43 @@ dependencies {
   wpiLibTools 'edu.wpi.first.wpilib:RobotBuilder:+'
 }
 
+def toolsJson = file("$buildDir/tools.json")
+
+def toolsJsonTask = tasks.register('toolsJson', Task) {
+  it.outputs.file toolsJson
+
+  def resolvedDeps = configurations.wpiLibTools.resolvedConfiguration.firstLevelModuleDependencies.toList()
+
+  resolvedDeps.each {
+    inputs.property it.moduleName, it.moduleVersion
+  }
+
+  doLast {
+    def config = []
+    resolvedDeps.each {
+      if (it.moduleName == 'app') {
+        def item = [:]
+        item['name'] = 'ShuffleBoard'
+        item['version'] = it.moduleVersion
+        item['jar'] = 'ShuffleBoard.jar'
+        config << item
+      } else {
+        def item = [:]
+        item['name'] = it.moduleName
+        item['version'] = it.moduleVersion
+        item['jar'] = it.moduleName + '.jar'
+        config << item
+      }
+    }
+    def gbuilder = getGsonBuilder()
+    gbuilder.setPrettyPrinting()
+    def json = gbuilder.create().toJson(config)
+
+    toolsJson.parentFile.mkdirs()
+    toolsJson.text = json
+  }
+}
+
 ext.toolsConfig = {
   def toolsFolder = 'tools'
   return new Tuple2({ task->
@@ -19,6 +56,12 @@ ext.toolsConfig = {
 }
 
 ext.toolsSetup = { Zip zip->
+  zip.dependsOn toolsJsonTask
+  zip.inputs.file toolsJson
+
+  zip.from (toolsJson) {
+    into '/tools'
+  }
   configurations.wpiLibTools.files.each {
     if (it.name.startsWith('app')) {
       zip.from (it) {

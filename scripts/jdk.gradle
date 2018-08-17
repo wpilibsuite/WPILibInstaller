@@ -43,6 +43,23 @@ def extract64BitJdk = tasks.register('extract64BitJdk', Copy) {
   includeEmptyDirs = false
 }
 
+def version32 = 'openjdk 11.0.0.26-internal 2018-09-25'
+def version64 = 'openjdk 11-ea 2018-09-25'
+
+ext.jdkConfigSetup = {
+  return new Tuple2({ task->
+    task.inputs.property 'version32', version32
+    task.inputs.property 'version64', version64
+  }, { config->
+    def jdks = [:]
+    jdks['32BitFolder'] = 'jdk32'
+    jdks['32BitVersion'] = version32
+    jdks['64BitFolder'] = 'jdk64'
+    jdks['64BitVersion'] = version64
+    config['jdks'] = jdks
+  })
+}
+
 ext.jdkZipSetup = { Zip zip->
   zip.dependsOn extract32BitJdk
   zip.dependsOn extract64BitJdk

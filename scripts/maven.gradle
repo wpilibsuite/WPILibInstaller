@@ -1,0 +1,6 @@
+
+ext.mavenZipSetup = { Zip zip->
+  zip.from('build.gradle') {
+    into '/maven'
+  }
+}

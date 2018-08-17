@@ -24,6 +24,11 @@ apply from: 'scripts/installer.gradle'
 apply from: 'scripts/tools.gradle'
 apply from: 'scripts/toolchain.gradle'
 apply from: 'scripts/jdk.gradle'
+apply from: 'scripts/maven.gradle'
+
+ext.getGsonBuilder = {
+    return new GsonBuilder()
+}
 
 def upgradeConfigFile = file("$buildDir/upgradeConfig.json")
 
@@ -48,7 +53,7 @@ def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { 
             it.second(config)
         }
 
-        def gbuilder = new GsonBuilder()
+        def gbuilder = getGsonBuilder()
         gbuilder.setPrettyPrinting()
         def json = gbuilder.create().toJson(config)
 
@@ -69,6 +74,7 @@ def commonResources = { Zip zip->
     msBuildSetupPermissionsWriter(zip)
 
     toolsSetup(zip)
+    mavenZipSetup(zip)
 }
 
 def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zip) {
@@ -136,6 +142,7 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     def configurations = []
     configurations << gradleConfigTaskSetup()
     configurations << toolchainConfigTaskSetup()
+    configurations << jdkConfigSetup()
 
     configurations.each {
         it.first(task)

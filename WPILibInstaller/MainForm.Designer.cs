@@ -44,9 +44,10 @@
             // 
             // performInstallButton
             // 
-            this.performInstallButton.Location = new System.Drawing.Point(11, 295);
+            this.performInstallButton.Location = new System.Drawing.Point(22, 567);
+            this.performInstallButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.performInstallButton.Name = "performInstallButton";
-            this.performInstallButton.Size = new System.Drawing.Size(274, 23);
+            this.performInstallButton.Size = new System.Drawing.Size(548, 44);
             this.performInstallButton.TabIndex = 6;
             this.performInstallButton.Text = "Execute Install";
             this.performInstallButton.UseVisualStyleBackColor = true;
@@ -56,9 +57,10 @@
             // vscodeCheck
             // 
             this.vscodeCheck.AutoSize = true;
-            this.vscodeCheck.Location = new System.Drawing.Point(12, 49);
+            this.vscodeCheck.Location = new System.Drawing.Point(23, 114);
+            this.vscodeCheck.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.vscodeCheck.Name = "vscodeCheck";
-            this.vscodeCheck.Size = new System.Drawing.Size(115, 17);
+            this.vscodeCheck.Size = new System.Drawing.Size(227, 29);
             this.vscodeCheck.TabIndex = 7;
             this.vscodeCheck.Text = "Visual Studio Code";
             this.vscodeCheck.UseVisualStyleBackColor = true;
@@ -66,9 +68,10 @@
             // javaCheck
             // 
             this.javaCheck.AutoSize = true;
-            this.javaCheck.Location = new System.Drawing.Point(12, 72);
+            this.javaCheck.Location = new System.Drawing.Point(23, 158);
+            this.javaCheck.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.javaCheck.Name = "javaCheck";
-            this.javaCheck.Size = new System.Drawing.Size(49, 17);
+            this.javaCheck.Size = new System.Drawing.Size(90, 29);
             this.javaCheck.TabIndex = 8;
             this.javaCheck.Text = "Java";
             this.javaCheck.UseVisualStyleBackColor = true;
@@ -76,35 +79,39 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 9);
+            this.label1.Location = new System.Drawing.Point(18, 17);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(285, 26);
+            this.label1.Size = new System.Drawing.Size(581, 75);
             this.label1.TabIndex = 9;
             this.label1.Text = "Use Checkbox to force reinstall\r\nIf item is unchecked, it was detected to already" +
-    " be installed";
+    " be installed.\r\nIt item is unselectable, those components are not available.";
             // 
             // vscodeButton
             // 
             this.vscodeButton.Enabled = false;
-            this.vscodeButton.Location = new System.Drawing.Point(134, 49);
+            this.vscodeButton.Location = new System.Drawing.Point(267, 114);
+            this.vscodeButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.vscodeButton.Name = "vscodeButton";
-            this.vscodeButton.Size = new System.Drawing.Size(152, 40);
+            this.vscodeButton.Size = new System.Drawing.Size(304, 77);
             this.vscodeButton.TabIndex = 10;
             this.vscodeButton.UseVisualStyleBackColor = true;
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(13, 318);
+            this.progressBar1.Location = new System.Drawing.Point(26, 612);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(272, 23);
+            this.progressBar1.Size = new System.Drawing.Size(544, 44);
             this.progressBar1.TabIndex = 11;
             // 
             // gradleCheck
             // 
             this.gradleCheck.AutoSize = true;
-            this.gradleCheck.Location = new System.Drawing.Point(11, 96);
+            this.gradleCheck.Location = new System.Drawing.Point(21, 205);
+            this.gradleCheck.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.gradleCheck.Name = "gradleCheck";
-            this.gradleCheck.Size = new System.Drawing.Size(57, 17);
+            this.gradleCheck.Size = new System.Drawing.Size(108, 29);
             this.gradleCheck.TabIndex = 12;
             this.gradleCheck.Text = "Gradle";
             this.gradleCheck.UseVisualStyleBackColor = true;
@@ -112,9 +119,10 @@
             // cppCheck
             // 
             this.cppCheck.AutoSize = true;
-            this.cppCheck.Location = new System.Drawing.Point(11, 119);
+            this.cppCheck.Location = new System.Drawing.Point(21, 249);
+            this.cppCheck.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cppCheck.Name = "cppCheck";
-            this.cppCheck.Size = new System.Drawing.Size(88, 17);
+            this.cppCheck.Size = new System.Drawing.Size(174, 29);
             this.cppCheck.TabIndex = 13;
             this.cppCheck.Text = "C++ Compiler";
             this.cppCheck.UseVisualStyleBackColor = true;
@@ -122,9 +130,10 @@
             // toolsCheck
             // 
             this.toolsCheck.AutoSize = true;
-            this.toolsCheck.Location = new System.Drawing.Point(12, 143);
+            this.toolsCheck.Location = new System.Drawing.Point(23, 295);
+            this.toolsCheck.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.toolsCheck.Name = "toolsCheck";
-            this.toolsCheck.Size = new System.Drawing.Size(109, 17);
+            this.toolsCheck.Size = new System.Drawing.Size(215, 29);
             this.toolsCheck.TabIndex = 14;
             this.toolsCheck.Text = "Tools and Utilities";
             this.toolsCheck.UseVisualStyleBackColor = true;
@@ -132,9 +141,10 @@
             // allUsers
             // 
             this.allUsers.AutoSize = true;
-            this.allUsers.Location = new System.Drawing.Point(11, 272);
+            this.allUsers.Location = new System.Drawing.Point(22, 523);
+            this.allUsers.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.allUsers.Name = "allUsers";
-            this.allUsers.Size = new System.Drawing.Size(118, 17);
+            this.allUsers.Size = new System.Drawing.Size(235, 29);
             this.allUsers.TabIndex = 15;
             this.allUsers.Text = "Install for All Users?";
             this.allUsers.UseVisualStyleBackColor = true;
@@ -142,9 +152,10 @@
             // wpilibCheck
             // 
             this.wpilibCheck.AutoSize = true;
-            this.wpilibCheck.Location = new System.Drawing.Point(11, 167);
+            this.wpilibCheck.Location = new System.Drawing.Point(21, 341);
+            this.wpilibCheck.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.wpilibCheck.Name = "wpilibCheck";
-            this.wpilibCheck.Size = new System.Drawing.Size(133, 17);
+            this.wpilibCheck.Size = new System.Drawing.Size(256, 29);
             this.wpilibCheck.TabIndex = 16;
             this.wpilibCheck.Text = "WPILib Dependencies";
             this.wpilibCheck.UseVisualStyleBackColor = true;
@@ -152,18 +163,19 @@
             // vscodeExtCheckBox
             // 
             this.vscodeExtCheckBox.AutoSize = true;
-            this.vscodeExtCheckBox.Location = new System.Drawing.Point(11, 191);
+            this.vscodeExtCheckBox.Location = new System.Drawing.Point(21, 387);
+            this.vscodeExtCheckBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.vscodeExtCheckBox.Name = "vscodeExtCheckBox";
-            this.vscodeExtCheckBox.Size = new System.Drawing.Size(169, 17);
+            this.vscodeExtCheckBox.Size = new System.Drawing.Size(339, 29);
             this.vscodeExtCheckBox.TabIndex = 17;
             this.vscodeExtCheckBox.Text = "Visual Studio Code Extensions";
             this.vscodeExtCheckBox.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(297, 353);
+            this.ClientSize = new System.Drawing.Size(594, 679);
             this.Controls.Add(this.vscodeExtCheckBox);
             this.Controls.Add(this.wpilibCheck);
             this.Controls.Add(this.allUsers);
@@ -176,6 +188,7 @@
             this.Controls.Add(this.javaCheck);
             this.Controls.Add(this.vscodeCheck);
             this.Controls.Add(this.performInstallButton);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "MainForm";
             this.Text = "WPILib Installer";
             this.Load += new System.EventHandler(this.Form1_Load);

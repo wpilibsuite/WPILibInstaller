@@ -19,10 +19,11 @@ namespace WPILibInstaller
 {
     public partial class MainForm : Form
     {
-        private const string ResourcesFolder = "Resources";
+        private readonly ZipFile zipStore;
 
-        public MainForm()
+        public MainForm(ZipFile mainZipFile)
         {
+            zipStore = mainZipFile;
             InitializeComponent();
         }
 
@@ -30,67 +31,82 @@ namespace WPILibInstaller
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            var path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
-            using (ZipFile zf = new ZipFile(fs))
+            // Look for upgrade config. Should always be there.
+            var upgradeEntry = zipStore.FindEntry("installUtils/upgradeConfig.json", true);
+
+            if (upgradeEntry == -1)
             {
-                zf.IsStreamOwner = false;
-
-                var entry = zf.GetEntry("config.json");
-
-                MessageBox.Show("Has Entry? " + entry == null ? "no" : "yes");
-
-                Stream entryStream = zf.GetInputStream(entry);
-
-                StreamReader reader = new StreamReader(entryStream);
-                string file = reader.ReadToEnd();
-
-                MessageBox.Show(file);
-
+                // Error
+                MessageBox.Show("File Error?");
+                Application.Exit();
                 return;
-
-
-
             }
 
-            Path.Combine(ResourcesFolder, "config.json");
-            string jsonContents = "";
-            try
-            {
-                jsonContents = File.ReadAllText(Path.Combine(ResourcesFolder, "config.json"));
-            }
-            catch (IOException)
-            {
-                MessageBox.Show("Coult not find settings file. Contact WPILib");
-                this.Close();
-            }
-            Config config = JsonConvert.DeserializeObject<Config>(jsonContents);
+            string upgradeConfigStr = "";
+            string fullConfigStr = "";
 
-            using (HttpClient client = new HttpClient())
+            using (StreamReader reader = new StreamReader(zipStore.GetInputStream(upgradeEntry)))
             {
-                try
+                upgradeConfigStr = await reader.ReadToEndAsync();
+            }
+
+            // Look for full config. Will not be there on upgrade
+            var fullEntry = zipStore.FindEntry("installUtils/fullConfig.json", true);
+
+            if (fullEntry == -1)
+            {
+                // Disable any full entry things
+            }
+            else
+            {
+                using (StreamReader reader = new StreamReader(zipStore.GetInputStream(fullEntry)))
                 {
-                    var result = await client.GetStringAsync("http://first.wpi.edu/FRC/roborio/wpilib.gpg.key");
-                    dynamic resultParse = JsonConvert.DeserializeObject(result);
-                    string newestVersion = resultParse.NewestVersion;
-                    if (newestVersion != config.CurrentVersion)
-                    {
-                        MessageBox.Show("This is not the newest version");
-                    }
-                    ;
-                }
-                catch (Exception ex)
-                {
-
+                    fullConfigStr = await reader.ReadToEndAsync();
                 }
             }
 
-            checkers.Add(new VsCodeInstaller(vscodeCheck, progressBar1, performInstallButton, vscodeButton, ResourcesFolder, config.VsCode));
-            checkers.Add(new JavaInstaller(javaCheck, config.Java, ResourcesFolder, config.DefaultInstallLocation));
-            checkers.Add(new GradleInstaller(gradleCheck, config.Gradle, ResourcesFolder, config.DefaultInstallLocation));
-            checkers.Add(new CppInstaller(cppCheck, config.CppCompiler, ResourcesFolder, config.DefaultInstallLocation));
-            checkers.Add(new EnvironmentSetters(allUsers, config.DefaultInstallLocation, ResourcesFolder, config.Year));
-            checkers.Add(new VsCodeExtensionInstallers(vscodeExtCheckBox, config.VsCodeExtensions, ResourcesFolder));
+            ;
+
+
+
+            //Path.Combine(ResourcesFolder, "config.json");
+            //string jsonContents = "";
+            //try
+            //{
+            //    jsonContents = File.ReadAllText(Path.Combine(ResourcesFolder, "config.json"));
+            //}
+            //catch (IOException)
+            //{
+            //    MessageBox.Show("Coult not find settings file. Contact WPILib");
+            //    this.Close();
+            //}
+            //Config config = JsonConvert.DeserializeObject<Config>(jsonContents);
+
+            //using (HttpClient client = new HttpClient())
+            //{
+            //    try
+            //    {
+            //        var result = await client.GetStringAsync("http://first.wpi.edu/FRC/roborio/wpilib.gpg.key");
+            //        dynamic resultParse = JsonConvert.DeserializeObject(result);
+            //        string newestVersion = resultParse.NewestVersion;
+            //        if (newestVersion != config.CurrentVersion)
+            //        {
+            //            MessageBox.Show("This is not the newest version");
+            //        }
+            //        ;
+            //    }
+            //    catch (Exception ex)
+            //    {
+
+            //    }
+            //}
+
+            //checkers.Add(new VsCodeInstaller(vscodeCheck, progressBar1, performInstallButton, vscodeButton, ResourcesFolder, config.VsCode));
+            //checkers.Add(new JavaInstaller(javaCheck, config.Java, ResourcesFolder, config.DefaultInstallLocation));
+            //checkers.Add(new GradleInstaller(gradleCheck, config.Gradle, ResourcesFolder, config.DefaultInstallLocation));
+            //checkers.Add(new CppInstaller(cppCheck, config.CppCompiler, ResourcesFolder, config.DefaultInstallLocation));
+            //checkers.Add(new EnvironmentSetters(allUsers, config.DefaultInstallLocation, ResourcesFolder, config.Year));
+            //checkers.Add(new VsCodeExtensionInstallers(vscodeExtCheckBox, config.VsCodeExtensions, ResourcesFolder));
 
             await TaskEx.WhenAll(checkers.Select(x => x.CheckForInstall()));
 
@@ -117,7 +133,7 @@ namespace WPILibInstaller
                 performInstallButton.Enabled = false;
                 isInstalling = true;
 
-               
+
 
                 foreach (var checker in checkers)
                 {
