@@ -16,8 +16,14 @@ def downloadTask = tasks.register('downloadToolchain', Download) {
 
 def extractTask = tasks.register('extractToolchain', Copy) {
   dependsOn downloadTask
-  from zipTree(file("$buildDir/$fileName"))
+
+  from zipTree(file("$buildDir/$fileName")).matching{ include "frc/**"}
   into extractLocation
+  eachFile { f->
+    f.path = f.path.substring(4) // length of frc/
+  }
+
+  includeEmptyDirs = false
 }
 
 ext.toolchainConfigTaskSetup = {
@@ -27,6 +33,7 @@ ext.toolchainConfigTaskSetup = {
     def toolchainConfig = [:];
 
     toolchainConfig['Version'] = gccVersion
+    toolchainConfig['Directory'] = 'gcc'
 
     config['CppToolchain'] = toolchainConfig
   });

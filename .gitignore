@@ -333,3 +333,7 @@ Resources/
 
 build/
 .gradle/
+.vscode/
+.project
+.classpath
+.settings

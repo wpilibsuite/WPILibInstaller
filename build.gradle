@@ -23,6 +23,7 @@ apply from: 'scripts/gradlew.gradle'
 apply from: 'scripts/installer.gradle'
 apply from: 'scripts/tools.gradle'
 apply from: 'scripts/toolchain.gradle'
+apply from: 'scripts/jdk.gradle'
 
 def upgradeConfigFile = file("$buildDir/upgradeConfig.json")
 
@@ -32,6 +33,7 @@ def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { 
     task.outputs.file upgradeConfigFile
 
     def configurations = []
+    configurations << toolsConfig()
 
     configurations.each {
         it.first(task)
@@ -173,7 +175,7 @@ def generateFullResourcesTask = tasks.register('generateFullResources', Zip) {
 
     gradleZipTaskSetup(it)
     toolchainZipSetup(it)
-
+    jdkZipSetup(it)
 }
 
 def generateFullZipBaseTask = tasks.register('generateFileZipBase', Zip) {

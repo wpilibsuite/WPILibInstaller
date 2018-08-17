@@ -9,8 +9,16 @@ dependencies {
   wpiLibTools 'edu.wpi.first.wpilib:RobotBuilder:+'
 }
 
-ext.toolsSetup = { Zip zip->
+ext.toolsConfig = {
+  def toolsFolder = 'tools'
+  return new Tuple2({ task->
+    task.inputs.property 'toolsFolder', toolsFolder
+  }, { config->
+    config['ToolsFolder'] = toolsFolder
+  })
+}
 
+ext.toolsSetup = { Zip zip->
   configurations.wpiLibTools.files.each {
     if (it.name.startsWith('app')) {
       zip.from (it) {
@@ -25,5 +33,4 @@ ext.toolsSetup = { Zip zip->
       }
     }
   }
-
 }
