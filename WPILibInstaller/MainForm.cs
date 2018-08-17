@@ -19,99 +19,18 @@ namespace WPILibInstaller
 {
     public partial class MainForm : Form
     {
-        private readonly ZipFile zipStore;
+        private ZipFile zipStore;
+        private bool closeZip = false;
+        private bool debugMode;
 
-        public MainForm(ZipFile mainZipFile)
+        public MainForm(ZipFile mainZipFile, bool debug)
         {
             zipStore = mainZipFile;
+            debugMode = debug;
             InitializeComponent();
         }
 
         List<Checker> checkers = new List<Checker>();
-
-        private async void Form1_Load(object sender, EventArgs e)
-        {
-            // Look for upgrade config. Should always be there.
-            var upgradeEntry = zipStore.FindEntry("installUtils/upgradeConfig.json", true);
-
-            if (upgradeEntry == -1)
-            {
-                // Error
-                MessageBox.Show("File Error?");
-                Application.Exit();
-                return;
-            }
-
-            string upgradeConfigStr = "";
-            string fullConfigStr = "";
-
-            using (StreamReader reader = new StreamReader(zipStore.GetInputStream(upgradeEntry)))
-            {
-                upgradeConfigStr = await reader.ReadToEndAsync();
-            }
-
-            // Look for full config. Will not be there on upgrade
-            var fullEntry = zipStore.FindEntry("installUtils/fullConfig.json", true);
-
-            if (fullEntry == -1)
-            {
-                // Disable any full entry things
-            }
-            else
-            {
-                using (StreamReader reader = new StreamReader(zipStore.GetInputStream(fullEntry)))
-                {
-                    fullConfigStr = await reader.ReadToEndAsync();
-                }
-            }
-
-            ;
-
-
-
-            //Path.Combine(ResourcesFolder, "config.json");
-            //string jsonContents = "";
-            //try
-            //{
-            //    jsonContents = File.ReadAllText(Path.Combine(ResourcesFolder, "config.json"));
-            //}
-            //catch (IOException)
-            //{
-            //    MessageBox.Show("Coult not find settings file. Contact WPILib");
-            //    this.Close();
-            //}
-            //Config config = JsonConvert.DeserializeObject<Config>(jsonContents);
-
-            //using (HttpClient client = new HttpClient())
-            //{
-            //    try
-            //    {
-            //        var result = await client.GetStringAsync("http://first.wpi.edu/FRC/roborio/wpilib.gpg.key");
-            //        dynamic resultParse = JsonConvert.DeserializeObject(result);
-            //        string newestVersion = resultParse.NewestVersion;
-            //        if (newestVersion != config.CurrentVersion)
-            //        {
-            //            MessageBox.Show("This is not the newest version");
-            //        }
-            //        ;
-            //    }
-            //    catch (Exception ex)
-            //    {
-
-            //    }
-            //}
-
-            //checkers.Add(new VsCodeInstaller(vscodeCheck, progressBar1, performInstallButton, vscodeButton, ResourcesFolder, config.VsCode));
-            //checkers.Add(new JavaInstaller(javaCheck, config.Java, ResourcesFolder, config.DefaultInstallLocation));
-            //checkers.Add(new GradleInstaller(gradleCheck, config.Gradle, ResourcesFolder, config.DefaultInstallLocation));
-            //checkers.Add(new CppInstaller(cppCheck, config.CppCompiler, ResourcesFolder, config.DefaultInstallLocation));
-            //checkers.Add(new EnvironmentSetters(allUsers, config.DefaultInstallLocation, ResourcesFolder, config.Year));
-            //checkers.Add(new VsCodeExtensionInstallers(vscodeExtCheckBox, config.VsCodeExtensions, ResourcesFolder));
-
-            await TaskEx.WhenAll(checkers.Select(x => x.CheckForInstall()));
-
-            performInstallButton.Visible = true;
-        }
 
         private void javaButton_Click(object sender, EventArgs e)
         {
@@ -144,6 +63,87 @@ namespace WPILibInstaller
                 performInstallButton.Text = "Finished Install";
                 progressBar1.Value = 0;
             }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (closeZip)
+            {
+                zipStore.Close();
+            }
+        }
+
+        private async void MainForm_Shown(object sender, EventArgs e)
+        {
+            this.Enabled = false;
+            if (zipStore == null)
+            {
+                if (debugMode)
+                {
+                    OpenFileDialog ofd = new OpenFileDialog();
+                    ofd.Title = "Select the installer zip";
+                    var res = ofd.ShowDialog();
+                    if (res == DialogResult.OK)
+                    {
+                        FileStream fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read);
+                        zipStore = new ZipFile(fs);
+                        zipStore.IsStreamOwner = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("File Error. Please select a zip file.");
+                        Application.Exit();
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("File Error. Try redownloading the file, and if this error continues contact WPILib support.");
+                    Application.Exit();
+                    return;
+                }
+            }
+
+
+
+            // Look for upgrade config. Should always be there.
+            var upgradeEntry = zipStore.FindEntry("installUtils/upgradeConfig.json", true);
+
+            if (upgradeEntry == -1)
+            {
+                // Error
+                MessageBox.Show("File Error?");
+                Application.Exit();
+                return;
+            }
+
+            string upgradeConfigStr = "";
+            string fullConfigStr = "";
+
+            using (StreamReader reader = new StreamReader(zipStore.GetInputStream(upgradeEntry)))
+            {
+                upgradeConfigStr = await reader.ReadToEndAsync();
+            }
+
+            // Look for full config. Will not be there on upgrade
+            var fullEntry = zipStore.FindEntry("installUtils/fullConfig.json", true);
+
+            if (fullEntry == -1)
+            {
+                // Disable any full entry things
+                gradleCheck.Enabled = false;
+                javaCheck.Enabled = false;
+                cppCheck.Enabled = false;
+            }
+            else
+            {
+                using (StreamReader reader = new StreamReader(zipStore.GetInputStream(fullEntry)))
+                {
+                    fullConfigStr = await reader.ReadToEndAsync();
+                }
+            }
+
+            this.Enabled = true;
         }
     }
 }

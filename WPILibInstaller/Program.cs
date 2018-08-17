@@ -13,10 +13,24 @@ namespace WPILibInstaller
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            bool debug = false;
+#if DEBUG
+            debug = true;
+#endif
+
+            foreach (var arg in args)
+            {
+                if (arg == "--debug")
+                {
+                    debug = true;
+                    break;
+                }
+            }
 
             // Check to see if this executable is a zip
             var thisPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
@@ -27,7 +41,7 @@ namespace WPILibInstaller
                     using (ZipFile zfs = new ZipFile(fs))
                     {
                         zfs.IsStreamOwner = false;
-                        Application.Run(new MainForm(zfs));
+                        Application.Run(new MainForm(zfs, debug));
                         return;
                     }
                 }
@@ -37,28 +51,7 @@ namespace WPILibInstaller
                 }
             }
 
-
-#if DEBUG
-            // If here, and in debug, we need to select our zip
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Select the installer zip";
-            var res = ofd.ShowDialog();
-            if (res == DialogResult.OK)
-            {
-                using (FileStream fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read))
-                {
-                    using (ZipFile zfs = new ZipFile(fs))
-                    {
-                        zfs.IsStreamOwner = false;
-                        Application.Run(new MainForm(zfs));
-                        return;
-                    }
-                }
-            }
-
-#endif
-            // If error, give support message
-            MessageBox.Show("File Error. Try redownloading the file, and if this error continues contact WPILib support.");
+            Application.Run(new MainForm(null, debug));
         }
     }
 }
