@@ -9,34 +9,21 @@ dependencies {
   wpiLibTools 'edu.wpi.first.wpilib:RobotBuilder:+'
 }
 
-def zipToolsTask = tasks.register('zipTools', Zip) {
-  baseName 'tools'
-  destinationDir buildDir
-
-  duplicatesStrategy 'exclude'
+ext.toolsSetup = { Zip zip->
 
   configurations.wpiLibTools.files.each {
     if (it.name.startsWith('app')) {
-      from (it) {
-        into '/'
+      zip.from (it) {
+        into '/tools'
         rename { 'ShuffleBoard.jar' }
       }
     } else {
       def str = it.name.substring(0, it.name.indexOf('-')) + '.jar'
-      from (it) {
-        into '/'
+      zip.from (it) {
+        into '/tools'
         rename { str }
       }
     }
-  }
-}
-
-ext.toolsSetup = { Zip zip->
-  zip.dependsOn zipToolsTask
-  zip.inputs.file zipToolsTask.get().archivePath
-
-  zip.from (zipToolsTask.get().archivePath) {
-    into '/resources'
   }
 
 }

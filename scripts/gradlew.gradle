@@ -25,6 +25,6 @@ ext.gradleZipTaskSetup = { Zip zip->
 
     def distribution = assembler.getDistribution(executor.configuration)
     zip.from (distribution.zipFile) {
-        into '/resources'
+        into '/installUtils'
     }
 }

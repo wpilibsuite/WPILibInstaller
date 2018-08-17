@@ -11,7 +11,8 @@ buildscript {
 plugins {
     id 'java'
     id "com.ullink.msbuild" version "2.21" apply false
-     id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '2.1'
+    id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '2.1'
+    id "de.undercouch.download" version "3.4.3" apply false
 }
 
 wrapper {
@@ -21,15 +22,16 @@ wrapper {
 apply from: 'scripts/gradlew.gradle'
 apply from: 'scripts/installer.gradle'
 apply from: 'scripts/tools.gradle'
+apply from: 'scripts/toolchain.gradle'
 
 def upgradeConfigFile = file("$buildDir/upgradeConfig.json")
+
+def frcYear = '2018'
 
 def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { Task task ->
     task.outputs.file upgradeConfigFile
 
     def configurations = []
-    configurations << gradleConfigTaskSetup()
-
 
     configurations.each {
         it.first(task)
@@ -37,6 +39,8 @@ def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { 
 
     doLast {
         def config = [:]
+
+        config['frcYear'] = frcYear
 
         configurations.each {
             it.second(config)
@@ -52,22 +56,25 @@ def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { 
     }
 }
 
+def commonResources = { Zip zip->
+    zip.dependsOn upgradeConfigFileTask
+    zip.inputs.file upgradeConfigFile
+
+    zip.from (upgradeConfigFile) {
+        into '/installUtils'
+    }
+
+    msBuildSetupPermissionsWriter(zip)
+
+    toolsSetup(zip)
+}
 
 def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zip) {
     baseName 'WPILib_UpgradeFiles'
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
 
-    dependsOn upgradeConfigFileTask
-    inputs.file upgradeConfigFile
-
-    it.from (upgradeConfigFile)
-
-    msBuildSetupPermissionsWriter(it)
-
-    gradleZipTaskSetup(it)
-
-    toolsSetup(it)
+    commonResources(it)
 }
 
 def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
@@ -125,11 +132,19 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     task.outputs.file fullConfigFile
 
     def configurations = []
+    configurations << gradleConfigTaskSetup()
+    configurations << toolchainConfigTaskSetup()
+
+    configurations.each {
+        it.first(task)
+    }
 
     doLast {
         def config = [:]
 
-        config['vscode'] = true
+        configurations.each {
+            it.second(config)
+        }
 
         def gbuilder = new GsonBuilder()
         gbuilder.setPrettyPrinting()
@@ -150,16 +165,21 @@ def generateFullResourcesTask = tasks.register('generateFullResources', Zip) {
     dependsOn fullConfigFileTask
     inputs.file fullConfigFile
 
-    it.from (fullConfigFile)
+    it.from (fullConfigFile) {
+        into '/installUtils'
+    }
+
+    commonResources(it)
+
+    gradleZipTaskSetup(it)
+    toolchainZipSetup(it)
+
 }
 
 def generateFullZipBaseTask = tasks.register('generateFileZipBase', Zip) {
     baseName 'WPILibInstaller_Full'
     destinationDir buildDir
     duplicatesStrategy 'exclude'
-
-    dependsOn generateUpgradeResourcesTask
-    inputs.file generateUpgradeResourcesTask.get().archivePath
 
     dependsOn generateFullResourcesTask
     inputs.file generateFullResourcesTask.get().archivePath
@@ -170,7 +190,6 @@ def generateFullZipBaseTask = tasks.register('generateFileZipBase', Zip) {
     // This MUST be first
     msBuildSetupMain(it)
 
-    from (generateUpgradeResourcesTask.get().archivePath)
     from (generateFullResourcesTask.get().archivePath)
 }
 

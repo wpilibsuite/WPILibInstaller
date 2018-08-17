@@ -1,0 +1,43 @@
+def fileName = 'FRC-2018-Windows-Toolchain-5.5.zip'
+def gccVersion = '5.5.0'
+def baseUrl = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+
+def downloadUrl = baseUrl + fileName
+
+def extractLocation = file("$buildDir/toolchain")
+
+apply plugin: 'de.undercouch.download'
+
+def downloadTask = tasks.register('downloadToolchain', Download) {
+  src downloadUrl
+  dest buildDir
+  overwrite false
+}
+
+def extractTask = tasks.register('extractToolchain', Copy) {
+  dependsOn downloadTask
+  from zipTree(file("$buildDir/$fileName"))
+  into extractLocation
+}
+
+ext.toolchainConfigTaskSetup = {
+  return new Tuple2({ task->
+    task.inputs.property 'toolchainName', fileName
+  }, { config->
+    def toolchainConfig = [:];
+
+    toolchainConfig['Version'] = gccVersion
+
+    config['CppToolchain'] = toolchainConfig
+  });
+}
+
+ext.toolchainZipSetup = { Zip zip->
+  zip.dependsOn extractTask
+
+  zip.inputs.dir extractLocation
+
+  zip.from(extractLocation) {
+    into '/gcc'
+  }
+}

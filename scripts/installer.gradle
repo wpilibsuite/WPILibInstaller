@@ -30,5 +30,7 @@ ext.msBuildSetupPermissionsWriter = { Zip zip->
   zip.dependsOn msbuild
   zip.inputs.file permissionSetter
 
-  zip.from (permissionSetter)
+  zip.from (permissionSetter) {
+    into '/installUtils'
+  }
 }
