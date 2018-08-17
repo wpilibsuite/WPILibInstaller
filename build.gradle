@@ -22,10 +22,10 @@ apply from: 'scripts/gradlew.gradle'
 apply from: 'scripts/installer.gradle'
 apply from: 'scripts/tools.gradle'
 
-def configFile = file("$buildDir/config.json")
+def upgradeConfigFile = file("$buildDir/upgradeConfig.json")
 
-def configFileTask = tasks.register('generateConfigFile', Task) { Task task ->
-    task.outputs.file configFile
+def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { Task task ->
+    task.outputs.file upgradeConfigFile
 
     def configurations = []
     configurations << gradleConfigTaskSetup()
@@ -46,27 +46,167 @@ def configFileTask = tasks.register('generateConfigFile', Task) { Task task ->
         gbuilder.setPrettyPrinting()
         def json = gbuilder.create().toJson(config)
 
-        configFile.parentFile.mkdirs()
+        upgradeConfigFile.parentFile.mkdirs()
 
-        configFile.text = json
+        upgradeConfigFile.text = json
     }
 }
 
 
-tasks.register('generateInstaller', Zip) {
-    baseName 'installerZip'
+def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zip) {
+    baseName 'WPILib_UpgradeFiles'
+    destinationDir file("$buildDir/outputs")
+    duplicatesStrategy 'exclude'
+
+    dependsOn upgradeConfigFileTask
+    inputs.file upgradeConfigFile
+
+    it.from (upgradeConfigFile)
+
+    msBuildSetupPermissionsWriter(it)
+
+    gradleZipTaskSetup(it)
+
+    toolsSetup(it)
+}
+
+def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
+    baseName 'WPILibInstaller_Upgrade'
     destinationDir buildDir
     duplicatesStrategy 'exclude'
 
-    dependsOn configFileTask
-    inputs.file configFile
+    dependsOn generateUpgradeResourcesTask
+    inputs.file generateUpgradeResourcesTask.get().archivePath
 
-    it.from (configFile) {
-        into '/resources'
+    entryCompression = ZipEntryCompression.STORED
+
+
+    // This MUST be first
+    msBuildSetupMain(it)
+
+    from (generateUpgradeResourcesTask.get().archivePath)
+}
+
+
+def upgradeInstallerName = 'WPILibInstaller_Upgrade.exe'
+def upgradeInstaller = file("$buildDir/outputs/$upgradeInstallerName")
+
+def upgradeInstallerTask = tasks.register('generateUpgradeInstaller', Task) {
+    def zipFile = generateUpgradeZipBaseTask.get().archivePath
+    inputs.file zipFile
+    outputs.file upgradeInstaller
+
+    dependsOn generateUpgradeZipBaseTask
+
+    doLast {
+        copy {
+            from zipFile
+            into "$buildDir/outputs"
+            rename { upgradeInstallerName }
+        }
+
+        installerFile.withInputStream { InputStream inputStream ->
+            RandomAccessFile foStream;
+            try {
+                foStream = new RandomAccessFile(upgradeInstaller, "rw");
+                foStream.write(inputStream.getBytes())
+            } finally {
+                if (foStream != null) {
+                    foStream.close();
+                }
+            }
+        }
     }
+}
 
-    gradleZipTaskSetup(it)
-    msBuildSetup(it)
-    toolsSetup(it)
+def fullConfigFile = file("$buildDir/fullConfig.json")
 
+def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task task ->
+    task.outputs.file fullConfigFile
+
+    def configurations = []
+
+    doLast {
+        def config = [:]
+
+        config['vscode'] = true
+
+        def gbuilder = new GsonBuilder()
+        gbuilder.setPrettyPrinting()
+        def json = gbuilder.create().toJson(config)
+
+        fullConfigFile.parentFile.mkdirs()
+
+        fullConfigFile.text = json
+    }
+}
+
+
+def generateFullResourcesTask = tasks.register('generateFullResources', Zip) {
+    baseName 'WPILib_FullFiles'
+    destinationDir file("$buildDir/outputs")
+    duplicatesStrategy 'exclude'
+
+    dependsOn fullConfigFileTask
+    inputs.file fullConfigFile
+
+    it.from (fullConfigFile)
+}
+
+def generateFullZipBaseTask = tasks.register('generateFileZipBase', Zip) {
+    baseName 'WPILibInstaller_Full'
+    destinationDir buildDir
+    duplicatesStrategy 'exclude'
+
+    dependsOn generateUpgradeResourcesTask
+    inputs.file generateUpgradeResourcesTask.get().archivePath
+
+    dependsOn generateFullResourcesTask
+    inputs.file generateFullResourcesTask.get().archivePath
+
+    entryCompression = ZipEntryCompression.STORED
+
+
+    // This MUST be first
+    msBuildSetupMain(it)
+
+    from (generateUpgradeResourcesTask.get().archivePath)
+    from (generateFullResourcesTask.get().archivePath)
+}
+
+
+def fullInstallerName = 'WPILibInstaller_Full.exe'
+def fullInstaller = file("$buildDir/outputs/$fullInstallerName")
+
+def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
+    def zipFile = generateFullZipBaseTask.get().archivePath
+    inputs.file zipFile
+    outputs.file fullInstaller
+
+    dependsOn generateFullZipBaseTask
+
+    doLast {
+        copy {
+            from zipFile
+            into "$buildDir/outputs"
+            rename { fullInstallerName }
+        }
+
+        installerFile.withInputStream { InputStream inputStream ->
+            RandomAccessFile foStream;
+            try {
+                foStream = new RandomAccessFile(fullInstaller, "rw");
+                foStream.write(inputStream.getBytes())
+            } finally {
+                if (foStream != null) {
+                    foStream.close();
+                }
+            }
+        }
+    }
+}
+
+tasks.register('generateInstallers', Task) {
+    dependsOn fullInstallerTask
+    dependsOn upgradeInstallerTask
 }

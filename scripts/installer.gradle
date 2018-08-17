@@ -8,20 +8,27 @@ msbuild {
   parameters.configuration = 'release'
 }
 
-def installerFile = file('WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
+ext.installerFile = file('WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
 def permissionSetter = file('ElevatedPermissionSetter/bin/Release/ElevatedPermissionSetter.exe')
 
 
-ext.msBuildSetup = { Zip zip->
+ext.msBuildSetupMain = { Zip zip->
   zip.dependsOn msbuild
   zip.inputs.file installerFile
+
+  zip.from (installerFile)
+}
+
+ext.msBuildSetupMain = { Zip zip->
+  zip.dependsOn msbuild
+  zip.inputs.file installerFile
+
+  zip.from (installerFile)
+}
+
+ext.msBuildSetupPermissionsWriter = { Zip zip->
+  zip.dependsOn msbuild
   zip.inputs.file permissionSetter
 
-  zip.from (installerFile) {
-    into '/'
-  }
-
-  zip.from (permissionSetter) {
-    into '/resources'
-  }
+  zip.from (permissionSetter)
 }

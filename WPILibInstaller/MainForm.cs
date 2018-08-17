@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +30,29 @@ namespace WPILibInstaller
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            var path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            using (ZipFile zf = new ZipFile(fs))
+            {
+                zf.IsStreamOwner = false;
+
+                var entry = zf.GetEntry("config.json");
+
+                MessageBox.Show("Has Entry? " + entry == null ? "no" : "yes");
+
+                Stream entryStream = zf.GetInputStream(entry);
+
+                StreamReader reader = new StreamReader(entryStream);
+                string file = reader.ReadToEnd();
+
+                MessageBox.Show(file);
+
+                return;
+
+
+
+            }
+
             Path.Combine(ResourcesFolder, "config.json");
             string jsonContents = "";
             try
