@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 namespace WPILibInstaller
 {
+    /*
     public class EnvironmentSetters : Checker
     {
         private string installPath;
@@ -81,4 +82,5 @@ namespace WPILibInstaller
             return true;
         }
     }
+    */
 }

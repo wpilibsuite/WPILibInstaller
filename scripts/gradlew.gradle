@@ -10,11 +10,12 @@ ext.gradleConfigTaskSetup = {
     def distributionHash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(wrapperTask.distributionUrl.getBytes())).toString(36)
 
     def gradleCfg = [
-        hash: distributionHash,
-        zipName: new File(wrapperTask.distributionUrl).name
+        Hash: distributionHash,
+        ZipName: new File(wrapperTask.distributionUrl).name,
+        ExtractLocation: 'permwrappers/dists'
     ]
 
-    config['gradle'] = gradleCfg
+    config['Gradle'] = gradleCfg
   })
 }
 

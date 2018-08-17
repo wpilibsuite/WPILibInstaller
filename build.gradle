@@ -47,7 +47,7 @@ def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { 
     doLast {
         def config = [:]
 
-        config['frcYear'] = frcYear
+        config['FrcYear'] = frcYear
 
         configurations.each {
             it.second(config)

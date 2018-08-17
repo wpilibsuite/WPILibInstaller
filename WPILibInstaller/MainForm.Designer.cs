@@ -68,6 +68,8 @@
             // javaCheck
             // 
             this.javaCheck.AutoSize = true;
+            this.javaCheck.Checked = true;
+            this.javaCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.javaCheck.Location = new System.Drawing.Point(23, 158);
             this.javaCheck.Margin = new System.Windows.Forms.Padding(6);
             this.javaCheck.Name = "javaCheck";
@@ -108,6 +110,8 @@
             // gradleCheck
             // 
             this.gradleCheck.AutoSize = true;
+            this.gradleCheck.Checked = true;
+            this.gradleCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.gradleCheck.Location = new System.Drawing.Point(21, 205);
             this.gradleCheck.Margin = new System.Windows.Forms.Padding(6);
             this.gradleCheck.Name = "gradleCheck";
@@ -119,6 +123,8 @@
             // cppCheck
             // 
             this.cppCheck.AutoSize = true;
+            this.cppCheck.Checked = true;
+            this.cppCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cppCheck.Location = new System.Drawing.Point(21, 249);
             this.cppCheck.Margin = new System.Windows.Forms.Padding(6);
             this.cppCheck.Name = "cppCheck";
@@ -130,6 +136,8 @@
             // toolsCheck
             // 
             this.toolsCheck.AutoSize = true;
+            this.toolsCheck.Checked = true;
+            this.toolsCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.toolsCheck.Location = new System.Drawing.Point(23, 295);
             this.toolsCheck.Margin = new System.Windows.Forms.Padding(6);
             this.toolsCheck.Name = "toolsCheck";
@@ -152,6 +160,8 @@
             // wpilibCheck
             // 
             this.wpilibCheck.AutoSize = true;
+            this.wpilibCheck.Checked = true;
+            this.wpilibCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.wpilibCheck.Location = new System.Drawing.Point(21, 341);
             this.wpilibCheck.Margin = new System.Windows.Forms.Padding(6);
             this.wpilibCheck.Name = "wpilibCheck";

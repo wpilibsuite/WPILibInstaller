@@ -56,7 +56,7 @@ ext.jdkConfigSetup = {
     jdks['32BitVersion'] = version32
     jdks['64BitFolder'] = 'jdk64'
     jdks['64BitVersion'] = version64
-    config['jdks'] = jdks
+    config['Jdks'] = jdks
   })
 }
 

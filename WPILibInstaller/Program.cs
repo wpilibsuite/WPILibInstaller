@@ -45,7 +45,7 @@ namespace WPILibInstaller
                         return;
                     }
                 }
-                catch (ZipException zx)
+                catch (ZipException)
                 {
                     // Not a zip file. Let it close, and find our zip file
                 }
