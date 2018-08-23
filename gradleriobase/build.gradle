@@ -1,0 +1,107 @@
+import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
+import com.google.gson.GsonBuilder
+
+buildscript {
+    dependencies {
+        classpath 'com.google.code.gson:gson:2.2.4'
+    }
+}
+
+
+plugins {
+    id "java"
+    id 'cpp'
+    id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
+}
+
+
+// Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
+// and NavX.
+dependencies {
+    compile wpilib()
+    compile ctre()
+    compile navx()
+}
+
+model {
+    components {
+        frcUserProgram(NativeExecutableSpec) {
+            targetPlatform 'roborio'
+
+            // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
+            // and NavX.
+            useLibrary(it, "wpilib", "ctre", "navx")
+        }
+    }
+}
+
+def getConfig = { configs, deps->
+    configs.each { config->
+        if (config.canBeResolved) {
+            config.resolvedConfiguration.resolvedArtifacts.each {
+                def item = [:];
+                item['classifier'] = it.classifier
+                item['extension'] = it.extension
+                def id = it.moduleVersion.id
+                item['groupId'] = id.group
+                item['version'] = id.version
+                item['artifactId'] = id.name
+                deps << item
+            }
+            def componentIds = config.incoming.resolutionResult.allDependencies.collect { it.selected.id }
+            def result = dependencies.createArtifactResolutionQuery()
+                                     .forComponents(componentIds)
+                                     .withArtifacts(JvmLibrary, SourcesArtifact, JavadocArtifact)
+                                     .execute()
+
+            for (component in result.resolvedComponents) {
+                component.getArtifacts(SourcesArtifact).each {
+
+                    def item = [:];
+                    item['classifier'] = 'sources'
+                    item['extension'] = 'jar'
+                    def id = it.id.componentIdentifier
+                    item['groupId'] = id.group
+                    item['version'] = id.version
+                    item['artifactId'] = id.module
+                    deps << item
+
+                }
+                component.getArtifacts(JavadocArtifact).each {
+                                        def item = [:];
+                    item['classifier'] = 'javadoc'
+                    item['extension'] = 'jar'
+                    def id = it.id.componentIdentifier
+                    item['groupId'] = id.group
+                    item['version'] = id.version
+                    item['artifactId'] = id.module
+                    deps << item
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    gradlePluginPortal()
+}
+
+ext.getGradleRioDependencies = {
+    def output = [:]
+    Set deps = []
+
+    getConfig(configurations, deps)
+    getConfig(buildscript.configurations, deps)
+
+    output['deps'] = deps
+
+    Set urls = [];
+
+    repositories.each {
+        urls << it.url
+    }
+
+    output['urls'] = urls
+
+    return output
+}

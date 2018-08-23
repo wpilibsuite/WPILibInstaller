@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -25,6 +26,7 @@ namespace WPILibInstaller
 
         private UpgradeConfig upgradeConfig;
         private FullConfig fullConfig;
+        private VsCodeConfig vsCodeConfig;
 
         private List<ExtractionIgnores> extractionControllers = new List<ExtractionIgnores>();
 
@@ -199,6 +201,7 @@ namespace WPILibInstaller
 
             string upgradeConfigStr = "";
             string fullConfigStr = "";
+            string vsConfigStr = "";
 
             using (StreamReader reader = new StreamReader(zipStore.GetInputStream(upgradeEntry)))
             {
@@ -210,6 +213,28 @@ namespace WPILibInstaller
                 extractionControllers.Add(new ExtractionIgnores(toolsCheck, upgradeConfig.ToolsFolder, false));
                 extractionControllers.Add(new ExtractionIgnores(wpilibCheck, "maven", false)); // TODO make this a real folder
             }
+
+            // Look for VS Code config. Should always be there.
+            var vsCodeEntry = zipStore.FindEntry("installUtils/vscodeConfig.json", true);
+
+            if (vsCodeEntry == -1)
+            {
+                // Error
+                MessageBox.Show("File Error?");
+                Application.Exit();
+                return;
+            }
+
+            using (StreamReader reader = new StreamReader(zipStore.GetInputStream(vsCodeEntry)))
+            {
+                vsConfigStr = await reader.ReadToEndAsync();
+                vsCodeConfig = JsonConvert.DeserializeObject<VsCodeConfig>(vsConfigStr, new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Error
+                });
+            }
+
+            vscodeButton.Enabled = true;
 
             // Look for full config. Will not be there on upgrade
             var fullEntry = zipStore.FindEntry("installUtils/fullConfig.json", true);
@@ -249,6 +274,17 @@ namespace WPILibInstaller
             this.performInstallButton.Enabled = true;
             this.performInstallButton.Visible = true;
             this.Enabled = true;
+        }
+
+        private async void vscodeButton_Click(object sender, EventArgs e)
+        {
+            VsCodeFiles vsf = new VsCodeFiles(vsCodeConfig);
+
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+
+            await vsf.DownloadAndZipFiles(progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, CancellationToken.None);
+
+            MessageBox.Show("Done!");
         }
     }
 }

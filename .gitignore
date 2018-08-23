@@ -337,3 +337,5 @@ build/
 .project
 .classpath
 .settings
+offline-repository/
+buildSrc/libs

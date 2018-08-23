@@ -12,7 +12,7 @@ ext.gradleConfigTaskSetup = {
     def gradleCfg = [
         Hash: distributionHash,
         ZipName: new File(wrapperTask.distributionUrl).name,
-        ExtractLocation: 'permwrappers/dists'
+        ExtractLocation: 'permwrapper/dists'
     ]
 
     config['Gradle'] = gradleCfg

@@ -18,6 +18,9 @@ def extract32BitJdk = tasks.register('extract32BitJdk', Copy) {
     f.path = f.path.substring(4) // length of jdk/
   }
   exclude '**/src.zip'
+  exclude '**/bin/*.pdb'
+  exclude '**/bin/*.map'
+  exclude '**/demo/**'
 
   includeEmptyDirs = false
 }
@@ -60,16 +63,20 @@ ext.jdkConfigSetup = {
   })
 }
 
-ext.jdkZipSetup = { Zip zip->
+ext.jdkZipSetup32 = { Zip zip->
   zip.dependsOn extract32BitJdk
-  zip.dependsOn extract64BitJdk
 
-  zip.inputs.dir jdk64Location
   zip.inputs.dir jdk32Location
 
   zip.from(jdk32Location) {
     into '/jdk32'
   }
+}
+
+ext.jdkZipSetup64 = { Zip zip->
+  zip.dependsOn extract64BitJdk
+
+  zip.inputs.dir jdk64Location
 
   zip.from(jdk64Location) {
     into '/jdk64'

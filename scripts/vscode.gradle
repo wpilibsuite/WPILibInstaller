@@ -1,0 +1,68 @@
+
+def vscodeFile = file("$buildDir/vscodeConfig.json")
+
+def vscode32Url = 'https://vscode-update.azurewebsites.net/1.26.1/win32-archive/stable'
+def vscode32ZipName = 'VSCode-win32-ia32-1.26.1.zip'
+def vscode64Url = 'https://vscode-update.azurewebsites.net/1.26.1/win32-x64-archive/stable'
+def vscode64ZipName = 'VSCode-win32-x64-1.26.1.zip'
+
+def cppUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/v0.18.1/cpptools-win32.vsix'
+def cppVsix = 'cpptools-win32-0.18.1.vsix'
+
+def wpilibExtensionFileName = 'vscode-wpilib-2019.0.0-alpha-4.vsix'
+def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-alpha-4/vscode-wpilib-2019.0.0-alpha-4.vsix'
+
+def javaDebugUrl = 'https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-debug/0.11.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
+def javaDebugVsix = 'vscode-java-debug-0.11.0.vsix'
+
+def javaLangUrl = 'https://redhat.gallery.vsassets.io/_apis/public/gallery/publisher/redhat/extension/java/0.29.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
+def javaLangVsix = 'vscode-java-lang-0.29.0.vsix'
+
+def extensions = [
+  javaLangVsix,
+  javaDebugVsix,
+  cppVsix,
+  wpilibExtensionFileName
+]
+
+def vscodeTask = tasks.register('vscodeConfig', Task) {
+  outputs.file vscodeFile
+  def config = [:]
+  config['VsCode32Url'] = vscode32Url
+  config['VsCode32Name'] = vscode32ZipName
+  config['VsCode64Url'] = vscode64Url
+  config['VsCode64Name'] = vscode64ZipName
+  config['cppUrl'] = cppUrl
+  config['cppVsix'] = cppVsix
+  config['javaDebugUrl'] = javaDebugUrl
+  config['javaDebugVsix'] = javaDebugVsix
+  config['javaLangUrl'] = javaLangUrl
+  config['javaLangVsix'] = javaLangVsix
+  config['extensions'] = extensions
+
+  config.each { key, value->
+    inputs.property key, value
+  }
+
+  doLast {
+
+    def gbuilder = getGsonBuilder()
+
+    gbuilder.setPrettyPrinting()
+    def json = gbuilder.create().toJson(config)
+
+    vscodeFile.parentFile.mkdirs()
+
+    vscodeFile.text = json
+  }
+}
+
+ext.vscodeZipSetup = { Zip zip->
+  zip.dependsOn vscodeTask
+
+  zip.inputs.file vscodeFile
+
+  zip.from (vscodeFile) {
+    into '/installUtils'
+  }
+}

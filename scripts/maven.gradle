@@ -1,6 +1,86 @@
+apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
+
+evaluationDependsOn(':gradleriobase')
+
+def gradleRioDeps = project(':gradleriobase').getGradleRioDependencies()
+
+def otherDeps = []
+
+
+configurations {
+  offline
+  tools
+}
+
+def toolArtifacts = [
+  'edu.wpi.first.shuffleboard:app',
+  'edu.wpi.first.wpilib:OutlineViewer',
+  'edu.wpi.first.wpilib:SmartDashboard',
+  'edu.wpi.first.wpilib:RobotBuilder'
+]
+
+dependencies {
+  gradleRioDeps.deps.each { dep->
+    if (dep.classifier == null) {
+      offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
+    } else if (dep.classifier == 'windowsx86-64') {
+      offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86@$dep.extension"
+    } else {
+      offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+    }
+
+    toolArtifacts.each { tool->
+      if ("$dep.groupId:$dep.artifactId" == tool) {
+        if (dep.classifier == null) {
+          tools "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
+        } else {
+          tools "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+        }
+      }
+    }
+
+
+  }
+}
+
+repositories {
+  gradleRioDeps.urls.each { gUrl->
+    maven {
+      url = gUrl
+    }
+  }
+}
+
+offlineDependencies {
+  repositories {
+    // You'll have to add your buildscript repositories here too
+    gradleRioDeps.urls.each { gUrl->
+      maven {
+        url = gUrl
+      }
+    }
+  }
+
+  configurations 'offline'
+
+  includeSources = true
+  includeJavadocs = true
+  includePoms = true
+  includeIvyXmls = true
+}
+
+ext.mavenConfigSetup = {
+  return new Tuple2({ task->
+  }, { config->
+    config['Maven'] = [:]
+    config['Maven']['Folder'] = 'maven'
+  })
+}
+
 
 ext.mavenZipSetup = { Zip zip->
-  zip.from('build.gradle') {
+  zip.dependsOn updateOfflineRepository
+  zip.from(fileTree(offlineRepositoryRoot)) {
     into '/maven'
   }
 }

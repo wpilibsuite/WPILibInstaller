@@ -1,6 +1,8 @@
 import com.google.gson.GsonBuilder
 import org.gradle.wrapper.*
 
+
+
 buildscript {
     dependencies {
         classpath files('gradle/wrapper/gradle-wrapper.jar')
@@ -11,7 +13,6 @@ buildscript {
 plugins {
     id 'java'
     id "com.ullink.msbuild" version "2.21" apply false
-    id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '2.1'
     id "de.undercouch.download" version "3.4.3" apply false
 }
 
@@ -21,10 +22,13 @@ wrapper {
 
 apply from: 'scripts/gradlew.gradle'
 apply from: 'scripts/installer.gradle'
-apply from: 'scripts/tools.gradle'
+
 apply from: 'scripts/toolchain.gradle'
 apply from: 'scripts/jdk.gradle'
 apply from: 'scripts/maven.gradle'
+// Tools must happen after maven
+apply from: 'scripts/tools.gradle'
+apply from: 'scripts/vscode.gradle'
 
 ext.getGsonBuilder = {
     return new GsonBuilder()
@@ -39,6 +43,7 @@ def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { 
 
     def configurations = []
     configurations << toolsConfig()
+    configurations << mavenConfigSetup()
 
     configurations.each {
         it.first(task)
@@ -75,6 +80,7 @@ def commonResources = { Zip zip->
 
     toolsSetup(zip)
     mavenZipSetup(zip)
+    vscodeZipSetup(zip)
 }
 
 def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zip) {
@@ -166,8 +172,8 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
 }
 
 
-def generateFullResourcesTask = tasks.register('generateFullResources', Zip) {
-    baseName 'WPILib_FullFiles'
+def generateFullResources32Task = tasks.register('generateFullResources32', Zip) {
+    baseName 'WPILib_FullFiles32'
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
 
@@ -182,16 +188,16 @@ def generateFullResourcesTask = tasks.register('generateFullResources', Zip) {
 
     gradleZipTaskSetup(it)
     toolchainZipSetup(it)
-    jdkZipSetup(it)
+    jdkZipSetup32(it)
 }
 
-def generateFullZipBaseTask = tasks.register('generateFileZipBase', Zip) {
-    baseName 'WPILibInstaller_Full'
+def generateFullZip32BaseTask = tasks.register('generateFileZip32Base', Zip) {
+    baseName 'WPILibInstaller_Full32'
     destinationDir buildDir
     duplicatesStrategy 'exclude'
 
-    dependsOn generateFullResourcesTask
-    inputs.file generateFullResourcesTask.get().archivePath
+    dependsOn generateFullResources32Task
+    inputs.file generateFullResources32Task.get().archivePath
 
     entryCompression = ZipEntryCompression.STORED
 
@@ -199,31 +205,99 @@ def generateFullZipBaseTask = tasks.register('generateFileZipBase', Zip) {
     // This MUST be first
     msBuildSetupMain(it)
 
-    from (generateFullResourcesTask.get().archivePath)
+    from (generateFullResources32Task.get().archivePath)
 }
 
 
-def fullInstallerName = 'WPILibInstaller_Full.exe'
-def fullInstaller = file("$buildDir/outputs/$fullInstallerName")
+def fullInstaller32Name = 'WPILibInstaller_Full32.exe'
+def fullInstaller32 = file("$buildDir/outputs/$fullInstaller32Name")
 
-def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
-    def zipFile = generateFullZipBaseTask.get().archivePath
+def fullInstallerTask32 = tasks.register('generateFullInstaller32', Task) {
+    def zipFile = generateFullZip32BaseTask.get().archivePath
     inputs.file zipFile
-    outputs.file fullInstaller
+    outputs.file fullInstaller32
 
-    dependsOn generateFullZipBaseTask
+    dependsOn generateFullZip32BaseTask
 
     doLast {
         copy {
             from zipFile
             into "$buildDir/outputs"
-            rename { fullInstallerName }
+            rename { fullInstaller32Name }
         }
 
         installerFile.withInputStream { InputStream inputStream ->
             RandomAccessFile foStream;
             try {
-                foStream = new RandomAccessFile(fullInstaller, "rw");
+                foStream = new RandomAccessFile(fullInstaller32, "rw");
+                foStream.write(inputStream.getBytes())
+            } finally {
+                if (foStream != null) {
+                    foStream.close();
+                }
+            }
+        }
+    }
+}
+
+def generateFullResources64Task = tasks.register('generateFullResources64', Zip) {
+    baseName 'WPILib_FullFiles64'
+    destinationDir file("$buildDir/outputs")
+    duplicatesStrategy 'exclude'
+
+    dependsOn fullConfigFileTask
+    inputs.file fullConfigFile
+
+    it.from (fullConfigFile) {
+        into '/installUtils'
+    }
+
+    commonResources(it)
+
+    gradleZipTaskSetup(it)
+    toolchainZipSetup(it)
+    jdkZipSetup64(it)
+}
+
+def generateFullZip64BaseTask = tasks.register('generateFileZip64Base', Zip) {
+    baseName 'WPILibInstaller_Full64'
+    destinationDir buildDir
+    duplicatesStrategy 'exclude'
+
+    dependsOn generateFullResources64Task
+    inputs.file generateFullResources64Task.get().archivePath
+
+    entryCompression = ZipEntryCompression.STORED
+
+
+    // This MUST be first
+    msBuildSetupMain(it)
+
+    from (generateFullResources64Task.get().archivePath)
+}
+
+
+def fullInstaller64Name = 'WPILibInstaller_Full64.exe'
+def fullInstaller64 = file("$buildDir/outputs/$fullInstaller64Name")
+
+def fullInstallerTask64 = tasks.register('generateFullInstaller64', Task) {
+    def zipFile = generateFullZip64BaseTask.get().archivePath
+    inputs.file zipFile
+    outputs.file fullInstaller64
+
+    dependsOn generateFullZip64BaseTask
+
+    doLast {
+        copy {
+            from zipFile
+            into "$buildDir/outputs"
+            rename { fullInstaller64Name }
+        }
+
+        installerFile.withInputStream { InputStream inputStream ->
+            RandomAccessFile foStream;
+            try {
+                foStream = new RandomAccessFile(fullInstaller64, "rw");
                 foStream.write(inputStream.getBytes())
             } finally {
                 if (foStream != null) {
@@ -235,6 +309,7 @@ def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
 }
 
 tasks.register('generateInstallers', Task) {
-    dependsOn fullInstallerTask
+    dependsOn fullInstallerTask32
+    dependsOn fullInstallerTask64
     dependsOn upgradeInstallerTask
 }

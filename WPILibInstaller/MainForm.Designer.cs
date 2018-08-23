@@ -40,6 +40,11 @@
             this.allUsers = new System.Windows.Forms.CheckBox();
             this.wpilibCheck = new System.Windows.Forms.CheckBox();
             this.vscodeExtCheckBox = new System.Windows.Forms.CheckBox();
+            this.progressBar2 = new System.Windows.Forms.ProgressBar();
+            this.progressBar3 = new System.Windows.Forms.ProgressBar();
+            this.progressBar4 = new System.Windows.Forms.ProgressBar();
+            this.progressBar5 = new System.Windows.Forms.ProgressBar();
+            this.progressBar6 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // performInstallButton
@@ -98,6 +103,7 @@
             this.vscodeButton.Size = new System.Drawing.Size(304, 77);
             this.vscodeButton.TabIndex = 10;
             this.vscodeButton.UseVisualStyleBackColor = true;
+            this.vscodeButton.Click += new System.EventHandler(this.vscodeButton_Click);
             // 
             // progressBar1
             // 
@@ -181,11 +187,51 @@
             this.vscodeExtCheckBox.Text = "Visual Studio Code Extensions";
             this.vscodeExtCheckBox.UseVisualStyleBackColor = true;
             // 
+            // progressBar2
+            // 
+            this.progressBar2.Location = new System.Drawing.Point(739, 163);
+            this.progressBar2.Name = "progressBar2";
+            this.progressBar2.Size = new System.Drawing.Size(100, 23);
+            this.progressBar2.TabIndex = 18;
+            // 
+            // progressBar3
+            // 
+            this.progressBar3.Location = new System.Drawing.Point(739, 193);
+            this.progressBar3.Name = "progressBar3";
+            this.progressBar3.Size = new System.Drawing.Size(100, 23);
+            this.progressBar3.TabIndex = 19;
+            // 
+            // progressBar4
+            // 
+            this.progressBar4.Location = new System.Drawing.Point(739, 223);
+            this.progressBar4.Name = "progressBar4";
+            this.progressBar4.Size = new System.Drawing.Size(100, 23);
+            this.progressBar4.TabIndex = 20;
+            // 
+            // progressBar5
+            // 
+            this.progressBar5.Location = new System.Drawing.Point(739, 253);
+            this.progressBar5.Name = "progressBar5";
+            this.progressBar5.Size = new System.Drawing.Size(100, 23);
+            this.progressBar5.TabIndex = 21;
+            // 
+            // progressBar6
+            // 
+            this.progressBar6.Location = new System.Drawing.Point(739, 283);
+            this.progressBar6.Name = "progressBar6";
+            this.progressBar6.Size = new System.Drawing.Size(100, 23);
+            this.progressBar6.TabIndex = 22;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(594, 679);
+            this.ClientSize = new System.Drawing.Size(1188, 679);
+            this.Controls.Add(this.progressBar6);
+            this.Controls.Add(this.progressBar5);
+            this.Controls.Add(this.progressBar4);
+            this.Controls.Add(this.progressBar3);
+            this.Controls.Add(this.progressBar2);
             this.Controls.Add(this.vscodeExtCheckBox);
             this.Controls.Add(this.wpilibCheck);
             this.Controls.Add(this.allUsers);
@@ -221,6 +267,11 @@
         private System.Windows.Forms.CheckBox allUsers;
         private System.Windows.Forms.CheckBox wpilibCheck;
         private System.Windows.Forms.CheckBox vscodeExtCheckBox;
+        private System.Windows.Forms.ProgressBar progressBar2;
+        private System.Windows.Forms.ProgressBar progressBar3;
+        private System.Windows.Forms.ProgressBar progressBar4;
+        private System.Windows.Forms.ProgressBar progressBar5;
+        private System.Windows.Forms.ProgressBar progressBar6;
     }
 }
 

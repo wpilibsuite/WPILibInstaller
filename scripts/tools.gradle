@@ -1,20 +1,9 @@
-configurations {
-  wpiLibTools
-}
-
-dependencies {
-  wpiLibTools 'edu.wpi.first.shuffleboard:app:+'
-  wpiLibTools 'edu.wpi.first.wpilib:OutlineViewer:+'
-  wpiLibTools 'edu.wpi.first.wpilib:SmartDashboard:+'
-  wpiLibTools 'edu.wpi.first.wpilib:RobotBuilder:+'
-}
-
 def toolsJson = file("$buildDir/tools.json")
 
 def toolsJsonTask = tasks.register('toolsJson', Task) {
   it.outputs.file toolsJson
 
-  def resolvedDeps = configurations.wpiLibTools.resolvedConfiguration.firstLevelModuleDependencies.toList()
+  def resolvedDeps = configurations.tools.resolvedConfiguration.firstLevelModuleDependencies.toList()
 
   resolvedDeps.each {
     inputs.property it.moduleName, it.moduleVersion
@@ -28,12 +17,32 @@ def toolsJsonTask = tasks.register('toolsJson', Task) {
         item['name'] = 'ShuffleBoard'
         item['version'] = it.moduleVersion
         item['jar'] = 'ShuffleBoard.jar'
+        it.moduleArtifacts.each {
+          def artif = [:]
+          artif['classifier'] = it.classifier
+          artif['extension'] = it.extension
+          def id = it.moduleVersion.id
+          artif['groupId'] = id.group
+          artif['version'] = id.version
+          artif['artifactId'] = id.name
+          item['artifact'] = artif
+        }
         config << item
       } else {
         def item = [:]
         item['name'] = it.moduleName
         item['version'] = it.moduleVersion
         item['jar'] = it.moduleName + '.jar'
+        it.moduleArtifacts.each {
+          def artif = [:]
+          artif['classifier'] = it.classifier
+          artif['extension'] = it.extension
+          def id = it.moduleVersion.id
+          artif['groupId'] = id.group
+          artif['version'] = id.version
+          artif['artifactId'] = id.name
+          item['artifact'] = artif
+        }
         config << item
       }
     }
@@ -61,19 +70,5 @@ ext.toolsSetup = { Zip zip->
 
   zip.from (toolsJson) {
     into '/tools'
-  }
-  configurations.wpiLibTools.files.each {
-    if (it.name.startsWith('app')) {
-      zip.from (it) {
-        into '/tools'
-        rename { 'ShuffleBoard.jar' }
-      }
-    } else {
-      def str = it.name.substring(0, it.name.indexOf('-')) + '.jar'
-      zip.from (it) {
-        into '/tools'
-        rename { str }
-      }
-    }
   }
 }
