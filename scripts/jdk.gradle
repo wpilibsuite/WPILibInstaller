@@ -20,6 +20,8 @@ def extract32BitJdk = tasks.register('extract32BitJdk', Copy) {
   exclude '**/src.zip'
   exclude '**/bin/*.pdb'
   exclude '**/bin/*.map'
+  exclude '**/bin/server/*.pdb'
+  exclude '**/bin/server/*.map'
   exclude '**/demo/**'
 
   includeEmptyDirs = false
@@ -49,36 +51,84 @@ def extract64BitJdk = tasks.register('extract64BitJdk', Copy) {
 def version32 = 'openjdk 11.0.0.26-internal 2018-09-25'
 def version64 = 'openjdk 11-ea 2018-09-25'
 
-ext.jdkConfigSetup = {
-  return new Tuple2({ task->
-    task.inputs.property 'version32', version32
-    task.inputs.property 'version64', version64
-  }, { config->
-    def jdks = [:]
-    jdks['32BitFolder'] = 'jdk32'
-    jdks['32BitVersion'] = version32
-    jdks['64BitFolder'] = 'jdk64'
-    jdks['64BitVersion'] = version64
-    config['Jdks'] = jdks
-  })
+def jdk32ConfigFile = file("$buildDir/jdk32config.json")
+
+def jdkConfigFile32Task = tasks.register("jdkConfigFile32") {
+  outputs.file jdk32ConfigFile
+  inputs.property 'version', version32
+
+  doLast {
+
+    def config = [:]
+    config['is32'] = true
+    config['version'] = version32
+    config['folder'] = 'jdk'
+
+    def gbuilder = getGsonBuilder()
+
+    gbuilder.setPrettyPrinting()
+    def json = gbuilder.create().toJson(config)
+
+    jdk32ConfigFile.parentFile.mkdirs()
+
+    jdk32ConfigFile.text = json
+  }
+}
+
+def jdk64ConfigFile = file("$buildDir/jdk64config.json")
+
+def jdkConfigFile64Task = tasks.register("jdkConfigFile64") {
+  it.outputs.file jdk64ConfigFile
+  it.inputs.property 'version', version64
+
+  doLast {
+
+    def config = [:]
+    config['is32'] = false
+    config['version'] = version64
+    config['folder'] = 'jdk'
+
+    def gbuilder = getGsonBuilder()
+
+    gbuilder.setPrettyPrinting()
+    def json = gbuilder.create().toJson(config)
+
+    jdk64ConfigFile.parentFile.mkdirs()
+
+    jdk64ConfigFile.text = json
+  }
 }
 
 ext.jdkZipSetup32 = { Zip zip->
   zip.dependsOn extract32BitJdk
+  zip.dependsOn jdkConfigFile32Task
 
   zip.inputs.dir jdk32Location
+  zip.inputs.file jdk32ConfigFile
 
   zip.from(jdk32Location) {
-    into '/jdk32'
+    into '/jdk'
+  }
+
+  zip.from(jdk32ConfigFile) {
+    into '/installUtils'
+    rename {'jdkConfig.json'}
   }
 }
 
 ext.jdkZipSetup64 = { Zip zip->
   zip.dependsOn extract64BitJdk
+  zip.dependsOn jdkConfigFile64Task
 
   zip.inputs.dir jdk64Location
+  zip.inputs.file jdk64ConfigFile
 
   zip.from(jdk64Location) {
-    into '/jdk64'
+    into '/jdk'
+  }
+
+    zip.from(jdk64ConfigFile) {
+    into '/installUtils'
+    rename {'jdkConfig.json'}
   }
 }

@@ -74,13 +74,20 @@ ext.mavenConfigSetup = {
   }, { config->
     config['Maven'] = [:]
     config['Maven']['Folder'] = 'maven'
+    config['Maven']['MetaDataFixerJar'] = 'installUtils/MavenMetaDataFixer.jar'
   })
 }
 
+def metaDataFixerJarFile = file('libs/MavenMetaDataFixer.jar')
 
 ext.mavenZipSetup = { Zip zip->
   zip.dependsOn updateOfflineRepository
+  zip.inputs.dir offlineRepositoryRoot
+  zip.inputs.file metaDataFixerJarFile
   zip.from(fileTree(offlineRepositoryRoot)) {
+    into '/maven'
+  }
+  zi.from(metaDataFixerJarFile) {
     into '/maven'
   }
 }

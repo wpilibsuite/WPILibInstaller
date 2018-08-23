@@ -254,6 +254,10 @@ namespace WPILibInstaller
                     {
                         MissingMemberHandling = MissingMemberHandling.Error
                     });
+
+                    // Determine if this is a 32 or a 64 bit installer
+                    //if (zipStore.FindEntry($"")
+
                     if (Environment.Is64BitOperatingSystem)
                     {
                         extractionControllers.Add(new ExtractionIgnores(fullConfig.Jdks.Folder32Bit, false));

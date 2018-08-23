@@ -107,6 +107,7 @@
     <Compile Include="Selector.Designer.cs">
       <DependentUpon>Selector.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToolsConfig.cs" />
     <Compile Include="UpgradeConfig.cs" />
     <Compile Include="VsCodeConfig.cs" />
     <Compile Include="VsCodeFiles.cs" />

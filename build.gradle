@@ -148,7 +148,6 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     def configurations = []
     configurations << gradleConfigTaskSetup()
     configurations << toolchainConfigTaskSetup()
-    configurations << jdkConfigSetup()
 
     configurations.each {
         it.first(task)
