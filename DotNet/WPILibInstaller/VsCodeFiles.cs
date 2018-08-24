@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
+using SharedCode;
 using System;
 using System.Collections.Generic;
 using System.IO;

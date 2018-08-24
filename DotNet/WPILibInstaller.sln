@@ -5,11 +5,13 @@ VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPILibInstaller", "WPILibInstaller\WPILibInstaller.csproj", "{393350C6-4346-41E6-8AE5-939574E45578}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatedPermissionSetter", "ElevatedPermissionSetter\ElevatedPermissionSetter.csproj", "{2129765E-EC0A-42F7-AB82-5BB290CA6A4F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MavenMetaDataFixer", "MavenMetaDataFixer\MavenMetaDataFixer.csproj", "{5DF64580-2663-4C90-A9A5-41BE928BC23D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolsUpdater", "ToolsUpdater\ToolsUpdater.csproj", "{FF3FDED3-740C-42F5-8E2F-621E5B749064}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvironmentSetter", "EnvironmentSetter\EnvironmentSetter.csproj", "{4894317A-43E8-4E70-B616-6F3CAC0E22C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedCode", "SharedCode\SharedCode.csproj", "{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +23,6 @@ Global
 		{393350C6-4346-41E6-8AE5-939574E45578}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{393350C6-4346-41E6-8AE5-939574E45578}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{393350C6-4346-41E6-8AE5-939574E45578}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2129765E-EC0A-42F7-AB82-5BB290CA6A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2129765E-EC0A-42F7-AB82-5BB290CA6A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2129765E-EC0A-42F7-AB82-5BB290CA6A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2129765E-EC0A-42F7-AB82-5BB290CA6A4F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5DF64580-2663-4C90-A9A5-41BE928BC23D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5DF64580-2663-4C90-A9A5-41BE928BC23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DF64580-2663-4C90-A9A5-41BE928BC23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +31,14 @@ Global
 		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

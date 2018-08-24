@@ -37,14 +37,8 @@
             this.gradleCheck = new System.Windows.Forms.CheckBox();
             this.cppCheck = new System.Windows.Forms.CheckBox();
             this.toolsCheck = new System.Windows.Forms.CheckBox();
-            this.allUsers = new System.Windows.Forms.CheckBox();
             this.wpilibCheck = new System.Windows.Forms.CheckBox();
             this.vscodeExtCheckBox = new System.Windows.Forms.CheckBox();
-            this.progressBar2 = new System.Windows.Forms.ProgressBar();
-            this.progressBar3 = new System.Windows.Forms.ProgressBar();
-            this.progressBar4 = new System.Windows.Forms.ProgressBar();
-            this.progressBar5 = new System.Windows.Forms.ProgressBar();
-            this.progressBar6 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // performInstallButton
@@ -102,6 +96,7 @@
             this.vscodeButton.Name = "vscodeButton";
             this.vscodeButton.Size = new System.Drawing.Size(304, 77);
             this.vscodeButton.TabIndex = 10;
+            this.vscodeButton.Text = "Select/Download VS Code";
             this.vscodeButton.UseVisualStyleBackColor = true;
             this.vscodeButton.Click += new System.EventHandler(this.vscodeButton_Click);
             // 
@@ -152,17 +147,6 @@
             this.toolsCheck.Text = "Tools and Utilities";
             this.toolsCheck.UseVisualStyleBackColor = true;
             // 
-            // allUsers
-            // 
-            this.allUsers.AutoSize = true;
-            this.allUsers.Location = new System.Drawing.Point(22, 523);
-            this.allUsers.Margin = new System.Windows.Forms.Padding(6);
-            this.allUsers.Name = "allUsers";
-            this.allUsers.Size = new System.Drawing.Size(235, 29);
-            this.allUsers.TabIndex = 15;
-            this.allUsers.Text = "Install for All Users?";
-            this.allUsers.UseVisualStyleBackColor = true;
-            // 
             // wpilibCheck
             // 
             this.wpilibCheck.AutoSize = true;
@@ -187,54 +171,13 @@
             this.vscodeExtCheckBox.Text = "Visual Studio Code Extensions";
             this.vscodeExtCheckBox.UseVisualStyleBackColor = true;
             // 
-            // progressBar2
-            // 
-            this.progressBar2.Location = new System.Drawing.Point(739, 163);
-            this.progressBar2.Name = "progressBar2";
-            this.progressBar2.Size = new System.Drawing.Size(100, 23);
-            this.progressBar2.TabIndex = 18;
-            // 
-            // progressBar3
-            // 
-            this.progressBar3.Location = new System.Drawing.Point(739, 193);
-            this.progressBar3.Name = "progressBar3";
-            this.progressBar3.Size = new System.Drawing.Size(100, 23);
-            this.progressBar3.TabIndex = 19;
-            // 
-            // progressBar4
-            // 
-            this.progressBar4.Location = new System.Drawing.Point(739, 223);
-            this.progressBar4.Name = "progressBar4";
-            this.progressBar4.Size = new System.Drawing.Size(100, 23);
-            this.progressBar4.TabIndex = 20;
-            // 
-            // progressBar5
-            // 
-            this.progressBar5.Location = new System.Drawing.Point(739, 253);
-            this.progressBar5.Name = "progressBar5";
-            this.progressBar5.Size = new System.Drawing.Size(100, 23);
-            this.progressBar5.TabIndex = 21;
-            // 
-            // progressBar6
-            // 
-            this.progressBar6.Location = new System.Drawing.Point(739, 283);
-            this.progressBar6.Name = "progressBar6";
-            this.progressBar6.Size = new System.Drawing.Size(100, 23);
-            this.progressBar6.TabIndex = 22;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1188, 679);
-            this.Controls.Add(this.progressBar6);
-            this.Controls.Add(this.progressBar5);
-            this.Controls.Add(this.progressBar4);
-            this.Controls.Add(this.progressBar3);
-            this.Controls.Add(this.progressBar2);
+            this.ClientSize = new System.Drawing.Size(616, 679);
             this.Controls.Add(this.vscodeExtCheckBox);
             this.Controls.Add(this.wpilibCheck);
-            this.Controls.Add(this.allUsers);
             this.Controls.Add(this.toolsCheck);
             this.Controls.Add(this.cppCheck);
             this.Controls.Add(this.gradleCheck);
@@ -264,14 +207,8 @@
         private System.Windows.Forms.CheckBox gradleCheck;
         private System.Windows.Forms.CheckBox cppCheck;
         private System.Windows.Forms.CheckBox toolsCheck;
-        private System.Windows.Forms.CheckBox allUsers;
         private System.Windows.Forms.CheckBox wpilibCheck;
         private System.Windows.Forms.CheckBox vscodeExtCheckBox;
-        private System.Windows.Forms.ProgressBar progressBar2;
-        private System.Windows.Forms.ProgressBar progressBar3;
-        private System.Windows.Forms.ProgressBar progressBar4;
-        private System.Windows.Forms.ProgressBar progressBar5;
-        private System.Windows.Forms.ProgressBar progressBar6;
     }
 }
 

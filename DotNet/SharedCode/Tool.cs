@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ToolsUpdater
+namespace SharedCode
 {
     public class ArtifactConfig
     {
@@ -20,7 +20,7 @@ namespace ToolsUpdater
         public string Version { get; set; }
     }
 
-    public class ToolsConfig
+    public class Tool
     {
         [JsonProperty("name")]
         public string Name { get; set; }

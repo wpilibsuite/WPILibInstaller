@@ -90,7 +90,6 @@
   <ItemGroup>
     <Compile Include="EnvironmentSetters.cs" />
     <Compile Include="ExtractionIgnores.cs" />
-    <Compile Include="FullConfig.cs" />
     <Compile Include="GradleSetup.cs" />
     <Compile Include="HttpClientDownloadWithProgress.cs" />
     <Compile Include="MainForm.cs">
@@ -107,9 +106,6 @@
     <Compile Include="Selector.Designer.cs">
       <DependentUpon>Selector.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolsConfig.cs" />
-    <Compile Include="UpgradeConfig.cs" />
-    <Compile Include="VsCodeConfig.cs" />
     <Compile Include="VsCodeFiles.cs" />
     <Compile Include="ZipTools.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -146,6 +142,12 @@
     <Content Include="combine.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedCode\SharedCode.csproj">
+      <Project>{1e86f096-9b7d-44ea-acdb-6f2a3fc10154}</Project>
+      <Name>SharedCode</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

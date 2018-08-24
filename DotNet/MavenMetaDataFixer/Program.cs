@@ -16,8 +16,6 @@ namespace MavenMetaDataFixer
             // Get directory EXE is in
             var exePath = Path.GetDirectoryName(exeFullPath);
 
-            exePath = @"C:\Users\thadh\Documents\GitHub\thadhouse\WPILibInstaller\offline-repository";
-
             // Update data down from exe path
             MetaDataFixer fixer = new MetaDataFixer(exePath);
             fixer.UpdateMetaData();

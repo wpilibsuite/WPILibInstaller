@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SharedCode;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +23,7 @@ namespace ToolsUpdater
 
             var jsonContents = File.ReadAllText(jsonPath);
 
-            var tools = JsonConvert.DeserializeObject<ToolsConfig[]>(jsonContents);
+            var tools = JsonConvert.DeserializeObject<Tool[]>(jsonContents);
 
             var mavenFolder = Path.Combine(Path.GetDirectoryName(exePath), "maven");
 

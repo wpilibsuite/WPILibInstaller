@@ -52,7 +52,10 @@ ext.toolsConfig = {
   return new Tuple2({ task->
     task.inputs.property 'toolsFolder', toolsFolder
   }, { config->
-    config['ToolsFolder'] = toolsFolder
+    def tools = [:]
+    tools['Folder'] = toolsFolder
+    tools['UpdaterExe'] = 'ToolsUpdater.exe'
+    config['Tools'] = tools
   })
 }
 

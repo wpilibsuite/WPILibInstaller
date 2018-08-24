@@ -2,7 +2,7 @@
 Set fso = WScript.CreateObject("Scripting.FileSystemObject")
 
 'Get the script name, and from that the jar name
-jarName = fso.getbasename(WScript.ScriptName) + ".jar"
+jarName = fso.GetBaseName(WScript.ScriptName) + ".jar"
 
 'Get the folder of this script
 toolsFolder = fso.GetParentFolderName(WScript.ScriptFullName)

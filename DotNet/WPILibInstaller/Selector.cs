@@ -1,9 +1,11 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
+using SharedCode;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -19,6 +21,7 @@ namespace WPILibInstaller
         private VsCodeConfig config;
         public Selector(VsCodeConfig config)
         {
+            this.config = config;
             InitializeComponent();
             progressBar1.Visible = false;
             progressBar2.Visible = false;
@@ -57,8 +60,14 @@ namespace WPILibInstaller
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Title = "Select VS Code Zip";
+            // Get location of EXE
+            var exeFullPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            // Get directory EXE is in
+            var exePath = Path.GetDirectoryName(exeFullPath);
+            ofd.InitialDirectory = exePath;
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                bool valid = true;
                 var file = ofd.FileName;
                 using (ZipFile zfs = new ZipFile(file))
                 {
@@ -67,7 +76,19 @@ namespace WPILibInstaller
                         
                     }
                 }
+
+                if (valid == true)
+                {
+                    ZipLocation = file;
+                    this.Close();
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("Inavlid Zip Selected. Maybe out of date versions.");
+                }
             }
+
         }
     }
 }

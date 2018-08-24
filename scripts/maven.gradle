@@ -78,7 +78,7 @@ ext.mavenConfigSetup = {
   }, { config->
     config['Maven'] = [:]
     config['Maven']['Folder'] = 'maven'
-    config['Maven']['MetaDataFixerExe'] = 'maven/MavenMetaDataFixer.exe'
+    config['Maven']['MetaDataFixerExe'] = 'MavenMetaDataFixer.exe'
   })
 }
 

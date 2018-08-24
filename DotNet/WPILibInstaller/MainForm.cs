@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
+using SharedCode;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,6 +56,11 @@ namespace WPILibInstaller
             }
             else
             {
+                foreach (var c in Controls.OfType<CheckBox>())
+                {
+                    c.Enabled = false;
+                }
+                vscodeButton.Enabled = false;
                 source = new CancellationTokenSource();
                 performInstallButton.Enabled = false;
                 isInstalling = true;
@@ -136,6 +142,40 @@ namespace WPILibInstaller
                     await GradleSetup.SetupGradle(fullConfig, intoPath);
                 }
 
+                if (toolsCheck.Checked)
+                {
+                    // Run tools fixer
+
+                    ProcessStartInfo pstart = new ProcessStartInfo(Path.Combine(intoPath, upgradeConfig.Tools.Folder, upgradeConfig.Tools.UpdaterExe), "silent");
+                    var p = Process.Start(pstart);
+                    await TaskEx.Run(() =>
+                    {
+                        p.WaitForExit();
+                    });
+                }
+
+
+                if (wpilibCheck.Checked)
+                {
+                    // Run maven fixer
+
+                    ProcessStartInfo pstart = new ProcessStartInfo(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
+                    var p = Process.Start(pstart);
+                    await TaskEx.Run(() =>
+                    {
+                        p.WaitForExit();
+                    });
+                }
+
+                {
+                    // Run environment setter
+                    ProcessStartInfo pstart = new ProcessStartInfo(Path.Combine(intoPath, "installUtils", "EnvironmentSetter.exe"), "silent");
+                    var p = Process.Start(pstart);
+                    await TaskEx.Run(() =>
+                    {
+                        p.WaitForExit();
+                    });
+                }
 
                 isInstalling = false;
                 performInstallButton.Enabled = false;
@@ -170,6 +210,7 @@ namespace WPILibInstaller
                         FileStream fs = new FileStream(ofd.FileName, FileMode.Open, FileAccess.Read);
                         zipStore = new ZipFile(fs);
                         zipStore.IsStreamOwner = true;
+                        closeZip = true;
                     }
                     else
                     {
@@ -210,8 +251,8 @@ namespace WPILibInstaller
                 {
                     MissingMemberHandling = MissingMemberHandling.Error
                 });
-                extractionControllers.Add(new ExtractionIgnores(toolsCheck, upgradeConfig.ToolsFolder, false));
-                extractionControllers.Add(new ExtractionIgnores(wpilibCheck, "maven", false)); // TODO make this a real folder
+                extractionControllers.Add(new ExtractionIgnores(toolsCheck, upgradeConfig.Tools.Folder, false));
+                extractionControllers.Add(new ExtractionIgnores(wpilibCheck, upgradeConfig.Maven.Folder, false));
             }
 
             // Look for VS Code config. Should always be there.
@@ -252,26 +293,53 @@ namespace WPILibInstaller
                     fullConfigStr = await reader.ReadToEndAsync();
                     fullConfig = JsonConvert.DeserializeObject<FullConfig>(fullConfigStr, new JsonSerializerSettings
                     {
-                        MissingMemberHandling = MissingMemberHandling.Error
+                        MissingMemberHandling = MissingMemberHandling.Error,
                     });
-
-                    // Determine if this is a 32 or a 64 bit installer
-                    //if (zipStore.FindEntry($"")
-
-                    if (Environment.Is64BitOperatingSystem)
-                    {
-                        extractionControllers.Add(new ExtractionIgnores(fullConfig.Jdks.Folder32Bit, false));
-                        extractionControllers.Add(new ExtractionIgnores(javaCheck, fullConfig.Jdks.Folder64Bit, false));
-                    }
-                    else
-                    {
-                        extractionControllers.Add(new ExtractionIgnores(fullConfig.Jdks.Folder64Bit, false));
-                        extractionControllers.Add(new ExtractionIgnores(javaCheck, fullConfig.Jdks.Folder32Bit, false));
-                    }
 
                     extractionControllers.Add(new ExtractionIgnores(cppCheck, fullConfig.CppToolchain.Directory, false));
 
                     extractionControllers.Add(new ExtractionIgnores(gradleCheck, "installUtils/" + fullConfig.Gradle.ZipName, true));
+                }
+
+                var jdkEntry = zipStore.FindEntry("installUtils/jdkConfig.json", true);
+                if (jdkEntry == -1)
+                {
+                    // Error
+                    MessageBox.Show("File Error?");
+                    Application.Exit();
+                    return;
+                }
+                else
+                {
+                    using (StreamReader reader = new StreamReader(zipStore.GetInputStream(jdkEntry)))
+                    {
+                        var jdkConfigStr = await reader.ReadToEndAsync();
+                        var jdkConfig = JsonConvert.DeserializeObject<JdkConfig>(jdkConfigStr, new JsonSerializerSettings
+                        {
+                            MissingMemberHandling = MissingMemberHandling.Error,
+                        });
+
+                        var is32Bit = !Environment.Is64BitOperatingSystem;
+                        if (!is32Bit && jdkConfig.Is32Bit)
+                        {
+                            // Error, need 64 bit
+                            MessageBox.Show("You need the 64 bit full installer for this system");
+                            Application.Exit();
+                            return;
+                        }
+                        else if (is32Bit && !jdkConfig.Is32Bit)
+                        {
+                            // Error, need 32 bit
+                            MessageBox.Show("You need the 32 bit full installer for this system");
+                            Application.Exit();
+                            return;
+                        }
+                        else
+                        {
+                            extractionControllers.Add(new ExtractionIgnores(javaCheck, jdkConfig.Folder, false));
+                        }
+                    }
+
                 }
             }
 
@@ -280,15 +348,22 @@ namespace WPILibInstaller
             this.Enabled = true;
         }
 
-        private async void vscodeButton_Click(object sender, EventArgs e)
+        private string VsCodeZipFile;
+
+        private void vscodeButton_Click(object sender, EventArgs e)
         {
-            VsCodeFiles vsf = new VsCodeFiles(vsCodeConfig);
-
-            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
-
-            await vsf.DownloadAndZipFiles(progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, CancellationToken.None);
-
-            MessageBox.Show("Done!");
+            Selector selector = new Selector(vsCodeConfig);
+            this.Enabled = false;
+            selector.ShowDialog();
+            this.Enabled = true;
+            VsCodeZipFile = selector.ZipLocation;
+            if (!string.IsNullOrWhiteSpace(VsCodeZipFile))
+            {
+                vscodeExtCheckBox.Enabled = true;
+                vscodeExtCheckBox.Checked = true;
+                vscodeCheck.Enabled = true;
+                vscodeCheck.Checked = true;
+            }
         }
     }
 }
