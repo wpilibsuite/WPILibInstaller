@@ -41,7 +41,9 @@ namespace WPILibInstaller
                     using (ZipFile zfs = new ZipFile(fs))
                     {
                         zfs.IsStreamOwner = false;
-                        Application.Run(new MainForm(zfs, debug));
+                        ZipEntry filesEntry = zfs.GetEntry("files.zip");
+                        var filesEntryStream = zfs.GetInputStream(filesEntry);
+                        Application.Run(new MainForm(new ZipFile(filesEntryStream), debug));
                         return;
                     }
                 }

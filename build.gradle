@@ -204,7 +204,9 @@ def generateFullZip32BaseTask = tasks.register('generateFileZip32Base', Zip) {
     // This MUST be first
     msBuildSetupMain(it)
 
-    from (generateFullResources32Task.get().archivePath)
+    from (generateFullResources32Task.get().archivePath) {
+        rename { 'files.zip' }
+    }
 }
 
 
@@ -272,7 +274,9 @@ def generateFullZip64BaseTask = tasks.register('generateFileZip64Base', Zip) {
     // This MUST be first
     msBuildSetupMain(it)
 
-    from (generateFullResources64Task.get().archivePath)
+    from (generateFullResources64Task.get().archivePath) {
+        rename { 'files.zip' }
+    }
 }
 
 
