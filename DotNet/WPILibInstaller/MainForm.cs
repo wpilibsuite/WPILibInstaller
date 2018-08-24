@@ -38,13 +38,6 @@ namespace WPILibInstaller
             InitializeComponent();
         }
 
-        //List<Checker> checkers = new List<Checker>();
-
-        private void javaButton_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com");
-        }
-
         CancellationTokenSource source;
         bool isInstalling = false;
 
@@ -152,6 +145,52 @@ namespace WPILibInstaller
                     {
                         p.WaitForExit();
                     });
+                }
+
+                if (vscodeCheck.Checked)
+                {
+                    
+                    // Extract VS Code
+                    using (FileStream fs = new FileStream(VsCodeZipFile, FileMode.Open, FileAccess.Read))
+                    {
+                        using (ZipFile zfs = new ZipFile(fs)) { 
+                            zfs.IsStreamOwner = false;
+                            string vsName = Environment.Is64BitOperatingSystem ? vsCodeConfig.VsCode64Name : vsCodeConfig.VsCode32Name;
+                            var entry = zfs.GetEntry($"download/{vsCodeConfig.VsCode64Name}");
+                            var vsStream = zfs.GetInputStream(entry);
+                            ZipFile zfsi = new ZipFile(vsStream);
+                            var vsToPath = Path.Combine(intoPath, "vscode");
+                            foreach (ZipEntry vsEntry in zfsi)
+                            {
+                                if (!vsEntry.IsFile)
+                                {
+                                    continue;
+                                }
+
+                                Stream zipStream = zfsi.GetInputStream(vsEntry);
+                                var entryName = vsEntry.Name;
+
+                                string fullZipToPath = Path.Combine(vsToPath, entryName);
+                                string directoryName = Path.GetDirectoryName(fullZipToPath);
+                                if (directoryName.Length > 0)
+                                {
+                                    try
+                                    {
+                                        Directory.CreateDirectory(directoryName);
+                                    }
+                                    catch (IOException)
+                                    {
+
+                                    }
+                                }
+
+                                using (FileStream writer = File.Create(fullZipToPath))
+                                {
+                                    await zipStream.CopyToAsync(writer);
+                                }
+                            }
+                        }
+                    }
                 }
 
 

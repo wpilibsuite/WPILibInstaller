@@ -32,6 +32,11 @@ namespace WPILibInstaller
 
         private async void downloadButton_Click(object sender, EventArgs e)
         {
+            progressBar1.Visible = true;
+            progressBar2.Visible = true;
+            progressBar3.Visible = true;
+            progressBar4.Visible = true;
+            progressBar5.Visible = true;
             selectButton.Visible = false;
             downloadButton.Enabled = false;
             downloadButton.Text = "Downloading";

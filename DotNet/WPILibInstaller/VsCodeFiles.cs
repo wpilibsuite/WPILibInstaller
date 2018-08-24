@@ -127,7 +127,7 @@ namespace WPILibInstaller
                 newFile.BeginUpdate();
                 foreach(var (success, output) in results)
                 {
-                    newFile.Add(output);
+                    newFile.Add(output, CompressionMethod.Stored);
                 }
                 newFile.CommitUpdate();
                 newFile.Close();

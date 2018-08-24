@@ -18,19 +18,10 @@ namespace WPILibInstaller
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            bool debug = false;
+            bool debug = args.Contains("--debug");
 #if DEBUG
             debug = true;
 #endif
-
-            foreach (var arg in args)
-            {
-                if (arg == "--debug")
-                {
-                    debug = true;
-                    break;
-                }
-            }
 
             // Check to see if this executable is a zip
             var thisPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
@@ -43,6 +34,7 @@ namespace WPILibInstaller
                         zfs.IsStreamOwner = false;
                         ZipEntry filesEntry = zfs.GetEntry("files.zip");
                         var filesEntryStream = zfs.GetInputStream(filesEntry);
+                        MessageBox.Show(filesEntryStream.CanSeek.ToString());
                         Application.Run(new MainForm(new ZipFile(filesEntryStream), debug));
                         return;
                     }
