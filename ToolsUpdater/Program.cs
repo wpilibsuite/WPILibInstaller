@@ -11,9 +11,6 @@ namespace ToolsUpdater
 {
     class Program
     {
-        const string BatchFileBase =
-@"@echo off
-";
         static void Main(string[] args)
         {
             // Get location of EXE
@@ -23,15 +20,11 @@ namespace ToolsUpdater
 
             var jsonPath = Path.Combine(exePath, "tools.json");
 
-            jsonPath = @"C:\Users\thadh\Documents\GitHub\thadhouse\WPILibInstaller\build\tools.json";
-
             var jsonContents = File.ReadAllText(jsonPath);
 
             var tools = JsonConvert.DeserializeObject<ToolsConfig[]>(jsonContents);
 
             var mavenFolder = Path.Combine(Path.GetDirectoryName(exePath), "maven");
-
-            mavenFolder = @"C:\Users\thadh\Documents\GitHub\thadhouse\WPILibInstaller\offline-repository";
 
             Parallel.ForEach(tools, tool =>
             {
@@ -45,7 +38,7 @@ namespace ToolsUpdater
                 if (File.Exists(artifactPath))
                 {
                     File.Copy(artifactPath, Path.Combine(exePath, tool.Name + ".jar"), true);
-                    //File.WriteAllText(Path.Combine(exePath, tool.Name + ".bat"), "Hello World");
+                    File.Copy(Path.Combine(exePath, "ScriptBase.vbs"), Path.Combine(exePath, tool.Name + ".vbs"));
                 }
             });
 

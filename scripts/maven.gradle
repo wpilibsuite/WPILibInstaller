@@ -25,6 +25,10 @@ dependencies {
       offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
     } else if (dep.classifier == 'windowsx86-64') {
       offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86@$dep.extension"
+      offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+    } else if (dep.classifier == 'windowsx86') {
+      offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86-64@$dep.extension"
+      offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
     } else {
       offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
     }

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5DF64580-2663-4C90-A9A5-41BE928BC23D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>MavenMetaDataFixer</RootNamespace>
     <AssemblyName>MavenMetaDataFixer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
