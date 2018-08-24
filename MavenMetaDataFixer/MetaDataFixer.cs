@@ -13,6 +13,49 @@ namespace MavenMetaDataFixer
     public class MetaDataFixer
     {
         private readonly string pathRoot;
+
+        private struct Artifact : IEquatable<Artifact>
+        {
+            public string GroupId { get; }
+            public string ArtifactId { get; }
+
+            public Artifact(string groupId, string artifactId)
+            {
+                GroupId = groupId;
+                ArtifactId = artifactId;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is Artifact && Equals((Artifact)obj);
+            }
+
+            public bool Equals(Artifact other)
+            {
+                return GroupId == other.GroupId &&
+                       ArtifactId == other.ArtifactId;
+            }
+
+            public override int GetHashCode()
+            {
+                var hashCode = -2042083241;
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GroupId);
+                hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ArtifactId);
+                return hashCode;
+            }
+
+            public static bool operator ==(Artifact artifact1, Artifact artifact2)
+            {
+                return artifact1.Equals(artifact2);
+            }
+
+            public static bool operator !=(Artifact artifact1, Artifact artifact2)
+            {
+                return !(artifact1 == artifact2);
+            }
+        }
+
+        private readonly Dictionary<Artifact, List<string>> artifactStore = new Dictionary<Artifact, List<string>>();
         
 
         public MetaDataFixer(string pathRoot)
@@ -22,15 +65,85 @@ namespace MavenMetaDataFixer
 
         public void UpdateMetaData()
         {
-            var dirs = Directory.EnumerateDirectories(pathRoot, "*", SearchOption.AllDirectories);
-            Parallel.ForEach(dirs, dir =>
+            RecurseMetaData(pathRoot);
+            foreach (var artifact in artifactStore)
             {
-                string metaDataFile = Path.Combine(dir, "maven-metadata.xml");
-                if (File.Exists(metaDataFile))
+                var dataFile = Path.Combine(pathRoot, artifact.Key.GroupId.Replace('.', Path.DirectorySeparatorChar), artifact.Key.ArtifactId, "maven-metadata.xml");
+                XDocument doc = new XDocument(new XDeclaration("1.0", "UTF8", null));
+                XElement metadata = new XElement("metadata");
+                metadata.Add(new XElement("groupId", artifact.Key.GroupId));
+                metadata.Add(new XElement("artifactId", artifact.Key.ArtifactId));
+                XElement versioning = new XElement("versioning");
+                artifact.Value.Sort();
+                versioning.Add(new XElement("release", artifact.Value[artifact.Value.Count - 1]));
+                XElement versions = new XElement("versions");
+                foreach (var version in artifact.Value)
                 {
-                    UpdateSpecificMetaData(metaDataFile);
+                    versions.Add(new XElement("version", version));
                 }
-            });
+                versioning.Add(versions);
+                var now = DateTime.UtcNow;
+                var nowStr = now.ToString("yyyyMMddHHmmss");
+                versioning.Add(new XElement("lastUpdated", nowStr));
+                metadata.Add(versioning);
+                doc.Add(metadata);
+                var newData = doc.Declaration.ToString() + '\n' + doc.ToString().Replace("\r\n", "\n") + '\n';
+                File.WriteAllText(dataFile, newData);
+                FixHashes(dataFile, newData);
+            }
+        }
+
+        private void RecurseMetaData(string root)
+        {
+            foreach (var file in Directory.EnumerateFiles(root, "*.pom"))
+            {
+                using (FileStream fs = new FileStream(file, FileMode.Open))
+                {
+                    XElement doc = XElement.Load(fs);
+                    var ns = doc.Name.Namespace;
+
+                    string groupId = "";
+                    var groupIdNode = doc.Element(ns + "groupId");
+                    if (groupIdNode == null)
+                    {
+                        groupId = doc.Element(ns + "parent").Element(ns + "groupId").Value;
+                    }
+                    else
+                    {
+                        groupId = groupIdNode.Value;
+                    }
+                    var artifactId = doc.Element(ns + "artifactId").Value;
+                    string version = "";
+                    var versionNode = doc.Element(ns + "version");
+                    if (versionNode == null)
+                    {
+                        version = doc.Element(ns + "parent").Element(ns + "version").Value;
+                    }
+                    else
+                    {
+                        version = versionNode.Value;
+                    }
+                    var key = new Artifact(groupId, artifactId);
+                    if (artifactStore.TryGetValue(key, out var versions))
+                    {
+                        versions.Add(version);
+                    }
+                    else
+                    {
+                        List<string> data = new List<string>
+                        {
+                            version
+                        };
+                        artifactStore.Add(key, data);
+                    }
+                    ;
+                }
+                ;
+            }
+            foreach (var dir in Directory.EnumerateDirectories(root))
+            {
+                RecurseMetaData(dir);
+            }
         }
 
         private void FixHashes(string dataFile, string text)
@@ -58,35 +171,6 @@ namespace MavenMetaDataFixer
                 var sha1Str = sb.ToString();
                 File.WriteAllText(dataFile + ".sha1", sha1Str);
             }
-        }
-
-        private IEnumerable<string> GetVersionsForMetaData(string dataFile, string artifactId)
-        {
-            var parent = Path.GetDirectoryName(dataFile);
-
-            return Directory.EnumerateDirectories(parent).Where(dir => File.Exists(Path.Combine(dir, $"{artifactId}-{Path.GetFileName(dir)}.pom")))
-                                                         .Select(dir => Path.GetFileName(dir));
-        }
-
-        private void UpdateSpecificMetaData(string dataFile)
-        {
-            var origData = File.ReadAllText(dataFile);
-            XDocument doc = XDocument.Parse(origData);
-            var artifactId = doc.Descendants().Where(x => x.Name.LocalName == "artifactId").Select(x => x.Value).First();
-            var versioningBlock = doc.Descendants().Where(x => x.Name.LocalName == "versioning").First();
-            var versionsBlock = versioningBlock.Descendants().Where(x => x.Name.LocalName == "versions").First();
-            versionsBlock.RemoveNodes();
-            var newVersions = GetVersionsForMetaData(dataFile, artifactId).OrderBy(x => x).Select(x => new XElement("version", x));
-            foreach (var v in newVersions)
-            {
-                versionsBlock.Add(v);
-            }
-            var now = DateTime.UtcNow;
-            var nowStr = now.ToString("yyyyMMddHHmmss");
-            versioningBlock.Descendants().Where(x => x.Name.LocalName == "lastUpdated").First().Value = nowStr;
-            var newData = doc.Declaration.ToString() + '\n' + doc.ToString().Replace("\r\n", "\n") + '\n';
-            File.WriteAllText(dataFile, newData);
-            FixHashes(dataFile, newData);
         }
     }
 }
