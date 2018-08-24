@@ -76,7 +76,7 @@ def commonResources = { Zip zip->
         into '/installUtils'
     }
 
-    msBuildSetupPermissionsWriter(zip)
+    msBuildExtraSetup(zip)
 
     toolsSetup(zip)
     mavenZipSetup(zip)

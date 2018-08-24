@@ -30,7 +30,7 @@ dependencies {
     }
 
     toolArtifacts.each { tool->
-      if ("$dep.groupId:$dep.artifactId" == tool) {
+      if ("$dep.groupId:$dep.artifactId" == tool && (dep.classifier == null || dep.classifier == "")) {
         if (dep.classifier == null) {
           tools "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
         } else {
@@ -74,20 +74,14 @@ ext.mavenConfigSetup = {
   }, { config->
     config['Maven'] = [:]
     config['Maven']['Folder'] = 'maven'
-    config['Maven']['MetaDataFixerJar'] = 'installUtils/MavenMetaDataFixer.jar'
+    config['Maven']['MetaDataFixerExe'] = 'maven/MavenMetaDataFixer.exe'
   })
 }
-
-def metaDataFixerJarFile = file('libs/MavenMetaDataFixer.jar')
 
 ext.mavenZipSetup = { Zip zip->
   zip.dependsOn updateOfflineRepository
   zip.inputs.dir offlineRepositoryRoot
-  zip.inputs.file metaDataFixerJarFile
   zip.from(fileTree(offlineRepositoryRoot)) {
-    into '/maven'
-  }
-  zi.from(metaDataFixerJarFile) {
     into '/maven'
   }
 }

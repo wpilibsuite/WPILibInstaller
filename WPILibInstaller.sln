@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElevatedPermissionSetter", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MavenMetaDataFixer", "MavenMetaDataFixer\MavenMetaDataFixer.csproj", "{5DF64580-2663-4C90-A9A5-41BE928BC23D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolsUpdater", "ToolsUpdater\ToolsUpdater.csproj", "{FF3FDED3-740C-42F5-8E2F-621E5B749064}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5DF64580-2663-4C90-A9A5-41BE928BC23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DF64580-2663-4C90-A9A5-41BE928BC23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DF64580-2663-4C90-A9A5-41BE928BC23D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

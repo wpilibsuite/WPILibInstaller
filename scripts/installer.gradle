@@ -10,6 +10,8 @@ msbuild {
 
 ext.installerFile = file('WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
 def permissionSetter = file('ElevatedPermissionSetter/bin/Release/ElevatedPermissionSetter.exe')
+def mavenUpdater = file('MavenMetaDataFixer/bin/Release/MavenMetaDataFixer.exe')
+def toolsUpdater = file('ToolsUpdater/bin/Release/Merged/ToolsUpdater.exe')
 
 
 ext.msBuildSetupMain = { Zip zip->
@@ -26,11 +28,21 @@ ext.msBuildSetupMain = { Zip zip->
   zip.from (installerFile)
 }
 
-ext.msBuildSetupPermissionsWriter = { Zip zip->
+ext.msBuildExtraSetup = { Zip zip->
   zip.dependsOn msbuild
   zip.inputs.file permissionSetter
+  zip.inputs.file mavenUpdater
+  zip.inputs.file toolsUpdater
 
   zip.from (permissionSetter) {
     into '/installUtils'
+  }
+
+  zip.from (mavenUpdater) {
+    into '/maven'
+  }
+
+  zip.from (toolsUpdater) {
+    into '/tools'
   }
 }
