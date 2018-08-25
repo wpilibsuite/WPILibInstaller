@@ -139,7 +139,7 @@
             this.toolsCheck.AutoSize = true;
             this.toolsCheck.Checked = true;
             this.toolsCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.toolsCheck.Location = new System.Drawing.Point(23, 295);
+            this.toolsCheck.Location = new System.Drawing.Point(21, 290);
             this.toolsCheck.Margin = new System.Windows.Forms.Padding(6);
             this.toolsCheck.Name = "toolsCheck";
             this.toolsCheck.Size = new System.Drawing.Size(215, 29);
@@ -152,7 +152,7 @@
             this.wpilibCheck.AutoSize = true;
             this.wpilibCheck.Checked = true;
             this.wpilibCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.wpilibCheck.Location = new System.Drawing.Point(21, 341);
+            this.wpilibCheck.Location = new System.Drawing.Point(21, 331);
             this.wpilibCheck.Margin = new System.Windows.Forms.Padding(6);
             this.wpilibCheck.Name = "wpilibCheck";
             this.wpilibCheck.Size = new System.Drawing.Size(256, 29);
@@ -163,7 +163,7 @@
             // vscodeExtCheckBox
             // 
             this.vscodeExtCheckBox.AutoSize = true;
-            this.vscodeExtCheckBox.Location = new System.Drawing.Point(21, 387);
+            this.vscodeExtCheckBox.Location = new System.Drawing.Point(21, 372);
             this.vscodeExtCheckBox.Margin = new System.Windows.Forms.Padding(6);
             this.vscodeExtCheckBox.Name = "vscodeExtCheckBox";
             this.vscodeExtCheckBox.Size = new System.Drawing.Size(339, 29);

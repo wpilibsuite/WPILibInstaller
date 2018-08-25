@@ -25,6 +25,11 @@ def extensions = [
   wpilibExtensionFileName
 ]
 
+def wpilibExtensionDownload = tasks.register("downloadWPILibExtension", Download) {
+  src wpilibExtensionUrl
+  dest buildDir
+}
+
 def vscodeTask = tasks.register('vscodeConfig', Task) {
   outputs.file vscodeFile
   def config = [:]
@@ -39,6 +44,7 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
   config['javaLangUrl'] = javaLangUrl
   config['javaLangVsix'] = javaLangVsix
   config['extensions'] = extensions
+  config['wpilibExtensionVsix'] = wpilibExtensionFileName
 
   config.each { key, value->
     inputs.property key, value
@@ -59,10 +65,15 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
 
 ext.vscodeZipSetup = { Zip zip->
   zip.dependsOn vscodeTask
+  zip.dependsOn wpilibExtensionDownload
 
   zip.inputs.file vscodeFile
 
   zip.from (vscodeFile) {
+    into '/installUtils'
+  }
+
+  zip.from (file("$buildDir/$wpilibExtensionFileName")) {
     into '/installUtils'
   }
 }

@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnvironmentSetters.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="ExtractionIgnores.cs" />
     <Compile Include="GradleSetup.cs" />
     <Compile Include="HttpClientDownloadWithProgress.cs" />

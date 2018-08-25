@@ -147,9 +147,11 @@ namespace WPILibInstaller
                     });
                 }
 
+                var vsToPath = Path.Combine(intoPath, "vscode");
+
                 if (vscodeCheck.Checked)
                 {
-                    
+
                     // Extract VS Code
                     using (FileStream fs = new FileStream(VsCodeZipFile, FileMode.Open, FileAccess.Read))
                     {
@@ -159,7 +161,7 @@ namespace WPILibInstaller
                             var entry = zfs.GetEntry($"download/{vsCodeConfig.VsCode64Name}");
                             var vsStream = zfs.GetInputStream(entry);
                             ZipFile zfsi = new ZipFile(vsStream);
-                            var vsToPath = Path.Combine(intoPath, "vscode");
+                            
                             foreach (ZipEntry vsEntry in zfsi)
                             {
                                 if (!vsEntry.IsFile)
@@ -191,6 +193,51 @@ namespace WPILibInstaller
                             }
                         }
                     }
+                    var dataFolder = Path.Combine(vsToPath, "data");
+                    Directory.CreateDirectory(dataFolder);
+                }
+
+                if (vscodeExtCheckBox.Checked)
+                {
+                    var tmpVsixDir = Path.Combine(intoPath, "tmp");
+                    Directory.CreateDirectory(tmpVsixDir);
+                    // Extract files
+                    using (FileStream fs = new FileStream(VsCodeZipFile, FileMode.Open, FileAccess.Read))
+                    {
+                        using (ZipFile zfs = new ZipFile(fs))
+                        {
+                            zfs.IsStreamOwner = false;
+                            async Task Extract(string name)
+                            {
+                                var entry = zfs.GetEntry($"download/{name}");
+                                var vsStream = zfs.GetInputStream(entry);
+                                using (FileStream writer = File.Create(Path.Combine(tmpVsixDir, name)))
+                                {
+                                    await vsStream.CopyToAsync(writer);
+                                }
+                            }
+                            await Extract(vsCodeConfig.cppVsix);
+                            await Extract(vsCodeConfig.javaLangVsix);
+                            await Extract(vsCodeConfig.javaDebugVsix);
+
+                        }
+                    }
+                    File.Copy(Path.Combine(intoPath, "installUtils", vsCodeConfig.wpilibExtensionVsix), Path.Combine(tmpVsixDir, vsCodeConfig.wpilibExtensionVsix), true);
+
+                    //{
+                    //    ProcessStartInfo info = new ProcessStartInfo(Path.Combine(vsToPath, "Code.exe"), "--list-extensions");
+                    //    info.RedirectStandardOutput = true;
+                    //    info.UseShellExecute = false;
+                    //    info.WindowStyle = ProcessWindowStyle.Hidden;
+                    //    info.CreateNoWindow = true;
+                    //    Process p = Process.Start(info);
+                    //    await p.WaitForExitAsync();
+                    //    string listEx = await p.StandardOutput.ReadToEndAsync();
+                    //    ;
+                    //}
+
+
+                    //Directory.Delete(tmpVsixDir, true);
                 }
 
 

@@ -18,6 +18,8 @@ namespace SharedCode
         public string javaDebugVsix { get; set; }
         public string javaLangUrl { get; set; }
         public string javaLangVsix { get; set; }
+
+        public string wpilibExtensionVsix { get; set; }
         public string[] extensions { get; set; }
     }
 }
