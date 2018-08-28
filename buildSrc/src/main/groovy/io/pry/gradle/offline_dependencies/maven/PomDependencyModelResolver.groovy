@@ -1,12 +1,12 @@
 package io.pry.gradle.offline_dependencies.maven
 
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.Parent
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.Repository
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.building.FileModelSource
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.building.ModelSource
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.resolution.InvalidRepositoryException
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.resolution.ModelResolver
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.resolution.UnresolvableModelException
+import org.apache.maven.model.Parent
+import org.apache.maven.model.Repository
+import org.apache.maven.model.building.FileModelSource
+import org.apache.maven.model.building.ModelSource
+import org.apache.maven.model.resolution.InvalidRepositoryException
+import org.apache.maven.model.resolution.ModelResolver
+import org.apache.maven.model.resolution.UnresolvableModelException
 import org.gradle.api.artifacts.result.UnresolvedArtifactResult
 import org.gradle.api.Project
 import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier

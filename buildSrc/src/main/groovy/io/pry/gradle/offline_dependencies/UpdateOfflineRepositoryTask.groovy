@@ -1,12 +1,12 @@
 package io.pry.gradle.offline_dependencies
 
 import io.pry.gradle.offline_dependencies.maven.PomDependencyModelResolver
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.Model
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.building.*
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.interpolation.StringSearchModelInterpolator
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.path.DefaultPathTranslator
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.path.DefaultUrlNormalizer
-import io.pry.gradle.offline_dependencies.repackaged.org.apache.maven.model.validation.DefaultModelValidator
+import org.apache.maven.model.Model
+import org.apache.maven.model.building.*
+import org.apache.maven.model.interpolation.StringSearchModelInterpolator
+import org.apache.maven.model.path.DefaultPathTranslator
+import org.apache.maven.model.path.DefaultUrlNormalizer
+import org.apache.maven.model.validation.DefaultModelValidator
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency

@@ -1,8 +1,3 @@
-configurations {
-  thirdparty
-  jarjar
-}
-
 repositories {
   mavenCentral()
   maven { url 'https://repo.gradle.org/gradle/libs-releases' }
@@ -10,38 +5,8 @@ repositories {
 
 ext {
   mavenVersion = '3.3.9'
-  jarjarVersion = '1.2.1'
-
-  thirdpartyLibsDir = "$project.rootDir/libs/"
 }
 
 dependencies {
-  compile fileTree(thirdpartyLibsDir)
-
-  // thirdparty dependencies and repackaging
-  jarjar "org.gradle.jarjar:jarjar:$jarjarVersion"
-  thirdparty "org.apache.maven:maven-model-builder:$mavenVersion"
+  compile "org.apache.maven:maven-model-builder:$mavenVersion"
 }
-
-task repackageDependencies(type: Jar) {
-	baseName = 'offline-dependencies-plugin-thirdparty-repackaged-all'
-	version = project.version
-	destinationDir = new File(thirdpartyLibsDir)
-
-	doLast {
-		project.ant {
-			taskdef name: "jarjar", classname: "com.tonicsystems.jarjar.JarJarTask", classpath: configurations.jarjar.asPath
-			jarjar(destfile: archivePath) {
-				configurations.thirdparty.each { originalJar ->
-					zipfileset(src: originalJar)
-				}
-				rule(pattern: 'org.**', result: 'io.pry.gradle.offline_dependencies.repackaged.org.@1')
-				rule(pattern: 'com.**', result: 'io.pry.gradle.offline_dependencies.repackaged.com.@1')
-				rule(pattern: 'licenses.**', result: 'io.pry.gradle.offline_dependencies.repackaged.licenses.@1')
-			}
-		}
-	}
-}
-
-compileJava.dependsOn 'repackageDependencies'
-compileGroovy.dependsOn 'repackageDependencies'
