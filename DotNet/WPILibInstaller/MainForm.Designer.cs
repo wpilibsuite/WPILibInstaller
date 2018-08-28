@@ -39,6 +39,7 @@
             this.toolsCheck = new System.Windows.Forms.CheckBox();
             this.wpilibCheck = new System.Windows.Forms.CheckBox();
             this.vscodeExtCheckBox = new System.Windows.Forms.CheckBox();
+            this.vsCodeWpiExtCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // performInstallButton
@@ -56,7 +57,7 @@
             // vscodeCheck
             // 
             this.vscodeCheck.AutoSize = true;
-            this.vscodeCheck.Location = new System.Drawing.Point(23, 114);
+            this.vscodeCheck.Location = new System.Drawing.Point(21, 162);
             this.vscodeCheck.Margin = new System.Windows.Forms.Padding(6);
             this.vscodeCheck.Name = "vscodeCheck";
             this.vscodeCheck.Size = new System.Drawing.Size(227, 29);
@@ -69,12 +70,12 @@
             this.javaCheck.AutoSize = true;
             this.javaCheck.Checked = true;
             this.javaCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.javaCheck.Location = new System.Drawing.Point(23, 158);
+            this.javaCheck.Location = new System.Drawing.Point(21, 326);
             this.javaCheck.Margin = new System.Windows.Forms.Padding(6);
             this.javaCheck.Name = "javaCheck";
-            this.javaCheck.Size = new System.Drawing.Size(90, 29);
+            this.javaCheck.Size = new System.Drawing.Size(182, 29);
             this.javaCheck.TabIndex = 8;
-            this.javaCheck.Text = "Java";
+            this.javaCheck.Text = "Java JDK/JRE";
             this.javaCheck.UseVisualStyleBackColor = true;
             // 
             // label1
@@ -113,7 +114,7 @@
             this.gradleCheck.AutoSize = true;
             this.gradleCheck.Checked = true;
             this.gradleCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gradleCheck.Location = new System.Drawing.Point(21, 205);
+            this.gradleCheck.Location = new System.Drawing.Point(22, 285);
             this.gradleCheck.Margin = new System.Windows.Forms.Padding(6);
             this.gradleCheck.Name = "gradleCheck";
             this.gradleCheck.Size = new System.Drawing.Size(108, 29);
@@ -126,7 +127,7 @@
             this.cppCheck.AutoSize = true;
             this.cppCheck.Checked = true;
             this.cppCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cppCheck.Location = new System.Drawing.Point(21, 249);
+            this.cppCheck.Location = new System.Drawing.Point(21, 244);
             this.cppCheck.Margin = new System.Windows.Forms.Padding(6);
             this.cppCheck.Name = "cppCheck";
             this.cppCheck.Size = new System.Drawing.Size(174, 29);
@@ -139,7 +140,7 @@
             this.toolsCheck.AutoSize = true;
             this.toolsCheck.Checked = true;
             this.toolsCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.toolsCheck.Location = new System.Drawing.Point(21, 290);
+            this.toolsCheck.Location = new System.Drawing.Point(23, 450);
             this.toolsCheck.Margin = new System.Windows.Forms.Padding(6);
             this.toolsCheck.Name = "toolsCheck";
             this.toolsCheck.Size = new System.Drawing.Size(215, 29);
@@ -152,7 +153,7 @@
             this.wpilibCheck.AutoSize = true;
             this.wpilibCheck.Checked = true;
             this.wpilibCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.wpilibCheck.Location = new System.Drawing.Point(21, 331);
+            this.wpilibCheck.Location = new System.Drawing.Point(23, 491);
             this.wpilibCheck.Margin = new System.Windows.Forms.Padding(6);
             this.wpilibCheck.Name = "wpilibCheck";
             this.wpilibCheck.Size = new System.Drawing.Size(256, 29);
@@ -163,19 +164,32 @@
             // vscodeExtCheckBox
             // 
             this.vscodeExtCheckBox.AutoSize = true;
-            this.vscodeExtCheckBox.Location = new System.Drawing.Point(21, 372);
+            this.vscodeExtCheckBox.Location = new System.Drawing.Point(21, 203);
             this.vscodeExtCheckBox.Margin = new System.Windows.Forms.Padding(6);
             this.vscodeExtCheckBox.Name = "vscodeExtCheckBox";
-            this.vscodeExtCheckBox.Size = new System.Drawing.Size(339, 29);
+            this.vscodeExtCheckBox.Size = new System.Drawing.Size(466, 29);
             this.vscodeExtCheckBox.TabIndex = 17;
-            this.vscodeExtCheckBox.Text = "Visual Studio Code Extensions";
+            this.vscodeExtCheckBox.Text = "Visual Studio Code Dependency Extensions";
             this.vscodeExtCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // vsCodeWpiExtCheck
+            // 
+            this.vsCodeWpiExtCheck.AutoSize = true;
+            this.vsCodeWpiExtCheck.Checked = true;
+            this.vsCodeWpiExtCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.vsCodeWpiExtCheck.Location = new System.Drawing.Point(23, 529);
+            this.vsCodeWpiExtCheck.Name = "vsCodeWpiExtCheck";
+            this.vsCodeWpiExtCheck.Size = new System.Drawing.Size(402, 29);
+            this.vsCodeWpiExtCheck.TabIndex = 18;
+            this.vsCodeWpiExtCheck.Text = "Visual Studio Code WPILib Extension";
+            this.vsCodeWpiExtCheck.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(616, 679);
+            this.Controls.Add(this.vsCodeWpiExtCheck);
             this.Controls.Add(this.vscodeExtCheckBox);
             this.Controls.Add(this.wpilibCheck);
             this.Controls.Add(this.toolsCheck);
@@ -209,6 +223,7 @@
         private System.Windows.Forms.CheckBox toolsCheck;
         private System.Windows.Forms.CheckBox wpilibCheck;
         private System.Windows.Forms.CheckBox vscodeExtCheckBox;
+        private System.Windows.Forms.CheckBox vsCodeWpiExtCheck;
     }
 }
 

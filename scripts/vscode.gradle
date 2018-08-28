@@ -30,8 +30,25 @@ def wpilibExtensionDownload = tasks.register("downloadWPILibExtension", Download
   dest buildDir
 }
 
+def wpiExtDir = file("$buildDir/wpiext")
+
+def extractWPILibExtension = tasks.register('extractWPILibExtension', Copy) {
+  dependsOn wpilibExtensionDownload
+  from (zipTree(file("$buildDir/$wpilibExtensionFileName")))
+  into (wpiExtDir)
+}
+
 def vscodeTask = tasks.register('vscodeConfig', Task) {
+  dependsOn extractWPILibExtension
+
+  inputs.dir wpiExtDir
   outputs.file vscodeFile
+
+  def extJsonFile = file("$wpiExtDir/extension/package.json")
+  def packageJson = new groovy.json.JsonSlurper().parseText(extJsonFile.text)
+
+
+
   def config = [:]
   config['VsCode32Url'] = vscode32Url
   config['VsCode32Name'] = vscode32ZipName
@@ -45,6 +62,8 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
   config['javaLangVsix'] = javaLangVsix
   config['extensions'] = extensions
   config['wpilibExtensionVsix'] = wpilibExtensionFileName
+  config['wpilibExtensionName'] = "${packageJson.publisher}.${packageJson.name}".toString()
+  config['wpilibExtensionVersion'] = packageJson.version
 
   config.each { key, value->
     inputs.property key, value

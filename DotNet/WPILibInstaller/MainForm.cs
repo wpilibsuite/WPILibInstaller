@@ -224,18 +224,9 @@ namespace WPILibInstaller
                     }
                     File.Copy(Path.Combine(intoPath, "installUtils", vsCodeConfig.wpilibExtensionVsix), Path.Combine(tmpVsixDir, vsCodeConfig.wpilibExtensionVsix), true);
 
-                    //{
-                    //    ProcessStartInfo info = new ProcessStartInfo(Path.Combine(vsToPath, "Code.exe"), "--list-extensions");
-                    //    info.RedirectStandardOutput = true;
-                    //    info.UseShellExecute = false;
-                    //    info.WindowStyle = ProcessWindowStyle.Hidden;
-                    //    info.CreateNoWindow = true;
-                    //    Process p = Process.Start(info);
-                    //    await p.WaitForExitAsync();
-                    //    string listEx = await p.StandardOutput.ReadToEndAsync();
-                    //    ;
-                    //}
 
+
+                    // Load extensions from VS Code
 
                     //Directory.Delete(tmpVsixDir, true);
                 }
@@ -282,7 +273,6 @@ namespace WPILibInstaller
         {
             vscodeButton.Enabled = false;
             vscodeCheck.Enabled = false;
-            vscodeExtCheckBox.Enabled = false;
             this.Enabled = false;
             if (zipStore == null)
             {
@@ -428,6 +418,25 @@ namespace WPILibInstaller
 
                 }
             }
+
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+
+            var directory = new DirectoryInfo(documentsPath);
+
+            // Now this should give you something like C:\Users\Public
+            string commonPath = directory.Parent.FullName;
+
+            VSCodeInstall vsi = new VSCodeInstall(Path.Combine(commonPath, $"frc{upgradeConfig.FrcYear}", "vscode"));
+
+            if (vsi.IsInstalled())
+            {
+                var version = await vsi.GetVsCodeVersion();
+                var extensions = await vsi.GetExtensions();
+
+                // Get WPILib extension
+            }
+
+
 
             this.performInstallButton.Enabled = true;
             this.performInstallButton.Visible = true;

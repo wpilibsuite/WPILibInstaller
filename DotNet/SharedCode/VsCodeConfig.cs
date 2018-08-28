@@ -20,6 +20,8 @@ namespace SharedCode
         public string javaLangVsix { get; set; }
 
         public string wpilibExtensionVsix { get; set; }
+        public string wpilibExtensionName { get; set; }
+        public string wpilibExtensionVersion { get; set; }
         public string[] extensions { get; set; }
     }
 }
