@@ -1,7 +1,20 @@
 apply plugin: 'com.ullink.msbuild'
+apply plugin: 'com.ullink.nuget'
+
+def slnFile = 'DotNet/WPILibInstaller.sln'
+
+nugetSources {
+  operation 'list'
+}
+
+nugetRestore {
+  solutionFile slnFile
+}
 
 msbuild {
-  solutionFile 'DotNet/WPILibInstaller.sln'
+  dependsOn nugetRestore
+
+  solutionFile slnFile
 
   targets = ['Clean', 'Rebuild']
 

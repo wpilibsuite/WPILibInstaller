@@ -23,13 +23,6 @@ def javaDebugFile = file("$buildDir/$javaDebugVsix")
 def cppFile = file("$buildDir/$cppVsix")
 def wpilibFile = file("$buildDir/$wpilibExtensionVsix")
 
-def extensions = [
-  javaLangVsix,
-  javaDebugVsix,
-  cppVsix,
-  wpilibExtensionVsix
-]
-
 def wpilibExtensionDownload = tasks.register("wpilibExtensionDownload", Download) {
   src wpilibExtensionUrl
   dest file("$buildDir/$wpilibExtensionVsix")
@@ -86,7 +79,7 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     getInformationOfVsix(zipTree(cppFile), cppMap)
     def javaLangMap = [:]
     javaLangMap['vsix'] = javaLangVsix
-    getInformationOfVsix(zipTree(wpilibFile), javaLangMap)
+    getInformationOfVsix(zipTree(javaLangFile), javaLangMap)
     def javaDebugMap = [:]
     javaDebugMap['vsix'] = javaDebugVsix
     getInformationOfVsix(zipTree(javaDebugFile), javaDebugMap)
@@ -96,12 +89,13 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     config['VsCode64Url'] = vscode64Url
     config['VsCode64Name'] = vscode64ZipName
 
-    config['wpilib'] = wpilibMap
-    config['cpp'] = cppMap
-    config['javaLang'] = javaLangMap
-    config['javaDebug'] = javaDebugMap
+    config['wpilibExtension'] = wpilibMap
 
-    config['extensions'] = extensions
+    config['thirdPartyExtensions'] = [
+      cppMap,
+      javaLangMap,
+      javaDebugMap
+    ]
 
 
     def gbuilder = getGsonBuilder()
