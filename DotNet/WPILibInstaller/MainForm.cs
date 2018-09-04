@@ -285,28 +285,6 @@ namespace WPILibInstaller
                 {
                     var tmpVsixDir = Path.Combine(intoPath, "tmp");
                     Directory.CreateDirectory(tmpVsixDir);
-                    // Extract files
-                    using (FileStream fs = new FileStream(VsCodeZipFile, FileMode.Open, FileAccess.Read))
-                    {
-                        using (ZipFile zfs = new ZipFile(fs))
-                        {
-                            zfs.IsStreamOwner = false;
-                            async Task Extract(string name)
-                            {
-                                var entry = zfs.GetEntry($"download/{name}");
-                                var vsStream = zfs.GetInputStream(entry);
-                                using (FileStream writer = File.Create(Path.Combine(tmpVsixDir, name)))
-                                {
-                                    await vsStream.CopyToAsync(writer);
-                                }
-                            }
-                            await Extract(vsCodeConfig.cppVsix);
-                            await Extract(vsCodeConfig.javaLangVsix);
-                            await Extract(vsCodeConfig.javaDebugVsix);
-
-                        }
-                    }
-                    File.Copy(Path.Combine(intoPath, "installUtils", vsCodeConfig.wpilibExtensionVsix), Path.Combine(tmpVsixDir, vsCodeConfig.wpilibExtensionVsix), true);
 
 
 
@@ -434,7 +412,9 @@ namespace WPILibInstaller
             {
                 // Disable any full entry things
                 javaCheck.Enabled = false;
+                javaCheck.Checked = false;
                 cppCheck.Enabled = false;
+                cppCheck.Checked = false;
             }
             else
             {

@@ -20,53 +20,7 @@ namespace WPILibInstaller
             this.config = config;
         }
 
-        private async Task<(bool, string)> GetCppExtension(ProgressBar progBar, CancellationToken token, string tmpDir)
-        {
-            var output = Path.Combine(tmpDir, config.cppVsix);
-            using (var client = new HttpClientDownloadWithProgress(config.cppUrl, output))
-            {
-                client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
-                    if (progressPercentage != null)
-                    {
-                        progBar.Value = (int)progressPercentage;
-                    }
-                };
-
-                return (await client.StartDownload(token), output);
-            }
-        }
-
-        private async Task<(bool, string)> GetJavaLangExtension(ProgressBar progBar, CancellationToken token, string tmpDir)
-        {
-            var output = Path.Combine(tmpDir, config.javaLangVsix);
-            using (var client = new HttpClientDownloadWithProgress(config.javaLangUrl, output))
-            {
-                client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
-                    if (progressPercentage != null)
-                    {
-                        progBar.Value = (int)progressPercentage;
-                    }
-                };
-
-                return (await client.StartDownload(token), output);
-            }
-        }
-
-        private async Task<(bool, string)> GetJavaDebugExtension(ProgressBar progBar, CancellationToken token, string tmpDir)
-        {
-            var output = Path.Combine(tmpDir, config.javaDebugVsix);
-            using (var client = new HttpClientDownloadWithProgress(config.javaDebugUrl, output))
-            {
-                client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) => {
-                    if (progressPercentage != null)
-                    {
-                        progBar.Value = (int)progressPercentage;
-                    }
-                };
-
-                return (await client.StartDownload(token), output);
-            }
-        }
+       
 
         private async Task<(bool, string)> GetVsCode32Zip(ProgressBar progBar, CancellationToken token, string tmpDir)
         {
@@ -107,9 +61,6 @@ namespace WPILibInstaller
             Directory.CreateDirectory(downloadDir);
 
             (bool success, string output)[] results = await TaskEx.WhenAll(
-                GetCppExtension(cppProg, token, downloadDir),
-                GetJavaDebugExtension(javaDebugProg, token, downloadDir),
-                GetJavaLangExtension(javaLangProg, token, downloadDir),
                 GetVsCode32Zip(vs32Prog, token, downloadDir),
                 GetVsCode64Zip(vs64Prog, token, downloadDir));
 
