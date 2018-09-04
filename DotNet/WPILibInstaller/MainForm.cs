@@ -24,6 +24,7 @@ namespace WPILibInstaller
         private ZipFile zipStore;
         private bool closeZip = false;
         private bool debugMode;
+        private bool adminMode;
 
         private UpgradeConfig upgradeConfig;
         private FullConfig fullConfig;
@@ -31,10 +32,57 @@ namespace WPILibInstaller
 
         private List<ExtractionIgnores> extractionControllers = new List<ExtractionIgnores>();
 
-        public MainForm(ZipFile mainZipFile, bool debug)
+        private void SetCppCompilerVariable(string frcHomePath, EnvironmentVariableTarget target)
+        {
+            var compilerPath = Path.Combine(frcHomePath, "gcc", "bin");
+
+            var path = Environment.GetEnvironmentVariable("PATH", target);
+
+            List<string> pathItems = path.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            if (!pathItems.Contains(compilerPath))
+            {
+                pathItems.Add(compilerPath);
+            }
+
+            string newPath = string.Join(Path.PathSeparator.ToString(), pathItems);
+
+            Environment.SetEnvironmentVariable("PATH", newPath, target);
+        }
+
+        private void SetVsCodeCmdVariables(string frcHomePath, EnvironmentVariableTarget target)
+        {
+            var codePath = Path.Combine(frcHomePath, "frccode");
+
+            var path = Environment.GetEnvironmentVariable("PATH", target);
+
+            List<string> pathItems = path.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            if (!pathItems.Contains(codePath))
+            {
+                pathItems.Add(codePath);
+            }
+
+            string newPath = string.Join(Path.PathSeparator.ToString(), pathItems);
+
+            Environment.SetEnvironmentVariable("PATH", newPath, target);
+        }
+
+        private void SetJavaHome(string frcHomePath, EnvironmentVariableTarget target)
+        {
+            Environment.SetEnvironmentVariable("JAVA_HOME", Path.Combine(frcHomePath, "jdk"), target);
+        }
+
+        private void SetFrcHome(string frcHomePath, string frcYear, EnvironmentVariableTarget target)
+        {
+            Environment.SetEnvironmentVariable($"FRC_{frcYear}_HOME", frcHomePath, target);
+        }
+
+        public MainForm(ZipFile mainZipFile, bool debug, bool isAdmin)
         {
             zipStore = mainZipFile;
             debugMode = debug;
+            adminMode = isAdmin;
             InitializeComponent();
         }
 
@@ -147,11 +195,34 @@ namespace WPILibInstaller
                     });
                 }
 
+                if (cppCheck.Checked)
+                {
+                    SetCppCompilerVariable(intoPath, EnvironmentVariableTarget.User);
+                    if (adminMode)
+                    {
+                        SetCppCompilerVariable(intoPath, EnvironmentVariableTarget.Machine);
+                    }
+                }
+
+                if (javaCheck.Checked)
+                {
+                    SetJavaHome(intoPath, EnvironmentVariableTarget.User);
+                    if (adminMode)
+                    {
+                        SetJavaHome(intoPath, EnvironmentVariableTarget.Machine);
+                    }
+                }
+
+                SetFrcHome(intoPath, upgradeConfig.FrcYear, EnvironmentVariableTarget.User);
+                if (adminMode)
+                {
+                    SetFrcHome(intoPath, upgradeConfig.FrcYear, EnvironmentVariableTarget.Machine);
+                }
+
                 var vsToPath = Path.Combine(intoPath, "vscode");
 
                 if (vscodeCheck.Checked)
                 {
-
                     // Extract VS Code
                     using (FileStream fs = new FileStream(VsCodeZipFile, FileMode.Open, FileAccess.Read))
                     {
@@ -195,6 +266,19 @@ namespace WPILibInstaller
                     }
                     var dataFolder = Path.Combine(vsToPath, "data");
                     Directory.CreateDirectory(dataFolder);
+
+                    var binFolder = Path.Combine(vsToPath, "bin");
+                    var codeFolder = Path.Combine(intoPath, "frccode");
+
+                    File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, "frccode2019"), true);
+                    File.Copy(Path.Combine(binFolder, "code.bat"), Path.Combine(codeFolder, "frccode2019.bat"), true);
+
+
+                    SetVsCodeCmdVariables(intoPath, EnvironmentVariableTarget.User);
+                    if (adminMode)
+                    {
+                        SetVsCodeCmdVariables(intoPath, EnvironmentVariableTarget.Machine);
+                    }
                 }
 
                 if (vscodeExtCheckBox.Checked)
@@ -237,16 +321,6 @@ namespace WPILibInstaller
                     // Run maven fixer
 
                     ProcessStartInfo pstart = new ProcessStartInfo(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
-                    var p = Process.Start(pstart);
-                    await TaskEx.Run(() =>
-                    {
-                        p.WaitForExit();
-                    });
-                }
-
-                {
-                    // Run environment setter
-                    ProcessStartInfo pstart = new ProcessStartInfo(Path.Combine(intoPath, "installUtils", "EnvironmentSetter.exe"), "silent");
                     var p = Process.Start(pstart);
                     await TaskEx.Run(() =>
                     {

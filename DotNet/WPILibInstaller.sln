@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MavenMetaDataFixer", "Maven
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolsUpdater", "ToolsUpdater\ToolsUpdater.csproj", "{FF3FDED3-740C-42F5-8E2F-621E5B749064}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvironmentSetter", "EnvironmentSetter\EnvironmentSetter.csproj", "{4894317A-43E8-4E70-B616-6F3CAC0E22C8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedCode", "SharedCode\SharedCode.csproj", "{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF3FDED3-740C-42F5-8E2F-621E5B749064}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4894317A-43E8-4E70-B616-6F3CAC0E22C8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Release|Any CPU.ActiveCfg = Release|Any CPU

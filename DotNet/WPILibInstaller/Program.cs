@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Windows.Forms;
 
 namespace WPILibInstaller
@@ -17,6 +18,27 @@ namespace WPILibInstaller
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            // Check for Admin
+            bool isAdmin = false;
+
+            using (WindowsIdentity identiy = WindowsIdentity.GetCurrent())
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(identiy);
+                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+
+            // If not admin, run admin check window
+            if (!isAdmin)
+            {
+                var adminForm = new AdminChecker();
+                Application.Run(adminForm);
+                // If set to admin, that means we need to restart. Just exit.
+                if (adminForm.Admin)
+                {
+                    return;
+                }
+            }
 
             bool debug = args.Contains("--debug");
 #if DEBUG
@@ -34,8 +56,7 @@ namespace WPILibInstaller
                         zfs.IsStreamOwner = false;
                         ZipEntry filesEntry = zfs.GetEntry("files.zip");
                         var filesEntryStream = zfs.GetInputStream(filesEntry);
-                        MessageBox.Show(filesEntryStream.CanSeek.ToString());
-                        Application.Run(new MainForm(new ZipFile(filesEntryStream), debug));
+                        Application.Run(new MainForm(new ZipFile(filesEntryStream), debug, isAdmin));
                         return;
                     }
                 }
@@ -45,7 +66,7 @@ namespace WPILibInstaller
                 }
             }
 
-            Application.Run(new MainForm(null, debug));
+            Application.Run(new MainForm(null, debug, isAdmin));
         }
     }
 }

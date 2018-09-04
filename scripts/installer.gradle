@@ -22,7 +22,6 @@ msbuild {
 }
 
 ext.installerFile = file('DotNet/WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
-def environmentSetter = file('DotNet/EnvironmentSetter/bin/Release/Merged/EnvironmentSetter.exe')
 def mavenUpdater = file('DotNet/MavenMetaDataFixer/bin/Release/MavenMetaDataFixer.exe')
 def toolsUpdater = file('DotNet/ToolsUpdater/bin/Release/Merged/ToolsUpdater.exe')
 
@@ -35,13 +34,8 @@ ext.msBuildSetupMain = { Zip zip->
 
 ext.msBuildExtraSetup = { Zip zip->
   zip.dependsOn msbuild
-  zip.inputs.file environmentSetter
   zip.inputs.file mavenUpdater
   zip.inputs.file toolsUpdater
-
-  zip.from (environmentSetter) {
-    into '/installUtils'
-  }
 
   zip.from (mavenUpdater) {
     into '/maven'

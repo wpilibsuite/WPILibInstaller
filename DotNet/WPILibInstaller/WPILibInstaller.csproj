@@ -90,6 +90,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminChecker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdminChecker.Designer.cs">
+      <DependentUpon>AdminChecker.cs</DependentUpon>
+    </Compile>
     <Compile Include="EnvironmentSetters.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ExtractionIgnores.cs" />
@@ -112,6 +118,9 @@
     <Compile Include="VSCodeExtensions.cs" />
     <Compile Include="VsCodeFiles.cs" />
     <Compile Include="ZipTools.cs" />
+    <EmbeddedResource Include="AdminChecker.resx">
+      <DependentUpon>AdminChecker.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
