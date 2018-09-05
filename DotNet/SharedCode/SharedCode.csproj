@@ -46,7 +46,7 @@
     <Compile Include="FullConfig.cs" />
     <Compile Include="JdkConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tool.cs" />
+    <Compile Include="ToolConfig.cs" />
     <Compile Include="UpgradeConfig.cs" />
     <Compile Include="VsCodeConfig.cs" />
   </ItemGroup>

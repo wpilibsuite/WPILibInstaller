@@ -20,14 +20,12 @@ namespace SharedCode
         public string Version { get; set; }
     }
 
-    public class Tool
+    public class ToolConfig
     {
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("version")]
         public string Version { get; set; }
-        [JsonProperty("jar")]
-        public string Jar { get; set; }
         [JsonProperty("artifact")]
         public ArtifactConfig Artifact { get; set; }
     }

@@ -23,7 +23,7 @@ namespace ToolsUpdater
 
             var jsonContents = File.ReadAllText(jsonPath);
 
-            var tools = JsonConvert.DeserializeObject<Tool[]>(jsonContents);
+            var tools = JsonConvert.DeserializeObject<ToolConfig[]>(jsonContents);
 
             var mavenFolder = Path.Combine(Path.GetDirectoryName(exePath), "maven");
 
