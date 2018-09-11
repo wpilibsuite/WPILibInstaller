@@ -1,5 +1,6 @@
 def varsfile = file("$buildDir/files/frcvars.bat")
 def varsfilePS = file("$buildDir/files/frcvars.ps1")
+def icoFile = file("$buildDir/files/wpilib-256.ico")
 
 def pathfolder = 'frccode'
 
@@ -14,6 +15,7 @@ ext.varConfigSetup = {
 ext.varsZipSetup = { Zip zip->
   zip.inputs.file varsfile
   zip.inputs.file varsfilePS
+  zip.inputs.file icoFile
 
   zip.from (varsfile) {
     into "/$pathfolder"
@@ -27,5 +29,9 @@ ext.varsZipSetup = { Zip zip->
     rename {
       "frcvars${frcYear}.ps1"
     }
+  }
+
+  zip.from (icoFile) {
+    into "/$pathfolder"
   }
 }

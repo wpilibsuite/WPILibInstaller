@@ -16,6 +16,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using IWshRuntimeLibrary;
+using File = System.IO.File;
 
 namespace WPILibInstaller
 {
@@ -31,6 +33,46 @@ namespace WPILibInstaller
         private VsCodeConfig vsCodeConfig;
 
         private List<ExtractionIgnores> extractionControllers = new List<ExtractionIgnores>();
+
+        private void CreateCodeShortcuts(string frcHomePath)
+        {
+            {
+                object shDesktop = "Desktop";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC VS Code {upgradeConfig.FrcYear}.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC VS Code";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "vscode", "Code.exe");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+            {
+                object shDesktop = "StartMenu";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC VS Code {upgradeConfig.FrcYear}.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC VS Code";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "vscode", "Code.exe");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+        }
+
+        private void CreateDevPromptShortcuts(string frcHomePath)
+        {
+            object shDesktop = "StartMenu";
+            WshShell shell = new WshShell();
+            string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC Developer Command Prompt {upgradeConfig.FrcYear}.lnk";
+            IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+            shortcut.Description = "Shortcut for FRC Development Command Prompt";
+            shortcut.TargetPath = @"%comspec%";
+            
+            shortcut.Arguments = $"/k \"{Path.Combine(frcHomePath, "frccode", "frcvars.bat")}\"";
+            object shDocuments = "MyDocuments";
+            shortcut.WorkingDirectory = shell.SpecialFolders.Item(ref shDocuments);
+            shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+            shortcut.Save();
+        }
 
         private void SetCppCompilerVariable(string frcHomePath, EnvironmentVariableTarget target)
         {
@@ -279,6 +321,8 @@ namespace WPILibInstaller
                     File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, "frccode2019"), true);
                     File.Copy(Path.Combine(binFolder, "code.bat"), Path.Combine(codeFolder, "frccode2019.bat"), true);
 
+                    CreateCodeShortcuts(intoPath);
+
                 }
 
                 if (vscodeExtCheckBox.Checked)
@@ -305,6 +349,8 @@ namespace WPILibInstaller
                         p.WaitForExit();
                     });
                 }
+
+                CreateDevPromptShortcuts(intoPath);
 
                 isInstalling = false;
                 performInstallButton.Enabled = false;
