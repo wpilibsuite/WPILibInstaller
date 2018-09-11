@@ -1,0 +1,31 @@
+def varsfile = file("$buildDir/files/frcvars.bat")
+def varsfilePS = file("$buildDir/files/frcvars.ps1")
+
+def pathfolder = 'frccode'
+
+ext.varConfigSetup = {
+  return new Tuple2({ Task task ->
+    task.inputs.property 'pathfolder', pathfolder
+  }, { config ->
+    config['PathFolder'] = pathfolder
+  })
+}
+
+ext.varsZipSetup = { Zip zip->
+  zip.inputs.file varsfile
+  zip.inputs.file varsfilePS
+
+  zip.from (varsfile) {
+    into "/$pathfolder"
+    rename {
+      "frcvars${frcYear}.bat"
+    }
+  }
+
+  zip.from (varsfilePS) {
+    into "/$pathfolder"
+    rename {
+      "frcvars${frcYear}.ps1"
+    }
+  }
+}

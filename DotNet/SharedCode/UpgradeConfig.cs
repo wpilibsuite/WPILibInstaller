@@ -22,5 +22,6 @@ namespace SharedCode
         public string FrcYear { get; set; }
         public MavenConfig Maven { get; set; }
         public ToolsConfig Tools { get; set; }
+        public string PathFolder { get; set; }
     }
 }

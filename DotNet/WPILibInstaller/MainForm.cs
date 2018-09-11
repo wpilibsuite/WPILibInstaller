@@ -52,7 +52,7 @@ namespace WPILibInstaller
 
         private void SetVsCodeCmdVariables(string frcHomePath, EnvironmentVariableTarget target)
         {
-            var codePath = Path.Combine(frcHomePath, "frccode");
+            var codePath = Path.Combine(frcHomePath, upgradeConfig.PathFolder);
 
             var path = Environment.GetEnvironmentVariable("PATH", target);
 
@@ -68,9 +68,9 @@ namespace WPILibInstaller
             Environment.SetEnvironmentVariable("PATH", newPath, target);
         }
 
-        private void SetJavaHome(string frcHomePath, EnvironmentVariableTarget target)
+        private void SetJdkHome(string frcHomePath, EnvironmentVariableTarget target)
         {
-            Environment.SetEnvironmentVariable("JAVA_HOME", Path.Combine(frcHomePath, "jdk"), target);
+            Environment.SetEnvironmentVariable("JDK_HOME", Path.Combine(frcHomePath, "jdk"), target);
         }
 
         private void SetFrcHome(string frcHomePath, string frcYear, EnvironmentVariableTarget target)
@@ -206,10 +206,10 @@ namespace WPILibInstaller
 
                 if (javaCheck.Checked)
                 {
-                    SetJavaHome(intoPath, EnvironmentVariableTarget.User);
+                    SetJdkHome(intoPath, EnvironmentVariableTarget.User);
                     if (adminMode)
                     {
-                        SetJavaHome(intoPath, EnvironmentVariableTarget.Machine);
+                        SetJdkHome(intoPath, EnvironmentVariableTarget.Machine);
                     }
                 }
 
@@ -217,6 +217,12 @@ namespace WPILibInstaller
                 if (adminMode)
                 {
                     SetFrcHome(intoPath, upgradeConfig.FrcYear, EnvironmentVariableTarget.Machine);
+                }
+
+                SetVsCodeCmdVariables(intoPath, EnvironmentVariableTarget.User);
+                if (adminMode)
+                {
+                    SetVsCodeCmdVariables(intoPath, EnvironmentVariableTarget.Machine);
                 }
 
                 var vsToPath = Path.Combine(intoPath, "vscode");
@@ -268,17 +274,11 @@ namespace WPILibInstaller
                     Directory.CreateDirectory(dataFolder);
 
                     var binFolder = Path.Combine(vsToPath, "bin");
-                    var codeFolder = Path.Combine(intoPath, "frccode");
+                    var codeFolder = Path.Combine(intoPath, upgradeConfig.PathFolder);
 
                     File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, "frccode2019"), true);
                     File.Copy(Path.Combine(binFolder, "code.bat"), Path.Combine(codeFolder, "frccode2019.bat"), true);
 
-
-                    SetVsCodeCmdVariables(intoPath, EnvironmentVariableTarget.User);
-                    if (adminMode)
-                    {
-                        SetVsCodeCmdVariables(intoPath, EnvironmentVariableTarget.Machine);
-                    }
                 }
 
                 if (vscodeExtCheckBox.Checked)

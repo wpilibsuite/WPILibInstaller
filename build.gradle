@@ -22,6 +22,8 @@ wrapper {
     gradleVersion = '4.9'
 }
 
+ext.frcYear = '2018'
+
 apply from: 'scripts/gradlew.gradle'
 apply from: 'scripts/installer.gradle'
 
@@ -31,6 +33,7 @@ apply from: 'scripts/maven.gradle'
 // Tools must happen after maven
 apply from: 'scripts/tools.gradle'
 apply from: 'scripts/vscode.gradle'
+apply from: 'scripts/vars.gradle'
 
 ext.getGsonBuilder = {
     return new GsonBuilder()
@@ -38,14 +41,13 @@ ext.getGsonBuilder = {
 
 def upgradeConfigFile = file("$buildDir/upgradeConfig.json")
 
-def frcYear = '2018'
-
 def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { Task task ->
     task.outputs.file upgradeConfigFile
 
     def configurations = []
     configurations << toolsConfig()
     configurations << mavenConfigSetup()
+    configurations << varConfigSetup()
 
     configurations.each {
         it.first(task)
@@ -83,6 +85,7 @@ def commonResources = { Zip zip->
     toolsSetup(zip)
     mavenZipSetup(zip)
     vscodeZipSetup(zip)
+    varsZipSetup(zip)
 }
 
 def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zip) {
