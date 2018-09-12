@@ -1,6 +1,6 @@
-def varsfile = file("$buildDir/files/frcvars.bat")
-def varsfilePS = file("$buildDir/files/frcvars.ps1")
-def icoFile = file("$buildDir/files/wpilib-256.ico")
+def varsfile = file("files/frcvars.bat")
+def varsfilePS = file("files/frcvars.ps1")
+def icoFile = file("files/wpilib-256.ico")
 
 def pathfolder = 'frccode'
 

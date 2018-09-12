@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.performInstallButton = new System.Windows.Forms.Button();
             this.vscodeCheck = new System.Windows.Forms.CheckBox();
             this.javaCheck = new System.Windows.Forms.CheckBox();
@@ -189,6 +190,7 @@
             this.Controls.Add(this.javaCheck);
             this.Controls.Add(this.vscodeCheck);
             this.Controls.Add(this.performInstallButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "MainForm";
             this.Text = "WPILib Installer";

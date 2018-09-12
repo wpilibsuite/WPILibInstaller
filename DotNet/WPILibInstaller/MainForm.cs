@@ -45,31 +45,31 @@ namespace WPILibInstaller
             var codeBatFile = Path.Combine(frcHomePath, "vscode", "bin", "code.cmd");
 
             // Load existing extensions
-           var versions = await TaskEx.Run(() =>
-            {
-                ProcessStartInfo startInfo = new ProcessStartInfo(codeBatFile, "--list-extensions --show-versions");
-                startInfo.UseShellExecute = false;
-                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                startInfo.CreateNoWindow = true;
-                startInfo.RedirectStandardOutput = true;
-                var proc = Process.Start(startInfo);
-                proc.WaitForExit();
-                List<(string name, string version)> lines = new List<(string name, string version)>();
-                while (true)
-                {
-                    string line = proc.StandardOutput.ReadLine();
-                    if (line == null)
-                    {
-                        return lines;
-                    }
+            var versions = await TaskEx.Run(() =>
+             {
+                 ProcessStartInfo startInfo = new ProcessStartInfo(codeBatFile, "--list-extensions --show-versions");
+                 startInfo.UseShellExecute = false;
+                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                 startInfo.CreateNoWindow = true;
+                 startInfo.RedirectStandardOutput = true;
+                 var proc = Process.Start(startInfo);
+                 proc.WaitForExit();
+                 List<(string name, string version)> lines = new List<(string name, string version)>();
+                 while (true)
+                 {
+                     string line = proc.StandardOutput.ReadLine();
+                     if (line == null)
+                     {
+                         return lines;
+                     }
 
-                    if (line.Contains("@"))
-                    {
-                        var split = line.Split('@');
-                        lines.Add((split[0], split[1]));
-                    }
-                }
-            });
+                     if (line.Contains("@"))
+                     {
+                         var split = line.Split('@');
+                         lines.Add((split[0], split[1]));
+                     }
+                 }
+             });
 
             List<(Extension extension, int sortOrder)> availableToInstall = new List<(Extension extension, int sortOrder)>();
 
@@ -436,13 +436,29 @@ namespace WPILibInstaller
                         }
                     }
                     var dataFolder = Path.Combine(vsToPath, "data");
-                    Directory.CreateDirectory(dataFolder);
+                    try
+                    {
+                        Directory.CreateDirectory(dataFolder);
+                    }
+                    catch (IOException)
+                    {
+
+                    }
 
                     var binFolder = Path.Combine(vsToPath, "bin");
                     var codeFolder = Path.Combine(intoPath, upgradeConfig.PathFolder);
 
-                    File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, "frccode2019"), true);
-                    File.Copy(Path.Combine(binFolder, "code.bat"), Path.Combine(codeFolder, "frccode2019.bat"), true);
+                    try
+                    {
+                        Directory.CreateDirectory(codeFolder);
+                    }
+                    catch (IOException)
+                    {
+
+                    }
+
+                    File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}"), true);
+                    File.Copy(Path.Combine(binFolder, "code.cmd"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}.bat"), true);
 
                     CreateCodeShortcuts(intoPath);
                     SetVsCodeSettings(intoPath);
@@ -472,6 +488,8 @@ namespace WPILibInstaller
                 performInstallButton.Enabled = false;
                 performInstallButton.Text = "Finished Install";
                 progressBar1.Value = 0;
+
+                MessageBox.Show("Finished! Use Desktop Icon to Open VS Code");
             }
         }
 

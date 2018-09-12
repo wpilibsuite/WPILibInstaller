@@ -67,6 +67,7 @@
     <Content Include="ILMerge.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="wpilib-256.ico" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="combine.bat">
@@ -94,6 +95,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>wpilib-256.ico</ApplicationIcon>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

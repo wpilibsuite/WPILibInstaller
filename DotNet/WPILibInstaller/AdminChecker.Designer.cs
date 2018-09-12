@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AdminChecker));
             this.label1 = new System.Windows.Forms.Label();
             this.allUsersButton = new System.Windows.Forms.Button();
             this.currentUserButton = new System.Windows.Forms.Button();
@@ -70,6 +71,7 @@
             this.Controls.Add(this.currentUserButton);
             this.Controls.Add(this.allUsersButton);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AdminChecker";
             this.Text = "AdminChecker";
             this.ResumeLayout(false);

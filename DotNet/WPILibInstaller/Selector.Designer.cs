@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Selector));
             this.label1 = new System.Windows.Forms.Label();
             this.downloadButton = new System.Windows.Forms.Button();
             this.selectButton = new System.Windows.Forms.Button();
@@ -115,6 +116,7 @@
             this.Controls.Add(this.selectButton);
             this.Controls.Add(this.downloadButton);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Selector";
             this.Text = "Selector";
             this.ResumeLayout(false);
