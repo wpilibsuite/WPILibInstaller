@@ -666,6 +666,10 @@ namespace WPILibInstaller
             {
                 vsCodeWpiExtCheck.Checked = false;
                 vsCodeWpiExtCheck.Enabled = false;
+            } else
+            {
+                vsCodeWpiExtCheck.Checked = true;
+                vsCodeWpiExtCheck.Enabled = true;
             }
 
 
@@ -691,9 +695,16 @@ namespace WPILibInstaller
             }
         }
 
+        private bool hasBeenCheckedOnce = false;
+
         private void vscodeCheck_CheckedChanged(object sender, EventArgs e)
         {
             vsCodeWpiExtCheck.Enabled = vscodeCheck.Checked;
+            if (!hasBeenCheckedOnce && vscodeCheck.Checked)
+            {
+                hasBeenCheckedOnce = true;
+                vsCodeWpiExtCheck.Checked = true;
+            }
         }
     }
 }

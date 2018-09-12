@@ -64,7 +64,7 @@
             this.selectButton.Name = "selectButton";
             this.selectButton.Size = new System.Drawing.Size(181, 138);
             this.selectButton.TabIndex = 2;
-            this.selectButton.Text = "Select Existing";
+            this.selectButton.Text = "Select Existing\r\nDownload\r\n";
             this.selectButton.UseVisualStyleBackColor = true;
             this.selectButton.Click += new System.EventHandler(this.selectButton_Click);
             // 

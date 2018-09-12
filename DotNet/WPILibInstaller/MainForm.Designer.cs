@@ -85,15 +85,14 @@
             this.label1.Location = new System.Drawing.Point(18, 17);
             this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(581, 75);
+            this.label1.Size = new System.Drawing.Size(581, 125);
             this.label1.TabIndex = 9;
-            this.label1.Text = "Use Checkbox to force reinstall\r\nIf item is unchecked, it was detected to already" +
-    " be installed.\r\nIt item is unselectable, those components are not available.";
+            this.label1.Text = resources.GetString("label1.Text");
             // 
             // vscodeButton
             // 
             this.vscodeButton.Enabled = false;
-            this.vscodeButton.Location = new System.Drawing.Point(267, 114);
+            this.vscodeButton.Location = new System.Drawing.Point(278, 162);
             this.vscodeButton.Margin = new System.Windows.Forms.Padding(6);
             this.vscodeButton.Name = "vscodeButton";
             this.vscodeButton.Size = new System.Drawing.Size(304, 77);
