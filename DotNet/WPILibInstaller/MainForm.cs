@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using IWshRuntimeLibrary;
 using File = System.IO.File;
+using Newtonsoft.Json.Linq;
 
 namespace WPILibInstaller
 {
@@ -33,6 +34,65 @@ namespace WPILibInstaller
         private VsCodeConfig vsCodeConfig;
 
         private List<ExtractionIgnores> extractionControllers = new List<ExtractionIgnores>();
+
+        private void SetVsCodeSettings(string frcHomePath)
+        {
+            //data\user-data\User
+            var vsCodePath = Path.Combine(frcHomePath, "vscode");
+            var settingsDir = Path.Combine(vsCodePath, "data", "user-data", "User");
+            var settingsFile = Path.Combine(settingsDir, "settings.json");
+            try
+            {
+                Directory.CreateDirectory(settingsDir);
+            }
+            catch (IOException)
+            {
+
+            }
+            dynamic settingsJson = new JObject();
+            if (File.Exists(settingsFile))
+            {
+                settingsJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(settingsFile));
+            }
+
+            if (!settingsJson.ContainsKey("java.home"))
+            {
+                settingsJson["java.home"] = Path.Combine(frcHomePath, "jdk");
+            }
+
+            if (!settingsJson.ContainsKey("terminal.integrated.env.windows"))
+            {
+                dynamic terminalProps = new JObject();
+
+                terminalProps["JAVA_HOME"] = Path.Combine(frcHomePath, "jdk");
+                terminalProps["PATH"] = Path.Combine(frcHomePath, "jdk", "bin") + ":${env:PATH}";
+
+                settingsJson["terminal.integrated.env.windows"] = terminalProps;
+
+            }
+            else
+            {
+                dynamic terminalEnv = settingsJson["terminal.integrated.env.windows"];
+                terminalEnv["JAVA_HOME"] = Path.Combine(frcHomePath, "jdk");
+                string path = terminalEnv["PATH"];
+                if (path == null)
+                {
+                    terminalEnv["PATH"] = Path.Combine(frcHomePath, "jdk", "bin") + ":${env:PATH}";
+                }
+                else
+                {
+                    var binPath = Path.Combine(frcHomePath, "jdk", "bin");
+                    if (!path.Contains(binPath))
+                    {
+                        path = binPath + ";" + path;
+                        terminalEnv["PATH"] = path;
+                    }
+                }
+            }
+
+            var serialized = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
+            File.WriteAllText(settingsFile, serialized);
+        }
 
         private void CreateCodeShortcuts(string frcHomePath)
         {
@@ -66,7 +126,7 @@ namespace WPILibInstaller
             IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
             shortcut.Description = "Shortcut for FRC Development Command Prompt";
             shortcut.TargetPath = @"%comspec%";
-            
+
             shortcut.Arguments = $"/k \"{Path.Combine(frcHomePath, "frccode", "frcvars.bat")}\"";
             object shDocuments = "MyDocuments";
             shortcut.WorkingDirectory = shell.SpecialFolders.Item(ref shDocuments);
@@ -274,13 +334,14 @@ namespace WPILibInstaller
                     // Extract VS Code
                     using (FileStream fs = new FileStream(VsCodeZipFile, FileMode.Open, FileAccess.Read))
                     {
-                        using (ZipFile zfs = new ZipFile(fs)) { 
+                        using (ZipFile zfs = new ZipFile(fs))
+                        {
                             zfs.IsStreamOwner = false;
                             string vsName = Environment.Is64BitOperatingSystem ? vsCodeConfig.VsCode64Name : vsCodeConfig.VsCode32Name;
                             var entry = zfs.GetEntry($"download/{vsCodeConfig.VsCode64Name}");
                             var vsStream = zfs.GetInputStream(entry);
                             ZipFile zfsi = new ZipFile(vsStream);
-                            
+
                             foreach (ZipEntry vsEntry in zfsi)
                             {
                                 if (!vsEntry.IsFile)
@@ -322,6 +383,7 @@ namespace WPILibInstaller
                     File.Copy(Path.Combine(binFolder, "code.bat"), Path.Combine(codeFolder, "frccode2019.bat"), true);
 
                     CreateCodeShortcuts(intoPath);
+                    SetVsCodeSettings(intoPath);
 
                 }
 
