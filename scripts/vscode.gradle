@@ -1,21 +1,23 @@
 
 def vscodeFile = file("$buildDir/vscodeConfig.json")
 
-def vscode32Url = 'https://vscode-update.azurewebsites.net/1.26.1/win32-archive/stable'
-def vscode32ZipName = 'VSCode-win32-ia32-1.26.1.zip'
-def vscode64Url = 'https://vscode-update.azurewebsites.net/1.26.1/win32-x64-archive/stable'
-def vscode64ZipName = 'VSCode-win32-x64-1.26.1.zip'
+def vsCodeVersion = '1.27.1'
 
-def cppUrl = ('https://github.com/Microsoft/vscode-cpptools/releases/download/v0.18.1/cpptools-win32.vsix')
+def vscode32Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-archive/stable"
+def vscode32ZipName = "VSCode-win32-ia32-${vsCodeVersion}.zip"
+def vscode64Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-x64-archive/stable"
+def vscode64ZipName = "VSCode-win32-x64-${vsCodeVersion}.zip"
+
+def cppUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/v0.18.1/cpptools-win32.vsix'
 def cppVsix = 'Cpp.vsix'
 
-def wpilibExtensionUrl = ('https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-alpha-4/vscode-wpilib-2019.0.0-alpha-4.vsix')
+def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-alpha-4/vscode-wpilib-2019.0.0-alpha-4.vsix'
 def wpilibExtensionVsix = 'WPILib.vsix'
 
-def javaDebugUrl = ('https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-debug/0.11.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage')
+def javaDebugUrl = 'https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-debug/0.12.2/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
 def javaDebugVsix = 'JavaDebug.vsix'
 
-def javaLangUrl = ('https://redhat.gallery.vsassets.io/_apis/public/gallery/publisher/redhat/extension/java/0.29.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage')
+def javaLangUrl = 'https://redhat.gallery.vsassets.io/_apis/public/gallery/publisher/redhat/extension/java/0.30.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
 def javaLangVsix = "JavaLang.vsix"
 
 def javaLangFile = file("$buildDir/$javaLangVsix")

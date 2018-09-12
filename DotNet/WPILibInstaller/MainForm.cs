@@ -35,6 +35,82 @@ namespace WPILibInstaller
 
         private List<ExtractionIgnores> extractionControllers = new List<ExtractionIgnores>();
 
+        private async Task HandleVsCodeExtensions(string frcHomePath)
+        {
+            if (!vsCodeWpiExtCheck.Checked)
+            {
+                return;
+            }
+
+            var codeBatFile = Path.Combine(frcHomePath, "vscode", "bin", "code.cmd");
+
+            // Load existing extensions
+           var versions = await TaskEx.Run(() =>
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo(codeBatFile, "--list-extensions --show-versions");
+                startInfo.UseShellExecute = false;
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.CreateNoWindow = true;
+                startInfo.RedirectStandardOutput = true;
+                var proc = Process.Start(startInfo);
+                proc.WaitForExit();
+                List<(string name, string version)> lines = new List<(string name, string version)>();
+                while (true)
+                {
+                    string line = proc.StandardOutput.ReadLine();
+                    if (line == null)
+                    {
+                        return lines;
+                    }
+
+                    if (line.Contains("@"))
+                    {
+                        var split = line.Split('@');
+                        lines.Add((split[0], split[1]));
+                    }
+                }
+            });
+
+            List<(Extension extension, int sortOrder)> availableToInstall = new List<(Extension extension, int sortOrder)>();
+
+            availableToInstall.Add((vsCodeConfig.WPILibExtension, int.MaxValue));
+            for (int i = 0; i < vsCodeConfig.ThirdPartyExtensions.Length; i++)
+            {
+                availableToInstall.Add((vsCodeConfig.ThirdPartyExtensions[i], i));
+            }
+
+            var maybeUpdates = availableToInstall.Where(x => versions.Select(y => y.name).Contains((x.extension.Name))).ToList();
+            var newInstall = availableToInstall.Except(maybeUpdates).ToList();
+
+            var definitelyUpdate = maybeUpdates.Join(versions, x => x.extension.Name, y => y.name, (newVersion, existing) => (newVersion, existing))
+                                          .Where(x => x.newVersion.extension.Version.CompareTo(x.existing.version) > 0).Select(x => x.newVersion);
+
+            var installs = definitelyUpdate.Concat(newInstall).OrderBy(x => x.sortOrder).Select(x => x.extension);
+
+            await TaskEx.Run(() =>
+            {
+                foreach (var item in installs)
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo(codeBatFile, "--install-extension " + Path.Combine(frcHomePath, "vsCodeExtensions", item.Vsix));
+                    startInfo.UseShellExecute = false;
+                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    startInfo.CreateNoWindow = true;
+                    startInfo.RedirectStandardOutput = true;
+                    var proc = Process.Start(startInfo);
+                    proc.WaitForExit();
+                    var data = proc.StandardOutput.ReadToEnd();
+                    ;
+                }
+            });
+        }
+
+        private bool CheckForVsCode(string frcHomePath)
+        {
+            var codeBatFile = Path.Combine(frcHomePath, "vscode", "bin", "code.cmd");
+
+            return File.Exists(codeBatFile);
+        }
+
         private void SetVsCodeSettings(string frcHomePath)
         {
             //data\user-data\User
@@ -170,11 +246,6 @@ namespace WPILibInstaller
             Environment.SetEnvironmentVariable("PATH", newPath, target);
         }
 
-        private void SetJdkHome(string frcHomePath, EnvironmentVariableTarget target)
-        {
-            Environment.SetEnvironmentVariable("JDK_HOME", Path.Combine(frcHomePath, "jdk"), target);
-        }
-
         private void SetFrcHome(string frcHomePath, string frcYear, EnvironmentVariableTarget target)
         {
             Environment.SetEnvironmentVariable($"FRC_{frcYear}_HOME", frcHomePath, target);
@@ -306,15 +377,6 @@ namespace WPILibInstaller
                     }
                 }
 
-                if (javaCheck.Checked)
-                {
-                    SetJdkHome(intoPath, EnvironmentVariableTarget.User);
-                    if (adminMode)
-                    {
-                        SetJdkHome(intoPath, EnvironmentVariableTarget.Machine);
-                    }
-                }
-
                 SetFrcHome(intoPath, upgradeConfig.FrcYear, EnvironmentVariableTarget.User);
                 if (adminMode)
                 {
@@ -387,18 +449,10 @@ namespace WPILibInstaller
 
                 }
 
-                if (vscodeExtCheckBox.Checked)
+                if (vsCodeWpiExtCheck.Checked)
                 {
-                    var tmpVsixDir = Path.Combine(intoPath, "tmp");
-                    Directory.CreateDirectory(tmpVsixDir);
-
-
-
-                    // Load extensions from VS Code
-
-                    //Directory.Delete(tmpVsixDir, true);
+                    await HandleVsCodeExtensions(intoPath);
                 }
-
 
                 if (wpilibCheck.Checked)
                 {
@@ -590,12 +644,10 @@ namespace WPILibInstaller
 
             VSCodeInstall vsi = new VSCodeInstall(Path.Combine(commonPath, $"frc{upgradeConfig.FrcYear}", "vscode"));
 
-            if (vsi.IsInstalled())
+            if (!vsi.IsInstalled())
             {
-                var version = await vsi.GetVsCodeVersion();
-                var extensions = await vsi.GetExtensions();
-
-                // Get WPILib extension
+                vsCodeWpiExtCheck.Checked = false;
+                vsCodeWpiExtCheck.Enabled = false;
             }
 
 
@@ -616,11 +668,14 @@ namespace WPILibInstaller
             VsCodeZipFile = selector.ZipLocation;
             if (!string.IsNullOrWhiteSpace(VsCodeZipFile))
             {
-                vscodeExtCheckBox.Enabled = true;
-                vscodeExtCheckBox.Checked = true;
                 vscodeCheck.Enabled = true;
                 vscodeCheck.Checked = true;
             }
+        }
+
+        private void vscodeCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            vsCodeWpiExtCheck.Enabled = vscodeCheck.Checked;
         }
     }
 }

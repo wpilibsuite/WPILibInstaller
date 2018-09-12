@@ -38,7 +38,6 @@
             this.cppCheck = new System.Windows.Forms.CheckBox();
             this.toolsCheck = new System.Windows.Forms.CheckBox();
             this.wpilibCheck = new System.Windows.Forms.CheckBox();
-            this.vscodeExtCheckBox = new System.Windows.Forms.CheckBox();
             this.vsCodeWpiExtCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
@@ -64,13 +63,14 @@
             this.vscodeCheck.TabIndex = 7;
             this.vscodeCheck.Text = "Visual Studio Code";
             this.vscodeCheck.UseVisualStyleBackColor = true;
+            this.vscodeCheck.CheckedChanged += new System.EventHandler(this.vscodeCheck_CheckedChanged);
             // 
             // javaCheck
             // 
             this.javaCheck.AutoSize = true;
             this.javaCheck.Checked = true;
             this.javaCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.javaCheck.Location = new System.Drawing.Point(21, 326);
+            this.javaCheck.Location = new System.Drawing.Point(21, 281);
             this.javaCheck.Margin = new System.Windows.Forms.Padding(6);
             this.javaCheck.Name = "javaCheck";
             this.javaCheck.Size = new System.Drawing.Size(182, 29);
@@ -114,7 +114,7 @@
             this.gradleCheck.AutoSize = true;
             this.gradleCheck.Checked = true;
             this.gradleCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.gradleCheck.Location = new System.Drawing.Point(22, 285);
+            this.gradleCheck.Location = new System.Drawing.Point(22, 240);
             this.gradleCheck.Margin = new System.Windows.Forms.Padding(6);
             this.gradleCheck.Name = "gradleCheck";
             this.gradleCheck.Size = new System.Drawing.Size(108, 29);
@@ -127,7 +127,7 @@
             this.cppCheck.AutoSize = true;
             this.cppCheck.Checked = true;
             this.cppCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cppCheck.Location = new System.Drawing.Point(21, 244);
+            this.cppCheck.Location = new System.Drawing.Point(21, 199);
             this.cppCheck.Margin = new System.Windows.Forms.Padding(6);
             this.cppCheck.Name = "cppCheck";
             this.cppCheck.Size = new System.Drawing.Size(174, 29);
@@ -161,17 +161,6 @@
             this.wpilibCheck.Text = "WPILib Dependencies";
             this.wpilibCheck.UseVisualStyleBackColor = true;
             // 
-            // vscodeExtCheckBox
-            // 
-            this.vscodeExtCheckBox.AutoSize = true;
-            this.vscodeExtCheckBox.Location = new System.Drawing.Point(21, 203);
-            this.vscodeExtCheckBox.Margin = new System.Windows.Forms.Padding(6);
-            this.vscodeExtCheckBox.Name = "vscodeExtCheckBox";
-            this.vscodeExtCheckBox.Size = new System.Drawing.Size(466, 29);
-            this.vscodeExtCheckBox.TabIndex = 17;
-            this.vscodeExtCheckBox.Text = "Visual Studio Code Dependency Extensions";
-            this.vscodeExtCheckBox.UseVisualStyleBackColor = true;
-            // 
             // vsCodeWpiExtCheck
             // 
             this.vsCodeWpiExtCheck.AutoSize = true;
@@ -179,9 +168,9 @@
             this.vsCodeWpiExtCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.vsCodeWpiExtCheck.Location = new System.Drawing.Point(23, 529);
             this.vsCodeWpiExtCheck.Name = "vsCodeWpiExtCheck";
-            this.vsCodeWpiExtCheck.Size = new System.Drawing.Size(402, 29);
+            this.vsCodeWpiExtCheck.Size = new System.Drawing.Size(339, 29);
             this.vsCodeWpiExtCheck.TabIndex = 18;
-            this.vsCodeWpiExtCheck.Text = "Visual Studio Code WPILib Extension";
+            this.vsCodeWpiExtCheck.Text = "Visual Studio Code Extensions";
             this.vsCodeWpiExtCheck.UseVisualStyleBackColor = true;
             // 
             // MainForm
@@ -190,7 +179,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(616, 679);
             this.Controls.Add(this.vsCodeWpiExtCheck);
-            this.Controls.Add(this.vscodeExtCheckBox);
             this.Controls.Add(this.wpilibCheck);
             this.Controls.Add(this.toolsCheck);
             this.Controls.Add(this.cppCheck);
@@ -222,7 +210,6 @@
         private System.Windows.Forms.CheckBox cppCheck;
         private System.Windows.Forms.CheckBox toolsCheck;
         private System.Windows.Forms.CheckBox wpilibCheck;
-        private System.Windows.Forms.CheckBox vscodeExtCheckBox;
         private System.Windows.Forms.CheckBox vsCodeWpiExtCheck;
     }
 }
