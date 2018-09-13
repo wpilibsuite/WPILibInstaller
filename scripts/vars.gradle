@@ -1,5 +1,7 @@
 def varsfile = file("files/frcvars.bat")
 def varsfilePS = file("files/frcvars.ps1")
+def codefile = file("files/frccode")
+def codefileCmd = file("files/frccode.cmd")
 def icoFile = file("files/wpilib-256.ico")
 
 def pathfolder = 'frccode'
@@ -16,6 +18,8 @@ ext.varsZipSetup = { Zip zip->
   zip.inputs.file varsfile
   zip.inputs.file varsfilePS
   zip.inputs.file icoFile
+  zip.inputs.file codefile
+  zip.inputs.file codefileCmd
 
   zip.from (varsfile) {
     into "/$pathfolder"
@@ -28,6 +32,20 @@ ext.varsZipSetup = { Zip zip->
     into "/$pathfolder"
     rename {
       "frcvars${frcYear}.ps1"
+    }
+  }
+
+    zip.from (codefile) {
+    into "/$pathfolder"
+    rename {
+      "frccode${frcYear}"
+    }
+  }
+
+  zip.from (codefileCmd) {
+    into "/$pathfolder"
+    rename {
+      "frccode${frcYear}.cmd"
     }
   }
 

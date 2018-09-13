@@ -133,6 +133,4 @@ ext.vscodeZipSetup = { Zip zip->
   zip.from (wpilibFile) {
     into '/vsCodeExtensions'
   }
-
-  zip.from ()
 }
