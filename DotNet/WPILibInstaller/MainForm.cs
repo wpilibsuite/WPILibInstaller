@@ -131,10 +131,21 @@ namespace WPILibInstaller
                 settingsJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(settingsFile));
             }
 
-            if (!settingsJson.ContainsKey("java.home"))
+            void setIfNotSet<T>(string key, T value)
             {
-                settingsJson["java.home"] = Path.Combine(frcHomePath, "jdk");
+                if (!settingsJson.ContainsKey(key))
+                {
+                    settingsJson[key] = value;
+                }
             }
+
+            setIfNotSet("java.home", Path.Combine(frcHomePath, "jdk"));
+            setIfNotSet("extensions.autoUpdate", false);
+            setIfNotSet("extensions.autoCheckUpdates", false);
+            setIfNotSet("extensions.ignoreRecommendations", true);
+            setIfNotSet("extensions.showRecommendationsOnlyOnDemand", false);
+            setIfNotSet("update.channel", "none");
+            setIfNotSet("update.showReleaseNotes", false);
 
             if (!settingsJson.ContainsKey("terminal.integrated.env.windows"))
             {
@@ -456,6 +467,8 @@ namespace WPILibInstaller
                     {
 
                     }
+
+
 
                     //File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}"), true);
                     //File.Copy(Path.Combine(binFolder, "code.cmd"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}.bat"), true);
