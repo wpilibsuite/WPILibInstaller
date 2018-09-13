@@ -457,8 +457,8 @@ namespace WPILibInstaller
 
                     }
 
-                    File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}"), true);
-                    File.Copy(Path.Combine(binFolder, "code.cmd"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}.bat"), true);
+                    //File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}"), true);
+                    //File.Copy(Path.Combine(binFolder, "code.cmd"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}.bat"), true);
 
                     CreateCodeShortcuts(intoPath);
                     SetVsCodeSettings(intoPath);
