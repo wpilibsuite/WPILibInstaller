@@ -490,6 +490,7 @@ namespace WPILibInstaller
                 progressBar1.Value = 0;
 
                 MessageBox.Show("Finished! Use Desktop Icon to Open VS Code");
+                this.Close();
             }
         }
 

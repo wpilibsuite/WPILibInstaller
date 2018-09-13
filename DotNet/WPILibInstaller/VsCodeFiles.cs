@@ -55,7 +55,7 @@ namespace WPILibInstaller
         }
 
 
-        public async Task<string> DownloadAndZipFiles(ProgressBar cppProg, ProgressBar javaLangProg, ProgressBar javaDebugProg, ProgressBar vs32Prog, ProgressBar vs64Prog, CancellationToken token)
+        public async Task<string> DownloadAndZipFiles(ProgressBar vs32Prog, ProgressBar vs64Prog, CancellationToken token)
         {
             
             Directory.CreateDirectory(downloadDir);
