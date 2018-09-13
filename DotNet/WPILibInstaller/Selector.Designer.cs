@@ -32,9 +32,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.downloadButton = new System.Windows.Forms.Button();
             this.selectButton = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.progressBar2 = new System.Windows.Forms.ProgressBar();
-            this.progressBar3 = new System.Windows.Forms.ProgressBar();
             this.progressBar4 = new System.Windows.Forms.ProgressBar();
             this.progressBar5 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
@@ -68,27 +65,6 @@
             this.selectButton.UseVisualStyleBackColor = true;
             this.selectButton.Click += new System.EventHandler(this.selectButton_Click);
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(219, 115);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(100, 23);
-            this.progressBar1.TabIndex = 3;
-            // 
-            // progressBar2
-            // 
-            this.progressBar2.Location = new System.Drawing.Point(219, 144);
-            this.progressBar2.Name = "progressBar2";
-            this.progressBar2.Size = new System.Drawing.Size(100, 23);
-            this.progressBar2.TabIndex = 3;
-            // 
-            // progressBar3
-            // 
-            this.progressBar3.Location = new System.Drawing.Point(219, 173);
-            this.progressBar3.Name = "progressBar3";
-            this.progressBar3.Size = new System.Drawing.Size(100, 23);
-            this.progressBar3.TabIndex = 3;
-            // 
             // progressBar4
             // 
             this.progressBar4.Location = new System.Drawing.Point(219, 202);
@@ -110,9 +86,6 @@
             this.ClientSize = new System.Drawing.Size(444, 289);
             this.Controls.Add(this.progressBar5);
             this.Controls.Add(this.progressBar4);
-            this.Controls.Add(this.progressBar3);
-            this.Controls.Add(this.progressBar2);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.selectButton);
             this.Controls.Add(this.downloadButton);
             this.Controls.Add(this.label1);
@@ -129,9 +102,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button downloadButton;
         private System.Windows.Forms.Button selectButton;
-        private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.ProgressBar progressBar2;
-        private System.Windows.Forms.ProgressBar progressBar3;
         private System.Windows.Forms.ProgressBar progressBar4;
         private System.Windows.Forms.ProgressBar progressBar5;
     }

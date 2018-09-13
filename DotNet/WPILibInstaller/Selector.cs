@@ -23,18 +23,12 @@ namespace WPILibInstaller
         {
             this.config = config;
             InitializeComponent();
-            progressBar1.Visible = false;
-            progressBar2.Visible = false;
-            progressBar3.Visible = false;
             progressBar4.Visible = false;
             progressBar5.Visible = false;
         }
 
         private async void downloadButton_Click(object sender, EventArgs e)
         {
-            progressBar1.Visible = true;
-            progressBar2.Visible = true;
-            progressBar3.Visible = true;
             progressBar4.Visible = true;
             progressBar5.Visible = true;
             selectButton.Visible = false;
@@ -46,7 +40,7 @@ namespace WPILibInstaller
 
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 
-            var res = await vsf.DownloadAndZipFiles(progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, CancellationToken.None);
+            var res = await vsf.DownloadAndZipFiles(progressBar4, progressBar5, CancellationToken.None);
 
             if (res == null)
             {
