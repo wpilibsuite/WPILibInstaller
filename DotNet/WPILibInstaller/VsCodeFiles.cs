@@ -73,7 +73,7 @@ namespace WPILibInstaller
 
             string zipLoc = "VsCodeFiles.zip";
 
-            using (ZipFile newFile = ZipFile.Create("VsCodeFiles.zip"))
+            using (ZipFile newFile = ZipFile.Create("OfflineVsCodeFiles.zip"))
             {
                 newFile.BeginUpdate();
                 foreach(var (success, output) in results)

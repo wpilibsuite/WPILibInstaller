@@ -40,6 +40,7 @@
             this.toolsCheck = new System.Windows.Forms.CheckBox();
             this.wpilibCheck = new System.Windows.Forms.CheckBox();
             this.vsCodeWpiExtCheck = new System.Windows.Forms.CheckBox();
+            this.vscodeText = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // performInstallButton
@@ -173,11 +174,22 @@
             this.vsCodeWpiExtCheck.Text = "Visual Studio Code Extensions";
             this.vsCodeWpiExtCheck.UseVisualStyleBackColor = true;
             // 
+            // vscodeText
+            // 
+            this.vscodeText.AutoSize = true;
+            this.vscodeText.Location = new System.Drawing.Point(278, 262);
+            this.vscodeText.Name = "vscodeText";
+            this.vscodeText.Size = new System.Drawing.Size(278, 125);
+            this.vscodeText.TabIndex = 19;
+            this.vscodeText.Text = "Click button above to open\r\ndownloaded VS Code file.\r\nYou can copy the zip file t" +
+    "o \r\nanother system if you need.\r\nOfflineVsCodeFiles.zip";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(616, 679);
+            this.Controls.Add(this.vscodeText);
             this.Controls.Add(this.vsCodeWpiExtCheck);
             this.Controls.Add(this.wpilibCheck);
             this.Controls.Add(this.toolsCheck);
@@ -212,6 +224,7 @@
         private System.Windows.Forms.CheckBox toolsCheck;
         private System.Windows.Forms.CheckBox wpilibCheck;
         private System.Windows.Forms.CheckBox vsCodeWpiExtCheck;
+        private System.Windows.Forms.Label vscodeText;
     }
 }
 

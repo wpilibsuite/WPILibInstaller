@@ -519,6 +519,7 @@ namespace WPILibInstaller
         {
             vscodeButton.Enabled = false;
             vscodeCheck.Enabled = false;
+            vscodeText.Visible = false;
             this.Enabled = false;
             if (zipStore == null)
             {
@@ -694,9 +695,15 @@ namespace WPILibInstaller
         }
 
         private string VsCodeZipFile;
+        private bool vsCodeSelected = false;
 
         private void vscodeButton_Click(object sender, EventArgs e)
         {
+            if (vsCodeSelected)
+            {
+                Process.Start("explorer.exe", "/select \"" + VsCodeZipFile + "\"");
+                return;
+            }
             Selector selector = new Selector(vsCodeConfig);
             this.Enabled = false;
             selector.ShowDialog();
@@ -706,6 +713,9 @@ namespace WPILibInstaller
             {
                 vscodeCheck.Enabled = true;
                 vscodeCheck.Checked = true;
+                vscodeText.Visible = true;
+                vsCodeSelected = true;
+                vscodeButton.Text = "Open Downloaded\nFile";
             }
         }
 
