@@ -2,8 +2,6 @@ apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
 
 evaluationDependsOn(':gradleriobase')
 
-def gradleRioDeps = project(':gradleriobase').getGradleRioDependencies()
-
 def otherDeps = []
 
 
@@ -19,46 +17,55 @@ def toolArtifacts = [
   'edu.wpi.first.wpilib:RobotBuilder'
 ]
 
-dependencies {
-  gradleRioDeps.deps.each { dep->
-    if (dep.classifier == null) {
-      offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
-    } else if (dep.classifier == 'windowsx86-64') {
-      offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86@$dep.extension"
-      offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
-    } else if (dep.classifier == 'windowsx86') {
-      offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86-64@$dep.extension"
-      offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
-    } else {
-      offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
-    }
+def lazyEvaluator = tasks.register('lazyModelEvaluation') {
 
-    toolArtifacts.each { tool->
-      if ("$dep.groupId:$dep.artifactId" == tool && (dep.classifier == null || dep.classifier == "")) {
+  dependsOn project(':gradleriobase').tasks.named('modelEvaluationTrigger')
+  doLast {
+    def gradleRioDeps = project(':gradleriobase').getGradleRioDependencies()
+    dependencies {
+      gradleRioDeps.deps.each { dep->
         if (dep.classifier == null) {
-          tools "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
+          offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
+        } else if (dep.classifier == 'windowsx86-64') {
+          offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86@$dep.extension"
+          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+        } else if (dep.classifier == 'windowsx86') {
+          offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86-64@$dep.extension"
+          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         } else {
-          tools "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         }
+
+        toolArtifacts.each { tool->
+          if ("$dep.groupId:$dep.artifactId" == tool && (dep.classifier == null || dep.classifier == "")) {
+            if (dep.classifier == null) {
+              tools "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
+            } else {
+              tools "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+            }
+          }
+        }
+
+
       }
     }
 
-
-  }
-}
-
-repositories {
-  gradleRioDeps.urls.each { gUrl->
-    maven {
-      url = gUrl
+    repositories {
+      gradleRioDeps.urls.each { gUrl->
+        maven {
+          url = gUrl
+        }
+      }
     }
   }
 }
+
+updateOfflineRepository.dependsOn lazyEvaluator
 
 offlineDependencies {
   repositories {
     // You'll have to add your buildscript repositories here too
-    gradleRioDeps.urls.each { gUrl->
+    project(':gradleriobase').getGradleRioUrls().each { gUrl->
       maven {
         url = gUrl
       }
