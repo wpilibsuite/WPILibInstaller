@@ -5,9 +5,8 @@ def toolsJsonTask = tasks.register('toolsJson', Task) {
 
   dependsOn tasks.named('lazyModelEvaluation')
 
-  def resolvedDeps = configurations.tools.resolvedConfiguration.resolvedArtifacts.toList()
-
   doLast {
+    def resolvedDeps = configurations.tools.resolvedConfiguration.resolvedArtifacts.toList()
     def config = []
     resolvedDeps.each {
       if (it.name == 'app') {
