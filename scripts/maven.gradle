@@ -49,15 +49,14 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
 
       }
     }
-
-    repositories {
-      gradleRioDeps.urls.each { gUrl->
+  }
+}
+repositories {
+    project(':gradleriobase').getGradleRioUrls().each { gUrl->
         maven {
           url = gUrl
         }
-      }
     }
-  }
 }
 
 updateOfflineRepository.dependsOn lazyEvaluator
