@@ -3,6 +3,8 @@ def scriptBaseFile = file("files/ScriptBase.vbs")
 
 def toolsJsonTask = tasks.register('toolsJson', Task) {
 
+  dependsOn tasks.named('lazyModelEvaluation')
+
   def resolvedDeps = configurations.tools.resolvedConfiguration.resolvedArtifacts.toList()
 
   doLast {
