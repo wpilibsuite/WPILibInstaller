@@ -3,7 +3,7 @@
 apply plugin: 'de.undercouch.download'
 
 def download32BitJdk = tasks.register('download32BitJdk', Download) {
-  src 'https://ci.appveyor.com/api/buildjobs/4ktdb4yv55kpmacg/artifacts/jdk-x86.zip'
+  src 'https://github.com/wpilibsuite/frc-openjdk-windows/releases/download/v11.0.0u28-1/jdk-x86-11.0.0u28-1.zip'
   dest buildDir
   overwrite false
 }
@@ -12,7 +12,7 @@ def jdk32Location = file("$buildDir/jdk32")
 
 def extract32BitJdk = tasks.register('extract32BitJdk', Copy) {
   dependsOn download32BitJdk
-  from zipTree(file("$buildDir/jdk-x86.zip")).matching{ include "jdk/**"}
+  from zipTree(file("$buildDir/jdk-x86-11.0.0u28-1.zip")).matching{ include "jdk/**"}
   into jdk32Location
   eachFile { f->
     f.path = f.path.substring(4) // length of jdk/
@@ -28,7 +28,7 @@ def extract32BitJdk = tasks.register('extract32BitJdk', Copy) {
 }
 
 def download64BitJdk = tasks.register('download64BitJdk', Download) {
-  src 'https://download.java.net/java/early_access/jdk11/26/GPL/openjdk-11-ea+26_windows-x64_bin.zip'
+  src 'https://download.java.net/java/GA/jdk11/28/GPL/openjdk-11+28_windows-x64_bin.zip'
   dest buildDir
   overwrite false
 }
@@ -37,7 +37,7 @@ def jdk64Location = file("$buildDir/jdk64")
 
 def extract64BitJdk = tasks.register('extract64BitJdk', Copy) {
   dependsOn download64BitJdk
-  from zipTree(file("$buildDir/openjdk-11-ea+26_windows-x64_bin.zip")).matching{ include "jdk-11/**"}
+  from zipTree(file("$buildDir/openjdk-11+28_windows-x64_bin.zip")).matching{ include "jdk-11/**"}
   into jdk64Location
   eachFile { f->
     f.path = f.path.substring(7) // length of jdk-11/
@@ -48,8 +48,8 @@ def extract64BitJdk = tasks.register('extract64BitJdk', Copy) {
   includeEmptyDirs = false
 }
 
-def version32 = 'openjdk 11.0.0.26-internal 2018-09-25'
-def version64 = 'openjdk 11-ea 2018-09-25'
+def version32 = 'openjdk version "11.0.0.28-internal" 2018-09-25'
+def version64 = 'openjdk version "11" 2018-09-25'
 
 def jdk32ConfigFile = file("$buildDir/jdk32config.json")
 

@@ -1,6 +1,6 @@
-def fileName = 'FRC-2018-Windows-Toolchain-5.5.zip'
-def gccVersion = '5.5.0'
-def baseUrl = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+def fileName = 'windows-toolchain-2019-1.zip'
+def gccVersion = '6.3.0'
+def baseUrl = 'https://github.com/wpilibsuite/toolchain-builder/releases/download/v2019-1/'
 
 def downloadUrl = baseUrl + fileName
 
@@ -17,10 +17,10 @@ def downloadTask = tasks.register('downloadToolchain', Download) {
 def extractTask = tasks.register('extractToolchain', Copy) {
   dependsOn downloadTask
 
-  from zipTree(file("$buildDir/$fileName")).matching{ include "frc/**"}
+  from zipTree(file("$buildDir/$fileName")).matching{ include "frc2019/**"}
   into extractLocation
   eachFile { f->
-    f.path = f.path.substring(4) // length of frc/
+    f.path = f.path.substring(8) // length of frc2019/
   }
 
   includeEmptyDirs = false
@@ -33,7 +33,7 @@ ext.toolchainConfigTaskSetup = {
     def toolchainConfig = [:];
 
     toolchainConfig['Version'] = gccVersion
-    toolchainConfig['Directory'] = 'gcc'
+    toolchainConfig['Directory'] = 'roborio'
 
     config['CppToolchain'] = toolchainConfig
   });
@@ -45,6 +45,6 @@ ext.toolchainZipSetup = { Zip zip->
   zip.inputs.dir extractLocation
 
   zip.from(extractLocation) {
-    into '/gcc'
+    into '/roborio'
   }
 }

@@ -223,7 +223,7 @@ namespace WPILibInstaller
 
         private void SetCppCompilerVariable(string frcHomePath, EnvironmentVariableTarget target)
         {
-            var compilerPath = Path.Combine(frcHomePath, "gcc", "bin");
+            var compilerPath = Path.Combine(frcHomePath, fullConfig.CppToolchain.Directory, "bin");
 
             var path = Environment.GetEnvironmentVariable("PATH", target);
 
