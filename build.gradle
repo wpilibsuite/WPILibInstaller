@@ -22,7 +22,7 @@ wrapper {
     gradleVersion = '4.9'
 }
 
-ext.frcYear = '2018'
+ext.frcYear = '2019'
 
 apply from: 'scripts/gradlew.gradle'
 apply from: 'scripts/installer.gradle'
