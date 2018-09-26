@@ -17,10 +17,10 @@ def downloadTask = tasks.register('downloadToolchain', Download) {
 def extractTask = tasks.register('extractToolchain', Copy) {
   dependsOn downloadTask
 
-  from zipTree(file("$buildDir/$fileName")).matching{ include "frc2019/**"}
+  from zipTree(file("$buildDir/$fileName")).matching{ include "frc2019/roborio/**"}
   into extractLocation
   eachFile { f->
-    f.path = f.path.substring(8) // length of frc2019/
+    f.path = f.path.substring(16) // length of frc2019/roborio/
   }
 
   includeEmptyDirs = false
