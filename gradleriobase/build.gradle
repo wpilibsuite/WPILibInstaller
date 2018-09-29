@@ -12,7 +12,14 @@ buildscript {
 plugins {
     id "java"
     id 'cpp'
-    id "edu.wpi.first.GradleRIO" version "2019.0.0-alpha-3"
+    id "edu.wpi.first.GradleRIO" version "2019.0.0-beta0-pre1"
+}
+
+wpi {
+    shuffleboardVersion = '1.3.1-20180822155514-46-g853ce2d'
+    outlineViewerVersion = '2.0.7-20180701134809'
+    robotBuilderVersion = '3.0.1-20180701134409-1-gf70dcba'
+    smartDashboardVersion = '3.0.1-20180701135609'
 }
 
 
@@ -20,18 +27,17 @@ plugins {
 // and NavX.
 dependencies {
     compile wpilib()
-    compile ctre()
-    compile navx()
 }
 
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
             targetPlatform 'roborio'
+            targetPlatform 'desktop'
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
-            useLibrary(it, "wpilib", "ctre", "navx")
+            useLibrary(it, "wpilib", "googletest")
         }
     }
 }

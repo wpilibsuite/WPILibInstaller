@@ -8,10 +8,10 @@ def vscode32ZipName = "VSCode-win32-ia32-${vsCodeVersion}.zip".toString()
 def vscode64Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-x64-archive/stable".toString()
 def vscode64ZipName = "VSCode-win32-x64-${vsCodeVersion}.zip".toString()
 
-def cppUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/v0.18.1/cpptools-win32.vsix'
+def cppUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-win32.vsix'
 def cppVsix = 'Cpp.vsix'
 
-def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-alpha-4/vscode-wpilib-2019.0.0-alpha-4.vsix'
+def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-beta0-pre1/vscode-wpilib-2019.0.0-beta0-pre1.vsix'
 def wpilibExtensionVsix = 'WPILib.vsix'
 
 def javaDebugUrl = 'https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-debug/0.12.2/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
