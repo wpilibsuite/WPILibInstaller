@@ -20,7 +20,7 @@ namespace WPILibInstaller
             this.config = config;
         }
 
-       
+
 
         private async Task<(bool, string)> GetVsCode32Zip(ProgressBar progBar, CancellationToken token, string tmpDir)
         {
@@ -57,7 +57,7 @@ namespace WPILibInstaller
 
         public async Task<string> DownloadAndZipFiles(ProgressBar vs32Prog, ProgressBar vs64Prog, CancellationToken token)
         {
-            
+
             Directory.CreateDirectory(downloadDir);
 
             (bool success, string output)[] results = await TaskEx.WhenAll(
@@ -71,7 +71,7 @@ namespace WPILibInstaller
                 return null;
             }
 
-            string zipLoc = "VsCodeFiles.zip";
+            string zipLoc = "OfflineVsCodeFiles.zip";
 
             using (ZipFile newFile = ZipFile.Create("OfflineVsCodeFiles.zip"))
             {
