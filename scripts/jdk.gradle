@@ -114,9 +114,9 @@ def jdkConfigFileTask = tasks.register("jdkConfigFile") {
     gbuilder.setPrettyPrinting()
     def json = gbuilder.create().toJson(config)
 
-    jdk64ConfigFile.parentFile.mkdirs()
+    jdkConfigFile.parentFile.mkdirs()
 
-    jdk64ConfigFile.text = json
+    jdkConfigFile.text = json
   }
 }
 
