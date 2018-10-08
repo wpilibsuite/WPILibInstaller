@@ -2,6 +2,57 @@
 
 apply plugin: 'de.undercouch.download'
 
+
+def downloadLinuxJdk = tasks.register('downloadLinuxJdk', Download) {
+  src 'https://download.java.net/java/ga/jdk11/openjdk-11_linux-x64_bin.tar.gz'
+  dest buildDir
+  overwrite false
+}
+
+def jdkLinuxLocation = file("$buildDir/jdklinux")
+
+def extractLinuxJdk = tasks.register('extractLinuxJdk', Copy) {
+  dependsOn downloadLinuxJdk
+  from zipTree(file("$buildDir/openjdk-11_linux-x64_bin.tar.gz")).matching{ include "jdk/**"}
+  into jdkLinuxLocation
+  eachFile { f->
+    f.path = f.path.substring(4) // length of jdk/
+  }
+  exclude '**/src.zip'
+  exclude '**/bin/*.pdb'
+  exclude '**/bin/*.map'
+  exclude '**/bin/server/*.pdb'
+  exclude '**/bin/server/*.map'
+  exclude '**/demo/**'
+
+  includeEmptyDirs = false
+}
+
+def downloadMacJdk = tasks.register('downloadMacJdk', Download) {
+  src 'https://download.java.net/java/ga/jdk11/openjdk-11_osx-x64_bin.tar.gz'
+  dest buildDir
+  overwrite false
+}
+
+def jdkMacLocation = file("$buildDir/jdkmac")
+
+def extractMacJdk = tasks.register('extractMacJdk', Copy) {
+  dependsOn downloadLinuxJdk
+  from zipTree(file("$buildDir/openjdk-11_osx-x64_bin.tar.gz")).matching{ include "jdk/**"}
+  into jdkMacLocation
+  eachFile { f->
+    f.path = f.path.substring(4) // length of jdk/
+  }
+  exclude '**/src.zip'
+  exclude '**/bin/*.pdb'
+  exclude '**/bin/*.map'
+  exclude '**/bin/server/*.pdb'
+  exclude '**/bin/server/*.map'
+  exclude '**/demo/**'
+
+  includeEmptyDirs = false
+}
+
 def download32BitJdk = tasks.register('download32BitJdk', Download) {
   src 'https://github.com/wpilibsuite/frc-openjdk-windows/releases/download/v11.0.0u28-1/jdk-x86-11.0.0u28-1.zip'
   dest buildDir
@@ -48,44 +99,14 @@ def extract64BitJdk = tasks.register('extract64BitJdk', Copy) {
   includeEmptyDirs = false
 }
 
-def version32 = 'openjdk version "11.0.0.28-internal" 2018-09-25'
-def version64 = 'openjdk version "11" 2018-09-25'
+def jdkConfigFile = file("$buildDir/jdkconfig.json")
 
-def jdk32ConfigFile = file("$buildDir/jdk32config.json")
-
-def jdkConfigFile32Task = tasks.register("jdkConfigFile32") {
-  outputs.file jdk32ConfigFile
-  inputs.property 'version', version32
+def jdkConfigFileTask = tasks.register("jdkConfigFile") {
+  it.outputs.file jdkConfigFile
 
   doLast {
 
     def config = [:]
-    config['is32'] = true
-    config['version'] = version32
-    config['folder'] = 'jdk'
-
-    def gbuilder = getGsonBuilder()
-
-    gbuilder.setPrettyPrinting()
-    def json = gbuilder.create().toJson(config)
-
-    jdk32ConfigFile.parentFile.mkdirs()
-
-    jdk32ConfigFile.text = json
-  }
-}
-
-def jdk64ConfigFile = file("$buildDir/jdk64config.json")
-
-def jdkConfigFile64Task = tasks.register("jdkConfigFile64") {
-  it.outputs.file jdk64ConfigFile
-  it.inputs.property 'version', version64
-
-  doLast {
-
-    def config = [:]
-    config['is32'] = false
-    config['version'] = version64
     config['folder'] = 'jdk'
 
     def gbuilder = getGsonBuilder()
@@ -101,16 +122,16 @@ def jdkConfigFile64Task = tasks.register("jdkConfigFile64") {
 
 ext.jdkZipSetup32 = { Zip zip->
   zip.dependsOn extract32BitJdk
-  zip.dependsOn jdkConfigFile32Task
+  zip.dependsOn jdkConfigFileTask
 
   zip.inputs.dir jdk32Location
-  zip.inputs.file jdk32ConfigFile
+  zip.inputs.file jdkConfigFile
 
   zip.from(jdk32Location) {
     into '/jdk'
   }
 
-  zip.from(jdk32ConfigFile) {
+  zip.from(jdkConfigFile) {
     into '/installUtils'
     rename {'jdkConfig.json'}
   }
@@ -118,17 +139,63 @@ ext.jdkZipSetup32 = { Zip zip->
 
 ext.jdkZipSetup64 = { Zip zip->
   zip.dependsOn extract64BitJdk
-  zip.dependsOn jdkConfigFile64Task
+  zip.dependsOn jdkConfigFileTask
 
   zip.inputs.dir jdk64Location
-  zip.inputs.file jdk64ConfigFile
+  zip.inputs.file jdkConfigFile
 
   zip.from(jdk64Location) {
     into '/jdk'
   }
 
-    zip.from(jdk64ConfigFile) {
+    zip.from(jdkConfigFile) {
     into '/installUtils'
     rename {'jdkConfig.json'}
+  }
+}
+
+ext.jdkZipSetupLinux = { Zip zip->
+  zip.dependsOn extractLinuxJdk
+  zip.dependsOn jdkConfigFileTask
+
+  zip.inputs.dir jdkLinuxLocation
+  zip.inputs.file jdkConfigFile
+
+  zip.from(jdkLinuxLocation) {
+    into '/jdk'
+  }
+
+  zip.from(jdkConfigFile) {
+    into '/installUtils'
+    rename {'jdkConfig.json'}
+  }
+}
+
+ext.jdkZipSetupMac = { Zip zip->
+  zip.dependsOn extractMacBitJdk
+  zip.dependsOn jdkConfigFileTask
+
+  zip.inputs.dir jdkMacLocation
+  zip.inputs.file jdkConfigFile
+
+  zip.from(jdkMacLocation) {
+    into '/jdk'
+  }
+
+    zip.from(jdkConfigFile) {
+    into '/installUtils'
+    rename {'jdkConfig.json'}
+  }
+}
+
+ext.jdkZipSetup = { Zip zip ->
+  if (project.hasProperty('linuxBuild')) {
+    jdkZipSetupLinux(zip)
+  } else if (project.hasProperty('macBuild')) {
+    jdkZipSetupMac(zip)
+  } else if (project.hasProperty('windows32')) {
+    jdkZipSetup32(zip)
+  } else {
+    jdkZipSetup64(zip)
   }
 }

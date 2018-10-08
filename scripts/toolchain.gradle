@@ -4,7 +4,14 @@ def baseUrl = 'http://first.wpi.edu/FRC/roborio/toolchains/'
 
 def downloadUrl = baseUrl + fileName
 
-def extractLocation = file("$buildDir/toolchain")
+def fileNameMac = 'FRC-2018-Windows-Toolchain-5.5.zip'
+def gccVersion = '6.3.0'
+def baseUrlMac = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+
+def downloadUrlMac = baseUrl + fileName
+
+def extractLocation = file("$buildDir/toolchain/win")
+def extractLocationMac = file("$buildDir/toolchain/mac")
 
 apply plugin: 'de.undercouch.download'
 
@@ -26,6 +33,24 @@ def extractTask = tasks.register('extractToolchain', Copy) {
   includeEmptyDirs = false
 }
 
+def downloadTaskMac = tasks.register('downloadToolchainMac', Download) {
+  src downloadUrlMac
+  dest buildDir
+  overwrite false
+}
+
+def extractTaskMac = tasks.register('extractToolchainMac', Copy) {
+  dependsOn downloadTaskMac
+
+  from zipTree(file("$buildDir/$fileNameMac")).matching{ include "frc/**"}
+  into extractLocationMac
+  eachFile { f->
+    f.path = f.path.substring(4) // length of frc
+  }
+
+  includeEmptyDirs = false
+}
+
 ext.toolchainConfigTaskSetup = {
   return new Tuple2({ task->
     task.inputs.property 'toolchainName', fileName
@@ -40,11 +65,22 @@ ext.toolchainConfigTaskSetup = {
 }
 
 ext.toolchainZipSetup = { Zip zip->
-  zip.dependsOn extractTask
+  if (project.hasProperty('linuxBuild')) {
+  } else if (project.hasProperty('macBuild')) {
+    zip.dependsOn extractTaskMac
 
-  zip.inputs.dir extractLocation
+    zip.inputs.dir extractLocationMac
 
-  zip.from(extractLocation) {
-    into '/roborio'
+    zip.from(extractLocationMac) {
+      into '/roborio'
+    }
+  } else {
+    zip.dependsOn extractTask
+
+    zip.inputs.dir extractLocation
+
+    zip.from(extractLocation) {
+      into '/roborio'
+    }
   }
 }

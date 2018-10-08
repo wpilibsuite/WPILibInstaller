@@ -232,12 +232,10 @@
     <PostBuildEvent>$(TargetDir)combine.bat</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Mac' ">
-    <PostBuildEvent>$(TargetDir)combine.sh</PostBuildEvent>
+    <PostBuildEvent>$(TargetDir)combine.bat</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Linux' ">
-    <PostBuildEvent>
-    echo $(TargetDir)
-    $(TargetDir)combine.sh</PostBuildEvent>
+    <PostBuildEvent>$(TargetDir)combine.bat</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

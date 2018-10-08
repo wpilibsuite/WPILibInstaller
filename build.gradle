@@ -20,6 +20,32 @@ plugins {
     id "de.undercouch.download" version "3.4.3" apply false
 }
 
+apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
+
+project.ext.setProperty('toolchain-missing-nofail', '')
+
+if (project.hasProperty('linuxBuild')) {
+    project.ext.forceNativeClassifier = 'linuxx86-64'
+    project.ext.forceToolsClassifier = 'linux64'
+    project.ext.buildClassifier = 'Linux'
+    offlineRepositoryRoot = "$buildDir/dependencies/linux"
+} else if (project.hasProperty('macBuild')) {
+    project.ext.forceNativeClassifier = 'osxx86-64'
+    project.ext.forceToolsClassifier = 'mac64'
+    project.ext.buildClassifier = 'Mac'
+    offlineRepositoryRoot = "$buildDir/dependencies/mac"
+} else if (project.hasProperty('windows32')) {
+    project.ext.forceNativeClassifier = 'windowsx86'
+    project.ext.forceToolsClassifier = 'win32'
+    project.ext.buildClassifier = 'Windows32'
+    offlineRepositoryRoot = "$buildDir/dependencies/win32"
+} else {
+    project.ext.forceNativeClassifier = 'windowsx86-64'
+    project.ext.forceToolsClassifier = 'win64'
+    project.ext.buildClassifier = 'Windows64'
+    offlineRepositoryRoot = "$buildDir/dependencies/win64"
+}
+
 wrapper {
     gradleVersion = '4.9'
 }
@@ -91,7 +117,7 @@ def commonResources = { Zip zip->
 }
 
 def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zip) {
-    baseName 'WPILib_UpgradeFiles'
+    baseName 'WPILib_UpgradeFiles-' + buildClassifier
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
 
@@ -99,7 +125,7 @@ def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zi
 }
 
 def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
-    baseName 'WPILibInstaller_Upgrade'
+    baseName 'WPILibInstaller_Upgrade-' + buildClassifier
     destinationDir buildDir
     duplicatesStrategy 'exclude'
 
@@ -116,7 +142,7 @@ def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
 }
 
 
-def upgradeInstallerName = 'WPILibInstaller_Upgrade.exe'
+def upgradeInstallerName = "WPILibInstaller_Upgrade-${buildClassifier}.exe"
 def upgradeInstaller = file("$buildDir/outputs/$upgradeInstallerName")
 
 def upgradeInstallerTask = tasks.register('generateUpgradeInstaller', Task) {
@@ -177,79 +203,8 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     }
 }
 
-
-def generateFullResources32Task = tasks.register('generateFullResources32', Zip) {
-    baseName 'WPILib_FullFiles32'
-    destinationDir file("$buildDir/outputs")
-    duplicatesStrategy 'exclude'
-
-    dependsOn fullConfigFileTask
-    inputs.file fullConfigFile
-
-    it.from (fullConfigFile) {
-        into '/installUtils'
-    }
-
-    commonResources(it)
-
-    gradleZipTaskSetup(it)
-    toolchainZipSetup(it)
-    jdkZipSetup32(it)
-}
-
-def generateFullZip32BaseTask = tasks.register('generateFileZip32Base', Zip) {
-    baseName 'WPILibInstaller_Full32'
-    destinationDir buildDir
-    duplicatesStrategy 'exclude'
-
-    dependsOn generateFullResources32Task
-    inputs.file generateFullResources32Task.get().archivePath
-
-    entryCompression = ZipEntryCompression.STORED
-
-
-    // This MUST be first
-    msBuildSetupMain(it)
-
-    from (generateFullResources32Task.get().archivePath) {
-        rename { 'files.zip' }
-    }
-}
-
-
-def fullInstaller32Name = 'WPILibInstaller_Full32.exe'
-def fullInstaller32 = file("$buildDir/outputs/$fullInstaller32Name")
-
-def fullInstallerTask32 = tasks.register('generateFullInstaller32', Task) {
-    def zipFile = generateFullZip32BaseTask.get().archivePath
-    inputs.file zipFile
-    outputs.file fullInstaller32
-
-    dependsOn generateFullZip32BaseTask
-
-    doLast {
-        copy {
-            from zipFile
-            into "$buildDir/outputs"
-            rename { fullInstaller32Name }
-        }
-
-        installerFile.withInputStream { InputStream inputStream ->
-            RandomAccessFile foStream;
-            try {
-                foStream = new RandomAccessFile(fullInstaller32, "rw");
-                foStream.write(inputStream.getBytes())
-            } finally {
-                if (foStream != null) {
-                    foStream.close();
-                }
-            }
-        }
-    }
-}
-
 def generateFullResources64Task = tasks.register('generateFullResources64', Zip) {
-    baseName 'WPILib_FullFiles64'
+    baseName 'WPILib_FullFiles64-' + buildClassifier
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
 
@@ -268,7 +223,7 @@ def generateFullResources64Task = tasks.register('generateFullResources64', Zip)
 }
 
 def generateFullZip64BaseTask = tasks.register('generateFileZip64Base', Zip) {
-    baseName 'WPILibInstaller_Full64'
+    baseName 'WPILibInstaller_Full64-' + buildClassifier
     destinationDir buildDir
     duplicatesStrategy 'exclude'
 
@@ -287,7 +242,7 @@ def generateFullZip64BaseTask = tasks.register('generateFileZip64Base', Zip) {
 }
 
 
-def fullInstaller64Name = 'WPILibInstaller_Full64.exe'
+def fullInstaller64Name = "WPILibInstaller_Full-${buildClassifier}.exe"
 def fullInstaller64 = file("$buildDir/outputs/$fullInstaller64Name")
 
 def fullInstallerTask64 = tasks.register('generateFullInstaller64', Task) {
@@ -319,7 +274,6 @@ def fullInstallerTask64 = tasks.register('generateFullInstaller64', Task) {
 }
 
 tasks.register('generateInstallers', Task) {
-    dependsOn fullInstallerTask32
     dependsOn fullInstallerTask64
     dependsOn upgradeInstallerTask
 }

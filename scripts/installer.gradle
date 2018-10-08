@@ -20,10 +20,9 @@ msbuild {
 
   targets = ['Clean', 'Rebuild']
 
-  def current = OperatingSystem.current()
-  if (current.isLinux()) {
+  if (project.hasProperty('linuxBuild')) {
     parameters.platform = 'Linux'
-  } else if (current.isMacOsX()) {
+  } else if (project.hasProperty('macBuild')) {
     parameters.platform = 'Mac'
   }
 
