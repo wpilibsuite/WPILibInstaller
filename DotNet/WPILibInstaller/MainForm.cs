@@ -16,7 +16,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+#if !MAC && !LINUX
 using IWshRuntimeLibrary;
+#endif
 using File = System.IO.File;
 using Newtonsoft.Json.Linq;
 
@@ -183,6 +185,7 @@ namespace WPILibInstaller
 
         private void CreateCodeShortcuts(string frcHomePath)
         {
+#if !MAC && !LINUX
             {
                 object shDesktop = "Desktop";
                 WshShell shell = new WshShell();
@@ -203,10 +206,12 @@ namespace WPILibInstaller
                 shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
                 shortcut.Save();
             }
+#endif
         }
 
         private void CreateDevPromptShortcuts(string frcHomePath)
         {
+#if !MAC && !LINUX
             object shDesktop = "StartMenu";
             WshShell shell = new WshShell();
             string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC Developer Command Prompt {upgradeConfig.FrcYear}.lnk";
@@ -219,6 +224,7 @@ namespace WPILibInstaller
             shortcut.WorkingDirectory = shell.SpecialFolders.Item(ref shDocuments);
             shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
             shortcut.Save();
+#endif
         }
 
         private void SetCppCompilerVariable(string frcHomePath, EnvironmentVariableTarget target)
