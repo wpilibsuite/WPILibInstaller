@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 apply plugin: 'com.ullink.msbuild'
 apply plugin: 'com.ullink.nuget'
 
@@ -18,7 +20,14 @@ msbuild {
 
   targets = ['Clean', 'Rebuild']
 
-  parameters.configuration = 'release'
+  def current = OperatingSystem.current()
+  if (current.isLinux()) {
+    parameters.platform = 'Linux'
+  } else if (current.isMacOsX()) {
+    parameters.platform = 'Mac'
+  }
+
+  parameters.configuration = 'Release'
 }
 
 ext.installerFile = file('DotNet/WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
