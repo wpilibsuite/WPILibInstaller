@@ -9,24 +9,7 @@ def downloadLinuxJdk = tasks.register('downloadLinuxJdk', Download) {
   overwrite false
 }
 
-def jdkLinuxLocation = file("$buildDir/jdklinux")
-
-def extractLinuxJdk = tasks.register('extractLinuxJdk', Copy) {
-  dependsOn downloadLinuxJdk
-  from zipTree(file("$buildDir/openjdk-11_linux-x64_bin.tar.gz")).matching{ include "jdk/**"}
-  into jdkLinuxLocation
-  eachFile { f->
-    f.path = f.path.substring(4) // length of jdk/
-  }
-  exclude '**/src.zip'
-  exclude '**/bin/*.pdb'
-  exclude '**/bin/*.map'
-  exclude '**/bin/server/*.pdb'
-  exclude '**/bin/server/*.map'
-  exclude '**/demo/**'
-
-  includeEmptyDirs = false
-}
+def jdkLinuxFile = file("$buildDir/openjdk-11_linux-x64_bin.tar.gz")
 
 def downloadMacJdk = tasks.register('downloadMacJdk', Download) {
   src 'https://download.java.net/java/ga/jdk11/openjdk-11_osx-x64_bin.tar.gz'
@@ -34,24 +17,7 @@ def downloadMacJdk = tasks.register('downloadMacJdk', Download) {
   overwrite false
 }
 
-def jdkMacLocation = file("$buildDir/jdkmac")
-
-def extractMacJdk = tasks.register('extractMacJdk', Copy) {
-  dependsOn downloadLinuxJdk
-  from zipTree(file("$buildDir/openjdk-11_osx-x64_bin.tar.gz")).matching{ include "jdk/**"}
-  into jdkMacLocation
-  eachFile { f->
-    f.path = f.path.substring(4) // length of jdk/
-  }
-  exclude '**/src.zip'
-  exclude '**/bin/*.pdb'
-  exclude '**/bin/*.map'
-  exclude '**/bin/server/*.pdb'
-  exclude '**/bin/server/*.map'
-  exclude '**/demo/**'
-
-  includeEmptyDirs = false
-}
+def jdkMacFile = file("$buildDir/openjdk-11_osx-x64_bin.tar.gz")
 
 def download32BitJdk = tasks.register('download32BitJdk', Download) {
   src 'https://github.com/wpilibsuite/frc-openjdk-windows/releases/download/v11.0.0u28-1/jdk-x86-11.0.0u28-1.zip'
@@ -108,6 +74,7 @@ def jdkConfigFileTask = tasks.register("jdkConfigFile") {
 
     def config = [:]
     config['folder'] = 'jdk'
+    config['tarFile'] = 'jdk.tar.gz'
 
     def gbuilder = getGsonBuilder()
 
@@ -155,14 +122,15 @@ ext.jdkZipSetup64 = { Zip zip->
 }
 
 ext.jdkZipSetupLinux = { Zip zip->
-  zip.dependsOn extractLinuxJdk
+  zip.dependsOn downloadLinuxJdk
   zip.dependsOn jdkConfigFileTask
 
-  zip.inputs.dir jdkLinuxLocation
+  zip.inputs.dir jdkLinuxFile
   zip.inputs.file jdkConfigFile
 
-  zip.from(jdkLinuxLocation) {
-    into '/jdk'
+  zip.from(jdkLinuxFile) {
+    into '/installUtils'
+    rename {'jdk.tar.gz'}
   }
 
   zip.from(jdkConfigFile) {
@@ -172,14 +140,15 @@ ext.jdkZipSetupLinux = { Zip zip->
 }
 
 ext.jdkZipSetupMac = { Zip zip->
-  zip.dependsOn extractMacBitJdk
+  zip.dependsOn downloadMacJdk
   zip.dependsOn jdkConfigFileTask
 
-  zip.inputs.dir jdkMacLocation
+  zip.inputs.file jdkMacFile
   zip.inputs.file jdkConfigFile
 
-  zip.from(jdkMacLocation) {
-    into '/jdk'
+  zip.from(jdkMacFile) {
+    into '/installUtils'
+    rename {'jdk.tar.gz'}
   }
 
     zip.from(jdkConfigFile) {

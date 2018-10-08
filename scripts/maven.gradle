@@ -9,10 +9,11 @@ configurations {
 }
 
 def toolArtifacts = [
-  'edu.wpi.first.shuffleboard:app',
+  'edu.wpi.first.shuffleboard:shuffleboard',
   'edu.wpi.first.wpilib:OutlineViewer',
   'edu.wpi.first.wpilib:SmartDashboard',
-  'edu.wpi.first.wpilib:RobotBuilder'
+  'edu.wpi.first.wpilib:RobotBuilder',
+  'edu.wpi.first.wpilib:PathWeaver'
 ]
 
 def lazyEvaluator = tasks.register('lazyModelEvaluation') {

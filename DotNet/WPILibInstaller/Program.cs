@@ -19,24 +19,29 @@ namespace WPILibInstaller
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+
             // Check for Admin
             bool isAdmin = false;
 
-            using (WindowsIdentity identiy = WindowsIdentity.GetCurrent())
+            if (OSLoader.IsWindows())
             {
-                WindowsPrincipal principal = new WindowsPrincipal(identiy);
-                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
-            }
 
-            // If not admin, run admin check window
-            if (!isAdmin)
-            {
-                var adminForm = new AdminChecker();
-                Application.Run(adminForm);
-                // If set to admin, that means we need to restart. Just exit.
-                if (adminForm.Admin)
+                using (WindowsIdentity identiy = WindowsIdentity.GetCurrent())
                 {
-                    return;
+                    WindowsPrincipal principal = new WindowsPrincipal(identiy);
+                    isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+                }
+
+                // If not admin, run admin check window
+                if (!isAdmin)
+                {
+                    var adminForm = new AdminChecker();
+                    Application.Run(adminForm);
+                    // If set to admin, that means we need to restart. Just exit.
+                    if (adminForm.Admin)
+                    {
+                        return;
+                    }
                 }
             }
 
