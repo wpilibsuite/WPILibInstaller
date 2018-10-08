@@ -63,7 +63,7 @@ ext.toolsSetup = { Zip zip->
   zip.dependsOn toolsJsonTask
   zip.inputs.file toolsJson
   zip.inputs.file scriptBaseFile
-  zip.inputes.file scriptBaseUnixFile
+  zip.inputs.file scriptBaseUnixFile
 
   zip.from (toolsJson) {
     into '/tools'
