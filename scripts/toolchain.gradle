@@ -5,7 +5,6 @@ def baseUrl = 'http://first.wpi.edu/FRC/roborio/toolchains/'
 def downloadUrl = baseUrl + fileName
 
 def fileNameMac = 'FRC-2018-Windows-Toolchain-5.5.zip'
-def gccVersion = '6.3.0'
 def baseUrlMac = 'http://first.wpi.edu/FRC/roborio/toolchains/'
 
 def downloadUrlMac = baseUrl + fileName
