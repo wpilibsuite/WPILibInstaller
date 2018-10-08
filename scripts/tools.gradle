@@ -1,5 +1,6 @@
 def toolsJson = file("$buildDir/tools.json")
 def scriptBaseFile = file("files/ScriptBase.vbs")
+def scriptBaseUnixFile = file("files/ScriptBase.sh")
 
 def toolsJsonTask = tasks.register('toolsJson', Task) {
 
@@ -62,12 +63,17 @@ ext.toolsSetup = { Zip zip->
   zip.dependsOn toolsJsonTask
   zip.inputs.file toolsJson
   zip.inputs.file scriptBaseFile
+  zip.inputes.file scriptBaseUnixFile
 
   zip.from (toolsJson) {
     into '/tools'
   }
 
   zip.from (scriptBaseFile) {
+    into '/tools'
+  }
+
+  zip.from (scriptBaseUnixFile) {
     into '/tools'
   }
 }
