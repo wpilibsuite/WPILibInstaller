@@ -4,13 +4,19 @@ def baseUrl = 'http://first.wpi.edu/FRC/roborio/toolchains/'
 
 def downloadUrl = baseUrl + fileName
 
+def extractLocation = file("$buildDir/toolchain/win")
+
 def fileNameMac = 'FRC-2018-Windows-Toolchain-5.5.zip'
 def baseUrlMac = 'http://first.wpi.edu/FRC/roborio/toolchains/'
 
-def downloadUrlMac = baseUrl + fileName
+def downloadUrlMac = baseUrlMac + fileNameMac
+def fileMac = file("$buildDir/$fileNameMac")
 
-def extractLocation = file("$buildDir/toolchain/win")
-def extractLocationMac = file("$buildDir/toolchain/mac")
+def fileNameLinux = 'FRC-2018-Windows-Toolchain-5.5.zip'
+def baseUrlLinux = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+
+def downloadUrlLinux = baseUrlLinux + fileNameLinux
+def fileLinux = file("$buildDir/$fileNameLinux")
 
 apply plugin: 'de.undercouch.download'
 
@@ -38,16 +44,10 @@ def downloadTaskMac = tasks.register('downloadToolchainMac', Download) {
   overwrite false
 }
 
-def extractTaskMac = tasks.register('extractToolchainMac', Copy) {
-  dependsOn downloadTaskMac
-
-  from zipTree(file("$buildDir/$fileNameMac")).matching{ include "frc/**"}
-  into extractLocationMac
-  eachFile { f->
-    f.path = f.path.substring(4) // length of frc
-  }
-
-  includeEmptyDirs = false
+def downloadTaskLinux = tasks.register('downloadToolchainLinux', Download) {
+  src downloadUrlLinux
+  dest buildDir
+  overwrite false
 }
 
 ext.toolchainConfigTaskSetup = {
@@ -58,6 +58,7 @@ ext.toolchainConfigTaskSetup = {
 
     toolchainConfig['Version'] = gccVersion
     toolchainConfig['Directory'] = 'roborio'
+    toolchainConfig['ToolChainFile'] = 'toolchain.tar.gz'
 
     config['CppToolchain'] = toolchainConfig
   });
@@ -65,13 +66,22 @@ ext.toolchainConfigTaskSetup = {
 
 ext.toolchainZipSetup = { Zip zip->
   if (project.hasProperty('linuxBuild')) {
+    zip.dependsOn downloadTaskLinux
+
+    zip.inputs.file fileLinux
+
+    zip.from(fileLinux) {
+      info '/installUtils'
+      rename { 'toolchain.tar.gz' }
+    }
   } else if (project.hasProperty('macBuild')) {
-    zip.dependsOn extractTaskMac
+    zip.dependsOn downloadTaskMac
 
-    zip.inputs.dir extractLocationMac
+    zip.inputs.file fileMac
 
-    zip.from(extractLocationMac) {
-      into '/roborio'
+    zip.from(fileMac) {
+      info '/installUtils'
+      rename { 'toolchain.tar.gz' }
     }
   } else {
     zip.dependsOn extractTask
