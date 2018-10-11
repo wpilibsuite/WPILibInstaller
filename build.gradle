@@ -217,7 +217,7 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     }
 }
 
-def generateFullResources64Task = tasks.register('generateFullResources', project.ext.archiveType) {
+def generateFullResourcesTask = tasks.register('generateFullResources', project.ext.archiveType) {
     baseName 'WPILib_FullFiles-' + buildClassifier
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
@@ -242,13 +242,13 @@ def generateFullResources64Task = tasks.register('generateFullResources', projec
     jdkZipSetup(it)
 }
 
-def generateFullZip64BaseTask = tasks.register('generateFullZipBase', Zip) {
+def generateFullZipBaseTask = tasks.register('generateFullZipBase', Zip) {
     baseName 'WPILibInstaller_Full-' + buildClassifier
     destinationDir buildDir
     duplicatesStrategy 'exclude'
 
-    dependsOn generateFullResources64Task
-    inputs.file generateFullResources64Task.get().archivePath
+    dependsOn generateFullResourcesTask
+    inputs.file generateFullResourcesTask.get().archivePath
 
     entryCompression = ZipEntryCompression.STORED
 
@@ -256,33 +256,33 @@ def generateFullZip64BaseTask = tasks.register('generateFullZipBase', Zip) {
     // This MUST be first
     msBuildSetupMain(it)
 
-    from (generateFullResources64Task.get().archivePath) {
+    from (generateFullResourcesTask.get().archivePath) {
         rename { 'files.zip' }
     }
 }
 
 
-def fullInstaller64Name = "WPILibInstaller_Full-${buildClassifier}.exe"
-def fullInstaller64 = file("$buildDir/outputs/$fullInstaller64Name")
+def fullInstallerName = "WPILibInstaller_Full-${buildClassifier}.exe"
+def fullInstaller = file("$buildDir/outputs/$fullInstallerName")
 
-def fullInstallerTask64 = tasks.register('generateFullInstaller', Task) {
-    def zipFile = generateFullZip64BaseTask.get().archivePath
+def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
+    def zipFile = generateFullZipBaseTask.get().archivePath
     inputs.file zipFile
-    outputs.file fullInstaller64
+    outputs.file fullInstaller
 
-    dependsOn generateFullZip64BaseTask
+    dependsOn generateFullZipBaseTask
 
     doLast {
         copy {
             from zipFile
             into "$buildDir/outputs"
-            rename { fullInstaller64Name }
+            rename { fullInstallerName }
         }
 
         installerFile.withInputStream { InputStream inputStream ->
             RandomAccessFile foStream;
             try {
-                foStream = new RandomAccessFile(fullInstaller64, "rw");
+                foStream = new RandomAccessFile(fullInstaller, "rw");
                 foStream.write(inputStream.getBytes())
             } finally {
                 if (foStream != null) {
@@ -294,6 +294,6 @@ def fullInstallerTask64 = tasks.register('generateFullInstaller', Task) {
 }
 
 tasks.register('generateInstallers', Task) {
-    dependsOn fullInstallerTask64
+    dependsOn fullInstallerTask
     dependsOn upgradeInstallerTask
 }
