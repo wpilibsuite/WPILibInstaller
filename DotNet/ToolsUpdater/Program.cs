@@ -15,7 +15,7 @@ namespace ToolsUpdater
         static void Main(string[] args)
         {
             // Get location of EXE
-            var exeFullPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var exeFullPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             // Get directory EXE is in
             var exePath = Path.GetDirectoryName(exeFullPath);
 

@@ -20,6 +20,13 @@ namespace SharedCode
     public class UpgradeConfig
     {
         public string FrcYear { get; set; }
+        public string InstallerType { get; set; }
+
+        public const string Windows32InstallerType = "Windows32";
+        public const string Windows64InstallerType = "Windows64";
+        public const string LinuxInstallerType = "Linux";
+        public const string MacInstallerType = "Mac";
+
         public MavenConfig Maven { get; set; }
         public ToolsConfig Tools { get; set; }
         public string PathFolder { get; set; }

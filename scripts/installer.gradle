@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 apply plugin: 'com.ullink.msbuild'
 apply plugin: 'com.ullink.nuget'
 
@@ -18,21 +20,27 @@ msbuild {
 
   targets = ['Clean', 'Rebuild']
 
-  parameters.configuration = 'release'
+  if (project.hasProperty('linuxBuild')) {
+    parameters.platform = 'Linux'
+  } else if (project.hasProperty('macBuild')) {
+    parameters.platform = 'Mac'
+  }
+
+  parameters.configuration = 'Release'
 }
 
 ext.installerFile = file('DotNet/WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
 def mavenUpdater = file('DotNet/MavenMetaDataFixer/bin/Release/MavenMetaDataFixer.exe')
 def toolsUpdater = file('DotNet/ToolsUpdater/bin/Release/Merged/ToolsUpdater.exe')
 
-ext.msBuildSetupMain = { Zip zip->
+ext.msBuildSetupMain = { AbstractArchiveTask zip->
   zip.dependsOn msbuild
   zip.inputs.file installerFile
 
   zip.from (installerFile)
 }
 
-ext.msBuildExtraSetup = { Zip zip->
+ext.msBuildExtraSetup = { AbstractArchiveTask zip->
   zip.dependsOn msbuild
   zip.inputs.file mavenUpdater
   zip.inputs.file toolsUpdater

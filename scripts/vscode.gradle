@@ -1,17 +1,29 @@
 
 def vscodeFile = file("$buildDir/vscodeConfig.json")
 
-def vsCodeVersion = '1.27.2'
+def vsCodeVersion = '1.28.0'
 
 def vscode32Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-archive/stable".toString()
 def vscode32ZipName = "VSCode-win32-ia32-${vsCodeVersion}.zip".toString()
 def vscode64Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-x64-archive/stable".toString()
 def vscode64ZipName = "VSCode-win32-x64-${vsCodeVersion}.zip".toString()
 
-def cppUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-win32.vsix'
-def cppVsix = 'Cpp.vsix'
+def vscodeLinuxUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/linux-x64/stable".toString()
+def vscodeLinuxZipName = "code-stable-1538751479.tar.gz"
 
-def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-beta0-pre1/vscode-wpilib-2019.0.0-beta0-pre1.vsix'
+def vscodeMacUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/darwin/stable".toString()
+def vscodeMacZipName = "VSCode-darwin-stable.zip"
+
+def cppWindowsUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-win32.vsix'
+def cppWindowsVsix = 'Cpp.vsix'
+
+def cppMacUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-osx.vsix'
+def cppMacVsix = 'CppMac.vsix'
+
+def cppLinuxUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-linux.vsix'
+def cppLinuxVsix = 'CppLinux.vsix'
+
+def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-alpha-4/vscode-wpilib-2019.0.0-alpha-4.vsix'
 def wpilibExtensionVsix = 'WPILib.vsix'
 
 def javaDebugUrl = 'https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-debug/0.12.2/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
@@ -22,7 +34,17 @@ def javaLangVsix = "JavaLang.vsix"
 
 def javaLangFile = file("$buildDir/$javaLangVsix")
 def javaDebugFile = file("$buildDir/$javaDebugVsix")
-def cppFile = file("$buildDir/$cppVsix")
+
+def cppFile
+if (project.hasProperty('linuxBuild')) {
+  cppFile = file("$buildDir/$cppLinuxVsix")
+} else if (project.hasProperty('macBuild')) {
+  cppFile = file("$buildDir/$cppMacVsix")
+} else {
+  cppFile = file("$buildDir/$cppWindowsVsix")
+}
+
+
 def wpilibFile = file("$buildDir/$wpilibExtensionVsix")
 
 def wpilibExtensionDownload = tasks.register("wpilibExtensionDownload", Download) {
@@ -32,8 +54,20 @@ def wpilibExtensionDownload = tasks.register("wpilibExtensionDownload", Download
 }
 
 def cppExtensionDownload = tasks.register("cppExtensionDownload", Download) {
-  src cppUrl
-  dest file("$buildDir/$cppVsix")
+  src cppWindowsUrl
+  dest file("$buildDir/$cppWindowsVsix")
+  overwrite false
+}
+
+def cppMacExtensionDownload = tasks.register("cppMacExtensionDownload", Download) {
+  src cppMacUrl
+  dest file("$buildDir/$cppMacVsix")
+  overwrite false
+}
+
+def cppLinuxExtensionDownload = tasks.register("cppLinuxExtensionDownload", Download) {
+  src cppLinuxUrl
+  dest file("$buildDir/$cppLinuxVsix")
   overwrite false
 }
 
@@ -62,6 +96,8 @@ def getInformationOfVsix = { vsix, map->
 def vscodeTask = tasks.register('vscodeConfig', Task) {
   dependsOn wpilibExtensionDownload
   dependsOn cppExtensionDownload
+  dependsOn cppMacExtensionDownload
+  dependsOn cppLinuxExtensionDownload
   dependsOn javaLangExtensionDownload
   dependsOn javaDebugExtensionDownload
 
@@ -77,7 +113,7 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     wpilibMap['vsix'] = wpilibExtensionVsix
     getInformationOfVsix(zipTree(wpilibFile), wpilibMap)
     def cppMap = [:]
-    cppMap['vsix'] = cppVsix
+    cppMap['vsix'] = cppWindowsVsix
     getInformationOfVsix(zipTree(cppFile), cppMap)
     def javaLangMap = [:]
     javaLangMap['vsix'] = javaLangVsix
@@ -90,6 +126,10 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     config['VsCode32Name'] = vscode32ZipName
     config['VsCode64Url'] = vscode64Url
     config['VsCode64Name'] = vscode64ZipName
+    config['VsCodeMacUrl'] = vscodeMacUrl
+    config['VsCodeMacName'] = vscodeMacZipName
+    config['VsCodeLinuxUrl'] = vscodeLinuxUrl
+    config['VsCodeLinuxName'] = vscodeLinuxZipName
 
     config['wpilibExtension'] = wpilibMap
 
@@ -111,7 +151,7 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
   }
 }
 
-ext.vscodeZipSetup = { Zip zip->
+ext.vscodeZipSetup = { AbstractArchiveTask zip->
   zip.dependsOn vscodeTask
   zip.dependsOn wpilibExtensionDownload
 
@@ -129,6 +169,7 @@ ext.vscodeZipSetup = { Zip zip->
   }
   zip.from (cppFile) {
     into '/vsCodeExtensions'
+    rename {cppWindowsVsix}
   }
   zip.from (wpilibFile) {
     into '/vsCodeExtensions'

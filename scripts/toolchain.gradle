@@ -1,10 +1,22 @@
-def fileName = 'FRC-2018-Windows-Toolchain-5.5.zip'
+def gitTag = 'v2019-2'
+def baseUrl = "https://github.com/wpilibsuite/toolchain-builder/releases/download/$gitTag/"
+
 def gccVersion = '6.3.0'
-def baseUrl = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+
+def fileName = 'FRC-2019-Windows-Toolchain-6.3.0.zip'
 
 def downloadUrl = baseUrl + fileName
+def fileWin = file("$buildDir/$fileName")
 
-def extractLocation = file("$buildDir/toolchain")
+def fileNameMac = 'FRC-2019-Mac-Toolchain-6.3.0.tar.gz'
+
+def downloadUrlMac = baseUrl + fileNameMac
+def fileMac = file("$buildDir/$fileNameMac")
+
+def fileNameLinux = 'FRC-2019-Linux-Toolchain-6.3.0.tar.gz'
+
+def downloadUrlLinux = baseUrl + fileNameLinux
+def fileLinux = file("$buildDir/$fileNameLinux")
 
 apply plugin: 'de.undercouch.download'
 
@@ -14,16 +26,17 @@ def downloadTask = tasks.register('downloadToolchain', Download) {
   overwrite false
 }
 
-def extractTask = tasks.register('extractToolchain', Copy) {
-  dependsOn downloadTask
 
-  from zipTree(file("$buildDir/$fileName")).matching{ include "frc/**"}
-  into extractLocation
-  eachFile { f->
-    f.path = f.path.substring(4) // length of frc
-  }
+def downloadTaskMac = tasks.register('downloadToolchainMac', Download) {
+  src downloadUrlMac
+  dest buildDir
+  overwrite false
+}
 
-  includeEmptyDirs = false
+def downloadTaskLinux = tasks.register('downloadToolchainLinux', Download) {
+  src downloadUrlLinux
+  dest buildDir
+  overwrite false
 }
 
 ext.toolchainConfigTaskSetup = {
@@ -39,12 +52,46 @@ ext.toolchainConfigTaskSetup = {
   });
 }
 
-ext.toolchainZipSetup = { Zip zip->
-  zip.dependsOn extractTask
+ext.toolchainZipSetup = { AbstractArchiveTask zip->
+  if (project.hasProperty('linuxBuild')) {
+    zip.dependsOn downloadTaskLinux
 
-  zip.inputs.dir extractLocation
+    zip.inputs.file fileLinux
 
-  zip.from(extractLocation) {
-    into '/roborio'
+    zip.from(project.tarTree(project.resources.gzip(fileLinux))) {
+
+      eachFile { f->
+        f.path = f.path.replace('frc2019/roborio/', 'roborio/')
+      }
+
+      includeEmptyDirs = false
+    }
+
+  } else if (project.hasProperty('macBuild')) {
+    zip.dependsOn downloadTaskMac
+
+    zip.inputs.file fileMac
+
+    zip.from(project.tarTree(project.resources.gzip(fileMac))) {
+
+      eachFile { f->
+        f.path = f.path.replace('frc2019/roborio/', 'roborio/')
+      }
+
+      includeEmptyDirs = false
+    }
+  } else {
+    zip.dependsOn downloadTask
+
+    zip.inputs.file fileWin
+
+    zip.from(project.zipTree(fileWin)) {
+
+      eachFile { f->
+        f.path = f.path.replace('frc2019/roborio/', 'roborio/')
+      }
+
+      includeEmptyDirs = false
+    }
   }
 }

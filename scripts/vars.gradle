@@ -1,5 +1,6 @@
 def varsfile = file("files/frcvars.bat")
 def varsfilePS = file("files/frcvars.ps1")
+def varsfilesh = file("files/frcvars.sh")
 def codefile = file("files/frccode")
 def codefileCmd = file("files/frccode.cmd")
 def icoFile = file("files/wpilib-256.ico")
@@ -14,9 +15,10 @@ ext.varConfigSetup = {
   })
 }
 
-ext.varsZipSetup = { Zip zip->
+ext.varsZipSetup = { AbstractArchiveTask zip->
   zip.inputs.file varsfile
   zip.inputs.file varsfilePS
+  zip.inputs.file varsfilesh
   zip.inputs.file icoFile
   zip.inputs.file codefile
   zip.inputs.file codefileCmd
@@ -32,6 +34,13 @@ ext.varsZipSetup = { Zip zip->
     into "/$pathfolder"
     rename {
       "frcvars${frcYear}.ps1"
+    }
+  }
+
+  zip.from (varsfilesh) {
+    into "/$pathfolder"
+    rename {
+      "frcvars${frcYear}.sh"
     }
   }
 

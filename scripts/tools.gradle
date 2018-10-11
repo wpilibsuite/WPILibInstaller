@@ -1,5 +1,6 @@
 def toolsJson = file("$buildDir/tools.json")
 def scriptBaseFile = file("files/ScriptBase.vbs")
+def scriptBaseUnixFile = file("files/ScriptBase.sh")
 
 def toolsJsonTask = tasks.register('toolsJson', Task) {
 
@@ -9,33 +10,18 @@ def toolsJsonTask = tasks.register('toolsJson', Task) {
     def resolvedDeps = configurations.tools.resolvedConfiguration.resolvedArtifacts.toList()
     def config = []
     resolvedDeps.each {
-      if (it.name == 'app') {
-        def item = [:]
-        item['name'] = 'ShuffleBoard'
-        item['version'] = it.moduleVersion.id.version
-        def artif = [:]
-        artif['classifier'] = it.classifier
-        artif['extension'] = it.extension
-        def id = it.moduleVersion.id
-        artif['groupId'] = id.group
-        artif['version'] = id.version
-        artif['artifactId'] = id.name
-        item['artifact'] = artif
-        config << item
-      } else {
-        def item = [:]
-        item['name'] = it.name
-        item['version'] = it.moduleVersion.id.version
-        def artif = [:]
-        artif['classifier'] = it.classifier
-        artif['extension'] = it.extension
-        def id = it.moduleVersion.id
-        artif['groupId'] = id.group
-        artif['version'] = id.version
-        artif['artifactId'] = id.name
-        item['artifact'] = artif
-        config << item
-      }
+      def item = [:]
+      item['name'] = it.name
+      item['version'] = it.moduleVersion.id.version
+      def artif = [:]
+      artif['classifier'] = it.classifier
+      artif['extension'] = it.extension
+      def id = it.moduleVersion.id
+      artif['groupId'] = id.group
+      artif['version'] = id.version
+      artif['artifactId'] = id.name
+      item['artifact'] = artif
+      config << item
     }
     def gbuilder = getGsonBuilder()
     gbuilder.setPrettyPrinting()
@@ -58,16 +44,21 @@ ext.toolsConfig = {
   })
 }
 
-ext.toolsSetup = { Zip zip->
+ext.toolsSetup = { AbstractArchiveTask zip->
   zip.dependsOn toolsJsonTask
   zip.inputs.file toolsJson
   zip.inputs.file scriptBaseFile
+  zip.inputs.file scriptBaseUnixFile
 
   zip.from (toolsJson) {
     into '/tools'
   }
 
   zip.from (scriptBaseFile) {
+    into '/tools'
+  }
+
+  zip.from (scriptBaseUnixFile) {
     into '/tools'
   }
 }

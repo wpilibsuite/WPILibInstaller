@@ -1,5 +1,3 @@
-apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
-
 evaluationDependsOn(':gradleriobase')
 
 def otherDeps = []
@@ -11,10 +9,11 @@ configurations {
 }
 
 def toolArtifacts = [
-  'edu.wpi.first.shuffleboard:app',
+  'edu.wpi.first.shuffleboard:shuffleboard',
   'edu.wpi.first.wpilib:OutlineViewer',
   'edu.wpi.first.wpilib:SmartDashboard',
-  'edu.wpi.first.wpilib:RobotBuilder'
+  'edu.wpi.first.wpilib:RobotBuilder',
+  'edu.wpi.first.wpilib:PathWeaver'
 ]
 
 def lazyEvaluator = tasks.register('lazyModelEvaluation') {
@@ -26,12 +25,6 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
       gradleRioDeps.deps.each { dep->
         if (dep.classifier == null) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
-        } else if (dep.classifier == 'windowsx86-64') {
-          offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86@$dep.extension"
-          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
-        } else if (dep.classifier == 'windowsx86') {
-          offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86-64@$dep.extension"
-          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         } else {
           offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         }
@@ -59,6 +52,11 @@ repositories {
     }
 }
 
+def cleanoffline = tasks.register("cleanOfflineRepository", Delete) {
+  delete offlineRepositoryRoot
+}
+
+updateOfflineRepository.dependsOn
 updateOfflineRepository.dependsOn lazyEvaluator
 
 offlineDependencies {
@@ -88,7 +86,7 @@ ext.mavenConfigSetup = {
   })
 }
 
-ext.mavenZipSetup = { Zip zip->
+ext.mavenZipSetup = { AbstractArchiveTask zip->
   zip.dependsOn updateOfflineRepository
   zip.inputs.dir offlineRepositoryRoot
   zip.from(fileTree(offlineRepositoryRoot)) {

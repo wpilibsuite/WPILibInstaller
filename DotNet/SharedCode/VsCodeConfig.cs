@@ -22,6 +22,12 @@ namespace SharedCode
         public string VsCode32Name { get; set; }
         public string VsCode64Url { get; set; }
         public string VsCode64Name { get; set; }
+
+        public string VsCodeMacUrl { get; set; }
+        public string VsCodeMacName { get; set; }
+        public string VsCodeLinuxUrl { get; set; }
+        public string VsCodeLinuxName { get; set; }
+
         [JsonProperty("wpilibExtension")]
         public Extension WPILibExtension { get; set; }
         [JsonProperty("thirdPartyExtensions")]

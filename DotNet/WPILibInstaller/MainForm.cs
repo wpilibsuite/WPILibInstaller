@@ -16,7 +16,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+#if !MAC && !LINUX
 using IWshRuntimeLibrary;
+#endif
 using File = System.IO.File;
 using Newtonsoft.Json.Linq;
 
@@ -28,6 +30,7 @@ namespace WPILibInstaller
         private bool closeZip = false;
         private bool debugMode;
         private bool adminMode;
+        private string frcHome;
 
         private UpgradeConfig upgradeConfig;
         private FullConfig fullConfig;
@@ -181,8 +184,20 @@ namespace WPILibInstaller
             File.WriteAllText(settingsFile, serialized);
         }
 
+        private async Task RunDotNetExecutable(string exe, params string[] args)
+        {
+            var assembly = Assembly.LoadFile(exe);
+            var entryMethod = assembly.EntryPoint;
+            await TaskEx.Run(() =>
+            {
+                entryMethod.Invoke(null, new object[] { args });
+            });
+            
+        }
+
         private void CreateCodeShortcuts(string frcHomePath)
         {
+#if !MAC && !LINUX
             {
                 object shDesktop = "Desktop";
                 WshShell shell = new WshShell();
@@ -203,10 +218,12 @@ namespace WPILibInstaller
                 shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
                 shortcut.Save();
             }
+#endif
         }
 
         private void CreateDevPromptShortcuts(string frcHomePath)
         {
+#if !MAC && !LINUX
             object shDesktop = "StartMenu";
             WshShell shell = new WshShell();
             string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC Developer Command Prompt {upgradeConfig.FrcYear}.lnk";
@@ -219,6 +236,7 @@ namespace WPILibInstaller
             shortcut.WorkingDirectory = shell.SpecialFolders.Item(ref shDocuments);
             shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
             shortcut.Save();
+#endif
         }
 
         private void SetCppCompilerVariable(string frcHomePath, EnvironmentVariableTarget target)
@@ -257,11 +275,6 @@ namespace WPILibInstaller
             Environment.SetEnvironmentVariable("PATH", newPath, target);
         }
 
-        private void SetFrcHome(string frcHomePath, string frcYear, EnvironmentVariableTarget target)
-        {
-            Environment.SetEnvironmentVariable($"FRC_{frcYear}_HOME", frcHomePath, target);
-        }
-
         public MainForm(ZipFile mainZipFile, bool debug, bool isAdmin)
         {
             zipStore = mainZipFile;
@@ -272,6 +285,7 @@ namespace WPILibInstaller
 
         CancellationTokenSource source;
         bool isInstalling = false;
+        bool isWindows = false;
 
         private async void performInstallButton_Click(object sender, EventArgs e)
         {
@@ -300,14 +314,7 @@ namespace WPILibInstaller
                 double totalCount = zipStore.Count;
                 long currentCount = 0;
 
-                string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
-
-                var directory = new DirectoryInfo(documentsPath);
-
-                // Now this should give you something like C:\Users\Public
-                string commonPath = directory.Parent.FullName;
-
-                string intoPath = Path.Combine(commonPath, $"frc{upgradeConfig.FrcYear}");
+                string intoPath = frcHome;
 
                 // Extract zip
                 foreach (ZipEntry entry in zipStore)
@@ -370,13 +377,7 @@ namespace WPILibInstaller
                 if (toolsCheck.Checked)
                 {
                     // Run tools fixer
-
-                    ProcessStartInfo pstart = new ProcessStartInfo(Path.Combine(intoPath, upgradeConfig.Tools.Folder, upgradeConfig.Tools.UpdaterExe), "silent");
-                    var p = Process.Start(pstart);
-                    await TaskEx.Run(() =>
-                    {
-                        p.WaitForExit();
-                    });
+                    await RunDotNetExecutable(Path.Combine(intoPath, upgradeConfig.Tools.Folder, upgradeConfig.Tools.UpdaterExe), "silent");
                 }
 
                 if (cppCheck.Checked)
@@ -386,12 +387,6 @@ namespace WPILibInstaller
                     {
                         SetCppCompilerVariable(intoPath, EnvironmentVariableTarget.Machine);
                     }
-                }
-
-                SetFrcHome(intoPath, upgradeConfig.FrcYear, EnvironmentVariableTarget.User);
-                if (adminMode)
-                {
-                    SetFrcHome(intoPath, upgradeConfig.FrcYear, EnvironmentVariableTarget.Machine);
                 }
 
                 SetVsCodeCmdVariables(intoPath, EnvironmentVariableTarget.User);
@@ -468,11 +463,6 @@ namespace WPILibInstaller
 
                     }
 
-
-
-                    //File.Copy(Path.Combine(binFolder, "code"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}"), true);
-                    //File.Copy(Path.Combine(binFolder, "code.cmd"), Path.Combine(codeFolder, $"frccode{upgradeConfig.FrcYear}.bat"), true);
-
                     CreateCodeShortcuts(intoPath);
                     SetVsCodeSettings(intoPath);
 
@@ -486,13 +476,7 @@ namespace WPILibInstaller
                 if (wpilibCheck.Checked)
                 {
                     // Run maven fixer
-
-                    ProcessStartInfo pstart = new ProcessStartInfo(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
-                    var p = Process.Start(pstart);
-                    await TaskEx.Run(() =>
-                    {
-                        p.WaitForExit();
-                    });
+                    await RunDotNetExecutable(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
                 }
 
                 CreateDevPromptShortcuts(intoPath);
@@ -576,6 +560,51 @@ namespace WPILibInstaller
                 });
                 extractionControllers.Add(new ExtractionIgnores(toolsCheck, upgradeConfig.Tools.Folder, false));
                 extractionControllers.Add(new ExtractionIgnores(wpilibCheck, upgradeConfig.Maven.Folder, false));
+
+                var osType = OSLoader.GetOsType();
+                switch (upgradeConfig.InstallerType)
+                {
+                    case UpgradeConfig.LinuxInstallerType:
+                        if (osType != OsType.Linux64)
+                        {
+                            MessageBox.Show("You need the Linux installer for this system");
+                            Application.Exit();
+                            return;
+                        }
+                        isWindows = false;
+                        break;
+                    case UpgradeConfig.MacInstallerType:
+                        if (osType != OsType.MacOs64)
+                        {
+                            MessageBox.Show("You need the Mac installer for this system");
+                            Application.Exit();
+                            return;
+                        }
+                        isWindows = false;
+                        break;
+                    case UpgradeConfig.Windows32InstallerType:
+                        if (osType != OsType.Windows32)
+                        {
+                            MessageBox.Show("You need the Windows32 installer for this system");
+                            Application.Exit();
+                            return;
+                        }
+                        isWindows = true;
+                        break;
+                    case UpgradeConfig.Windows64InstallerType:
+                        if (osType != OsType.Windows64)
+                        {
+                            MessageBox.Show("You need the Windows64 installer for this system");
+                            Application.Exit();
+                            return;
+                        }
+                        isWindows = true;
+                        break;
+                    default:
+                        MessageBox.Show("Unknown installer type?");
+                        Application.Exit();
+                        return;
+                }
             }
 
             // Look for VS Code config. Should always be there.
@@ -644,38 +673,25 @@ namespace WPILibInstaller
                             MissingMemberHandling = MissingMemberHandling.Error,
                         });
 
-                        var is32Bit = !Environment.Is64BitOperatingSystem;
-                        if (!is32Bit && jdkConfig.Is32Bit)
-                        {
-                            // Error, need 64 bit
-                            MessageBox.Show("You need the 64 bit full installer for this system");
-                            Application.Exit();
-                            return;
-                        }
-                        else if (is32Bit && !jdkConfig.Is32Bit)
-                        {
-                            // Error, need 32 bit
-                            MessageBox.Show("You need the 32 bit full installer for this system");
-                            Application.Exit();
-                            return;
-                        }
-                        else
-                        {
-                            extractionControllers.Add(new ExtractionIgnores(javaCheck, jdkConfig.Folder, false));
-                        }
+
+                        extractionControllers.Add(new ExtractionIgnores(javaCheck, jdkConfig.Folder, false));
                     }
 
                 }
             }
 
-            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments);
+            if (isWindows)
+            {
+                var publicFolder = Environment.GetEnvironmentVariable("PUBLIC");
+                frcHome = Path.Combine(publicFolder, $"frc{upgradeConfig.FrcYear}");
+            }
+            else
+            {
+                var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                frcHome = Path.Combine(userFolder, $"frc{upgradeConfig.FrcYear}");
+            }
 
-            var directory = new DirectoryInfo(documentsPath);
-
-            // Now this should give you something like C:\Users\Public
-            string commonPath = directory.Parent.FullName;
-
-            VSCodeInstall vsi = new VSCodeInstall(Path.Combine(commonPath, $"frc{upgradeConfig.FrcYear}", "vscode"));
+            VSCodeInstall vsi = new VSCodeInstall(Path.Combine(frcHome, "vscode"));
 
             if (!vsi.IsInstalled())
             {
