@@ -96,6 +96,8 @@ def getInformationOfVsix = { vsix, map->
 def vscodeTask = tasks.register('vscodeConfig', Task) {
   dependsOn wpilibExtensionDownload
   dependsOn cppExtensionDownload
+  dependsOn cppMacExtensionDownload
+  dependsOn cppLinuxExtensionDownload
   dependsOn javaLangExtensionDownload
   dependsOn javaDebugExtensionDownload
 
