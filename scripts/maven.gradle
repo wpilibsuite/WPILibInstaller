@@ -86,7 +86,7 @@ ext.mavenConfigSetup = {
   })
 }
 
-ext.mavenZipSetup = { Zip zip->
+ext.mavenZipSetup = { AbstractArchiveTask zip->
   zip.dependsOn updateOfflineRepository
   zip.inputs.dir offlineRepositoryRoot
   zip.from(fileTree(offlineRepositoryRoot)) {

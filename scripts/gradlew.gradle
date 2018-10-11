@@ -19,7 +19,7 @@ ext.gradleConfigTaskSetup = {
   })
 }
 
-ext.gradleZipTaskSetup = { Zip zip->
+ext.gradleZipTaskSetup = { AbstractArchiveTask zip->
     def executor = WrapperExecutor.forProjectDirectory(project.rootDir)
 
     PathAssembler assembler = new PathAssembler(GradleUserHomeLookup.gradleUserHome());

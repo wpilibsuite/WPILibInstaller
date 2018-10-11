@@ -15,7 +15,7 @@ ext.varConfigSetup = {
   })
 }
 
-ext.varsZipSetup = { Zip zip->
+ext.varsZipSetup = { AbstractArchiveTask zip->
   zip.inputs.file varsfile
   zip.inputs.file varsfilePS
   zip.inputs.file varsfilesh

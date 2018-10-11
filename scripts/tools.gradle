@@ -44,7 +44,7 @@ ext.toolsConfig = {
   })
 }
 
-ext.toolsSetup = { Zip zip->
+ext.toolsSetup = { AbstractArchiveTask zip->
   zip.dependsOn toolsJsonTask
   zip.inputs.file toolsJson
   zip.inputs.file scriptBaseFile
