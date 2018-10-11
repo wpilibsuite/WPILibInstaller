@@ -30,14 +30,14 @@ jobs:
         tasks: 'generateInstallers'
         options: '-Pwindows32'
 
-    # - task: CopyFiles@2
-    #   inputs:
-    #     contents: 'app\build\**\*.jar'
-    #     targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: CopyFiles@2
+      inputs:
+        contents: 'build\outputs\**'
+        targetFolder: $(Build.ArtifactStagingDirectory)
 
-    # - task: PublishBuildArtifacts@1
-    #   inputs:
-    #     artifactName: 'Win64Jar'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        artifactName: 'Win32'
 
  - job: Windows_64_Bit
    pool:
@@ -64,14 +64,14 @@ jobs:
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'generateInstallers'
 
-    # - task: CopyFiles@2
-    #   inputs:
-    #     contents: 'app\build\**\*.jar'
-    #     targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: CopyFiles@2
+      inputs:
+        contents: 'build\outputs\**'
+        targetFolder: $(Build.ArtifactStagingDirectory)
 
-    # - task: PublishBuildArtifacts@1
-    #   inputs:
-    #     artifactName: 'Win64Jar'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        artifactName: 'Win64'
 
  - job: Mac
    pool:
@@ -99,14 +99,14 @@ jobs:
         tasks: 'generateInstallers'
         options: '-PmacBuild'
 
-    # - task: CopyFiles@2
-    #   inputs:
-    #     contents: 'app\build\**\*.jar'
-    #     targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: CopyFiles@2
+      inputs:
+        contents: 'build\outputs\**'
+        targetFolder: $(Build.ArtifactStagingDirectory)
 
-    # - task: PublishBuildArtifacts@1
-    #   inputs:
-    #     artifactName: 'Win64Jar'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        artifactName: 'Mac'
 
  - job: Linux
    pool:
@@ -134,11 +134,11 @@ jobs:
         tasks: 'generateInstallers'
         options: '-PlinuxBuild'
 
-    # - task: CopyFiles@2
-    #   inputs:
-    #     contents: 'app\build\**\*.jar'
-    #     targetFolder: $(Build.ArtifactStagingDirectory)
+    - task: CopyFiles@2
+      inputs:
+        contents: 'build\outputs\**'
+        targetFolder: $(Build.ArtifactStagingDirectory)
 
-    # - task: PublishBuildArtifacts@1
-    #   inputs:
-    #     artifactName: 'Win64Jar'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        artifactName: 'Linux'
