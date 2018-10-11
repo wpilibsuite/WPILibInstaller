@@ -16,10 +16,6 @@ plugins {
 }
 
 wpi {
-    shuffleboardVersion = '1.424242.3.1-20181007163852-59-gc57db86'
-    outlineViewerVersion = '2.424242.0.4-20181007161343-8-g71b005c'
-    robotBuilderVersion = '3.0.1-20180701134409-1-gf70dcba'
-    smartDashboardVersion = '3.0.1-20180701135609'
     maven {
         try {
             useFrcMavenLocalDevelopment = true
