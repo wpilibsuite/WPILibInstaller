@@ -132,7 +132,7 @@ jobs:
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'generateInstallers'
-        options: '-PmacBuild'
+        options: '-PlinuxBuild'
 
     # - task: CopyFiles@2
     #   inputs:
