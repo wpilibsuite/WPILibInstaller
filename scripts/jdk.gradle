@@ -25,24 +25,26 @@ def download32BitJdk = tasks.register('download32BitJdk', Download) {
   overwrite false
 }
 
-def jdk32Location = file("$buildDir/jdk32")
+def jdk32File = file("$buildDir/jdk-x86-11.0.0u28-1.zip")
 
-def extract32BitJdk = tasks.register('extract32BitJdk', Copy) {
-  dependsOn download32BitJdk
-  from zipTree(file("$buildDir/jdk-x86-11.0.0u28-1.zip")).matching{ include "jdk/**"}
-  into jdk32Location
-  eachFile { f->
-    f.path = f.path.substring(4) // length of jdk/
-  }
-  exclude '**/src.zip'
-  exclude '**/bin/*.pdb'
-  exclude '**/bin/*.map'
-  exclude '**/bin/server/*.pdb'
-  exclude '**/bin/server/*.map'
-  exclude '**/demo/**'
+// def jdk32Location = file("$buildDir/jdk32")
 
-  includeEmptyDirs = false
-}
+// def extract32BitJdk = tasks.register('extract32BitJdk', Copy) {
+//   dependsOn download32BitJdk
+//   from zipTree(file("$buildDir/jdk-x86-11.0.0u28-1.zip")).matching{ include "jdk/**"}
+//   into jdk32Location
+//   eachFile { f->
+//     f.path = f.path.substring(4) // length of jdk/
+//   }
+//   exclude '**/src.zip'
+//   exclude '**/bin/*.pdb'
+//   exclude '**/bin/*.map'
+//   exclude '**/bin/server/*.pdb'
+//   exclude '**/bin/server/*.map'
+//   exclude '**/demo/**'
+
+//   includeEmptyDirs = false
+// }
 
 def download64BitJdk = tasks.register('download64BitJdk', Download) {
   src 'https://download.java.net/java/GA/jdk11/28/GPL/openjdk-11+28_windows-x64_bin.zip'
@@ -50,20 +52,22 @@ def download64BitJdk = tasks.register('download64BitJdk', Download) {
   overwrite false
 }
 
-def jdk64Location = file("$buildDir/jdk64")
+def jdk64File = file("$buildDir/openjdk-11+28_windows-x64_bin.zip")
 
-def extract64BitJdk = tasks.register('extract64BitJdk', Copy) {
-  dependsOn download64BitJdk
-  from zipTree(file("$buildDir/openjdk-11+28_windows-x64_bin.zip")).matching{ include "jdk-11/**"}
-  into jdk64Location
-  eachFile { f->
-    f.path = f.path.substring(7) // length of jdk-11/
-  }
+// def jdk64Location = file("$buildDir/jdk64")
 
-  exclude '**/src.zip'
+// def extract64BitJdk = tasks.register('extract64BitJdk', Copy) {
+//   dependsOn download64BitJdk
+//   from zipTree(file("$buildDir/openjdk-11+28_windows-x64_bin.zip")).matching{ include "jdk-11/**"}
+//   into jdk64Location
+//   eachFile { f->
+//     f.path = f.path.substring(7) // length of jdk-11/
+//   }
 
-  includeEmptyDirs = false
-}
+//   exclude '**/src.zip'
+
+//   includeEmptyDirs = false
+// }
 
 def jdkConfigFile = file("$buildDir/jdkconfig.json")
 
@@ -87,15 +91,27 @@ def jdkConfigFileTask = tasks.register("jdkConfigFile") {
   }
 }
 
-ext.jdkZipSetup32 = { Zip zip->
-  zip.dependsOn extract32BitJdk
+ext.jdkZipSetup32 = { AbstractArchiveTask zip->
+  zip.dependsOn download32BitJdk
   zip.dependsOn jdkConfigFileTask
 
-  zip.inputs.dir jdk32Location
+  zip.inputs.file jdk32File
   zip.inputs.file jdkConfigFile
 
-  zip.from(jdk32Location) {
-    into '/jdk'
+  zip.from(project.zipTree(jdk32File)) {
+
+    eachFile { f->
+      f.path = f.path.replace('jdk-11/', 'jdk/')
+    }
+
+    exclude '**/src.zip'
+    exclude '**/bin/*.pdb'
+    exclude '**/bin/*.map'
+    exclude '**/bin/server/*.pdb'
+    exclude '**/bin/server/*.map'
+    exclude '**/demo/**'
+
+    includeEmptyDirs = false
   }
 
   zip.from(jdkConfigFile) {
@@ -104,15 +120,27 @@ ext.jdkZipSetup32 = { Zip zip->
   }
 }
 
-ext.jdkZipSetup64 = { Zip zip->
-  zip.dependsOn extract64BitJdk
+ext.jdkZipSetup64 = { AbstractArchiveTask zip->
+  zip.dependsOn download64BitJdk
   zip.dependsOn jdkConfigFileTask
 
-  zip.inputs.dir jdk64Location
+  zip.inputs.file jdk64File
   zip.inputs.file jdkConfigFile
 
-  zip.from(jdk64Location) {
-    into '/jdk'
+  zip.from(project.zipTree(jdk64File)) {
+
+    eachFile { f->
+      f.path = f.path.replace('jdk-11/', 'jdk/')
+    }
+
+    exclude '**/src.zip'
+    exclude '**/bin/*.pdb'
+    exclude '**/bin/*.map'
+    exclude '**/bin/server/*.pdb'
+    exclude '**/bin/server/*.map'
+    exclude '**/demo/**'
+
+    includeEmptyDirs = false
   }
 
     zip.from(jdkConfigFile) {
@@ -121,16 +149,26 @@ ext.jdkZipSetup64 = { Zip zip->
   }
 }
 
-ext.jdkZipSetupLinux = { Zip zip->
+ext.jdkZipSetupLinux = { AbstractArchiveTask zip->
   zip.dependsOn downloadLinuxJdk
   zip.dependsOn jdkConfigFileTask
 
-  zip.inputs.dir jdkLinuxFile
+  zip.inputs.file jdkLinuxFile
   zip.inputs.file jdkConfigFile
 
-  zip.from(jdkLinuxFile) {
-    into '/installUtils'
-    rename {'jdk.tar.gz'}
+  zip.from(project.tarTree(project.resources.gzip(jdkLinuxFile))) {
+    eachFile { f->
+      f.path = f.path.replace('jdk-11/', 'jdk/')
+    }
+
+    exclude '**/src.zip'
+    exclude '**/bin/*.pdb'
+    exclude '**/bin/*.map'
+    exclude '**/bin/server/*.pdb'
+    exclude '**/bin/server/*.map'
+    exclude '**/demo/**'
+
+    includeEmptyDirs = false
   }
 
   zip.from(jdkConfigFile) {
@@ -139,16 +177,29 @@ ext.jdkZipSetupLinux = { Zip zip->
   }
 }
 
-ext.jdkZipSetupMac = { Zip zip->
+ext.jdkZipSetupMac = { AbstractArchiveTask zip->
   zip.dependsOn downloadMacJdk
   zip.dependsOn jdkConfigFileTask
 
   zip.inputs.file jdkMacFile
   zip.inputs.file jdkConfigFile
 
-  zip.from(jdkMacFile) {
-    into '/installUtils'
-    rename {'jdk.tar.gz'}
+  zip.from(project.tarTree(project.resources.gzip(jdkMacFile))) {
+    eachFile { f->
+      f.path = f.path.replace('./jdk-11.jdk/Contents/Home/', 'jdk/')
+    }
+
+    exclude './jdk-11.jdk/Contents/MacOS/**'
+    exclude './jdk-11.jdk/Contents/Info.plist'
+
+    exclude '**/src.zip'
+    exclude '**/bin/*.pdb'
+    exclude '**/bin/*.map'
+    exclude '**/bin/server/*.pdb'
+    exclude '**/bin/server/*.map'
+    exclude '**/demo/**'
+
+    includeEmptyDirs = false
   }
 
     zip.from(jdkConfigFile) {
@@ -157,7 +208,7 @@ ext.jdkZipSetupMac = { Zip zip->
   }
 }
 
-ext.jdkZipSetup = { Zip zip ->
+ext.jdkZipSetup = { AbstractArchiveTask zip ->
   if (project.hasProperty('linuxBuild')) {
     jdkZipSetupLinux(zip)
   } else if (project.hasProperty('macBuild')) {

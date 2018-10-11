@@ -29,21 +29,29 @@ if (project.hasProperty('linuxBuild')) {
     project.ext.forceToolsClassifier = 'linux64'
     project.ext.buildClassifier = 'Linux'
     offlineRepositoryRoot = "$buildDir/dependencies/linux"
+    project.ext.archiveType = Tar
+    project.ext.isUnix = true
 } else if (project.hasProperty('macBuild')) {
     project.ext.forceNativeClassifier = 'osxx86-64'
     project.ext.forceToolsClassifier = 'mac64'
     project.ext.buildClassifier = 'Mac'
     offlineRepositoryRoot = "$buildDir/dependencies/mac"
+    project.ext.archiveType = Tar
+    project.ext.isUnix = true
 } else if (project.hasProperty('windows32')) {
     project.ext.forceNativeClassifier = 'windowsx86'
     project.ext.forceToolsClassifier = 'win32'
     project.ext.buildClassifier = 'Windows32'
     offlineRepositoryRoot = "$buildDir/dependencies/win32"
+    project.ext.archiveType = Zip
+    project.ext.isUnix = false
 } else {
     project.ext.forceNativeClassifier = 'windowsx86-64'
     project.ext.forceToolsClassifier = 'win64'
     project.ext.buildClassifier = 'Windows64'
     offlineRepositoryRoot = "$buildDir/dependencies/win64"
+    project.ext.archiveType = Zip
+    project.ext.isUnix = false
 }
 
 wrapper {
@@ -102,7 +110,7 @@ def upgradeConfigFileTask = tasks.register('generateUpgradeConfigFile', Task) { 
     }
 }
 
-def commonResources = { Zip zip->
+def commonResources = { AbstractArchiveTask zip->
     zip.dependsOn upgradeConfigFileTask
     zip.inputs.file upgradeConfigFile
 
@@ -118,12 +126,17 @@ def commonResources = { Zip zip->
     varsZipSetup(zip)
 }
 
-def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', Zip) {
+def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', project.ext.archiveType) {
     baseName 'WPILib_UpgradeFiles-' + buildClassifier
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
 
     commonResources(it)
+
+    if (project.ext.isUnix) {
+        extension = 'tar.gz'
+        compression = Compression.GZIP
+    }
 }
 
 def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
@@ -135,7 +148,6 @@ def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
     inputs.file generateUpgradeResourcesTask.get().archivePath
 
     entryCompression = ZipEntryCompression.STORED
-
 
     // This MUST be first
     msBuildSetupMain(it)
@@ -205,10 +217,16 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     }
 }
 
-def generateFullResources64Task = tasks.register('generateFullResources64', Zip) {
-    baseName 'WPILib_FullFiles64-' + buildClassifier
+def generateFullResources64Task = tasks.register('generateFullResources64', project.ext.archiveType) {
+    baseName 'WPILib_FullFiles-' + buildClassifier
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
+
+
+    if (project.ext.isUnix) {
+        extension = 'tar.gz'
+        compression = Compression.GZIP
+    }
 
     dependsOn fullConfigFileTask
     inputs.file fullConfigFile
@@ -221,7 +239,7 @@ def generateFullResources64Task = tasks.register('generateFullResources64', Zip)
 
     gradleZipTaskSetup(it)
     toolchainZipSetup(it)
-    jdkZipSetup64(it)
+    jdkZipSetup(it)
 }
 
 def generateFullZip64BaseTask = tasks.register('generateFileZip64Base', Zip) {

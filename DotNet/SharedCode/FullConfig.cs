@@ -17,7 +17,6 @@ namespace SharedCode
     {
         public string Version { get; set; }
         public string Directory { get; set; }
-        public string ToolChainFile { get; set; }
     }
 
     public class FullConfig

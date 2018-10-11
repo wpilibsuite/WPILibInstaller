@@ -9,7 +9,7 @@ def vscode64Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win3
 def vscode64ZipName = "VSCode-win32-x64-${vsCodeVersion}.zip".toString()
 
 def vscodeLinuxUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/linux-x64/stable"
-def cscodeLinuxZipName = "code-stable-1538751479.tar.gz"
+def vscodeLinuxZipName = "code-stable-1538751479.tar.gz"
 
 def vscodeMacUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/darwin/stable"
 def vscodeMacZipName = "VSCode-darwin-stable.zip"
@@ -111,7 +111,7 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     wpilibMap['vsix'] = wpilibExtensionVsix
     getInformationOfVsix(zipTree(wpilibFile), wpilibMap)
     def cppMap = [:]
-    cppMap['vsix'] = cppVsix
+    cppMap['vsix'] = cppWindowsVsix
     getInformationOfVsix(zipTree(cppFile), cppMap)
     def javaLangMap = [:]
     javaLangMap['vsix'] = javaLangVsix
