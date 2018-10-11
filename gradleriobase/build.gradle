@@ -21,7 +21,11 @@ wpi {
     robotBuilderVersion = '3.0.1-20180701134409-1-gf70dcba'
     smartDashboardVersion = '3.0.1-20180701135609'
     maven {
-        useFrcMavenLocalDevelopment = true
+        try {
+            useFrcMavenLocalDevelopment = true
+        } catch (Exception ex) {
+
+        }
     }
 }
 
