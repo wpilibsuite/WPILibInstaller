@@ -217,7 +217,7 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     }
 }
 
-def generateFullResources64Task = tasks.register('generateFullResources64', project.ext.archiveType) {
+def generateFullResources64Task = tasks.register('generateFullResources', project.ext.archiveType) {
     baseName 'WPILib_FullFiles-' + buildClassifier
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
@@ -242,8 +242,8 @@ def generateFullResources64Task = tasks.register('generateFullResources64', proj
     jdkZipSetup(it)
 }
 
-def generateFullZip64BaseTask = tasks.register('generateFileZip64Base', Zip) {
-    baseName 'WPILibInstaller_Full64-' + buildClassifier
+def generateFullZip64BaseTask = tasks.register('generateFullZipBase', Zip) {
+    baseName 'WPILibInstaller_Full-' + buildClassifier
     destinationDir buildDir
     duplicatesStrategy 'exclude'
 
@@ -265,7 +265,7 @@ def generateFullZip64BaseTask = tasks.register('generateFileZip64Base', Zip) {
 def fullInstaller64Name = "WPILibInstaller_Full-${buildClassifier}.exe"
 def fullInstaller64 = file("$buildDir/outputs/$fullInstaller64Name")
 
-def fullInstallerTask64 = tasks.register('generateFullInstaller64', Task) {
+def fullInstallerTask64 = tasks.register('generateFullInstaller', Task) {
     def zipFile = generateFullZip64BaseTask.get().archivePath
     inputs.file zipFile
     outputs.file fullInstaller64

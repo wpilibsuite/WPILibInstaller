@@ -1,20 +1,21 @@
-def fileName = 'FRC-2018-Windows-Toolchain-5.5.zip'
+def gitTag = 'v2019-2'
+def baseUrl = "https://github.com/wpilibsuite/toolchain-builder/releases/download/$gitTag/"
+
 def gccVersion = '6.3.0'
-def baseUrl = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+
+def fileName = 'FRC-2019-Windows-Toolchain-6.3.0.zip'
 
 def downloadUrl = baseUrl + fileName
 def fileWin = file("$buildDir/$fileName")
 
-def fileNameMac = 'FRC-2018-Windows-Toolchain-5.5.zip'
-def baseUrlMac = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+def fileNameMac = 'FRC-2019-Mac-Toolchain-6.3.0.tar.gz'
 
-def downloadUrlMac = baseUrlMac + fileNameMac
+def downloadUrlMac = baseUrl + fileNameMac
 def fileMac = file("$buildDir/$fileNameMac")
 
-def fileNameLinux = 'FRC-2018-Windows-Toolchain-5.5.zip'
-def baseUrlLinux = 'http://first.wpi.edu/FRC/roborio/toolchains/'
+def fileNameLinux = 'FRC-2019-Linux-Toolchain-6.3.0.tar.gz'
 
-def downloadUrlLinux = baseUrlLinux + fileNameLinux
+def downloadUrlLinux = baseUrl + fileNameLinux
 def fileLinux = file("$buildDir/$fileNameLinux")
 
 apply plugin: 'de.undercouch.download'
@@ -57,10 +58,10 @@ ext.toolchainZipSetup = { AbstractArchiveTask zip->
 
     zip.inputs.file fileLinux
 
-    zip.from(project.zipTree(fileLinux)) {
+    zip.from(project.tarTree(project.resources.gzip(fileLinux))) {
 
       eachFile { f->
-        f.path = f.path.replace('frc/', 'roborio/')
+        f.path = f.path.replace('frc2019/roborio/', 'roborio/')
       }
 
       includeEmptyDirs = false
@@ -71,10 +72,10 @@ ext.toolchainZipSetup = { AbstractArchiveTask zip->
 
     zip.inputs.file fileMac
 
-    zip.from(project.zipTree(fileMac)) {
+    zip.from(project.tarTree(project.resources.gzip(fileMac))) {
 
       eachFile { f->
-        f.path = f.path.replace('frc/', 'roborio/')
+        f.path = f.path.replace('frc2019/roborio/', 'roborio/')
       }
 
       includeEmptyDirs = false
@@ -87,7 +88,7 @@ ext.toolchainZipSetup = { AbstractArchiveTask zip->
     zip.from(project.zipTree(fileWin)) {
 
       eachFile { f->
-        f.path = f.path.replace('frc/', 'roborio/')
+        f.path = f.path.replace('frc2019/roborio/', 'roborio/')
       }
 
       includeEmptyDirs = false
