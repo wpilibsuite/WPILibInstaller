@@ -10,7 +10,7 @@ namespace SharedCode
     {
         public string Hash { get; set; }
         public string ZipName { get; set; }
-        public string ExtractLocation { get; set; }
+        public string[] ExtractLocations { get; set; }
     }
 
     public class CppToolchainConfig

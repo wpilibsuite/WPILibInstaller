@@ -15,20 +15,25 @@ namespace WPILibInstaller
             string gradleZipLoc = Path.Combine(extractFolder, "installUtils", config.Gradle.ZipName);
 
             string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string toFolder = Path.Combine(userFolder, ".gradle", config.Gradle.ExtractLocation, Path.GetFileNameWithoutExtension(config.Gradle.ZipName), config.Gradle.Hash);
-            string toFile = Path.Combine(toFolder, config.Gradle.ZipName);
-            await Task.Factory.StartNew(() =>
+            List<Task> tasks = new List<Task>();
+            foreach (var extractLocation in config.Gradle.ExtractLocations)
             {
-                try
+                string toFolder = Path.Combine(userFolder, ".gradle", extractLocation, Path.GetFileNameWithoutExtension(config.Gradle.ZipName), config.Gradle.Hash);
+                string toFile = Path.Combine(toFolder, config.Gradle.ZipName);
+                tasks.Add(Task.Factory.StartNew(() =>
                 {
-                    Directory.CreateDirectory(toFolder);
-                }
-                catch (IOException)
-                {
+                    try
+                    {
+                        Directory.CreateDirectory(toFolder);
+                    }
+                    catch (IOException)
+                    {
 
-                }
-                File.Copy(gradleZipLoc, toFile, true);
-            });
+                    }
+                    File.Copy(gradleZipLoc, toFile, true);
+                }));
+            }
+            await TaskEx.WhenAll(tasks);
         }
     }
 }

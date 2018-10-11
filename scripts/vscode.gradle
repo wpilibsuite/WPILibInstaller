@@ -8,10 +8,10 @@ def vscode32ZipName = "VSCode-win32-ia32-${vsCodeVersion}.zip".toString()
 def vscode64Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-x64-archive/stable".toString()
 def vscode64ZipName = "VSCode-win32-x64-${vsCodeVersion}.zip".toString()
 
-def vscodeLinuxUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/linux-x64/stable"
+def vscodeLinuxUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/linux-x64/stable".toString()
 def vscodeLinuxZipName = "code-stable-1538751479.tar.gz"
 
-def vscodeMacUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/darwin/stable"
+def vscodeMacUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/darwin/stable".toString()
 def vscodeMacZipName = "VSCode-darwin-stable.zip"
 
 def cppWindowsUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-win32.vsix'
