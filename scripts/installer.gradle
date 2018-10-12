@@ -5,6 +5,8 @@ apply plugin: 'com.ullink.nuget'
 
 def slnFile = 'DotNet/WPILibInstaller.sln'
 
+evaluationDependsOn(':apps:MavenMetaDataFixer')
+
 nugetSources {
   operation 'list'
 }
@@ -30,7 +32,6 @@ msbuild {
 }
 
 ext.installerFile = file('DotNet/WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
-def mavenUpdater = file('DotNet/MavenMetaDataFixer/bin/Release/MavenMetaDataFixer.exe')
 def toolsUpdater = file('DotNet/ToolsUpdater/bin/Release/Merged/ToolsUpdater.exe')
 
 ext.msBuildSetupMain = { AbstractArchiveTask zip->
@@ -40,13 +41,29 @@ ext.msBuildSetupMain = { AbstractArchiveTask zip->
   zip.from (installerFile)
 }
 
+def metaDataScriptBatch = file("$rootDir/files/MavenMetaDataFixer.bat")
+def metaDataScriptSh = file("$rootDir/files/MavenMetaDataFixer.sh")
+
 ext.msBuildExtraSetup = { AbstractArchiveTask zip->
   zip.dependsOn msbuild
-  zip.inputs.file mavenUpdater
+  zip.inputs.file project(':apps:MavenMetaDataFixer').shadowJar.archivePath
   zip.inputs.file toolsUpdater
+  zip.inputs.file metaDataScriptBatch
+  zip.inputs.file metaDataScriptSh
 
-  zip.from (mavenUpdater) {
+  zip.from (project(':apps:MavenMetaDataFixer').shadowJar.archivePath) {
     into '/maven'
+  }
+
+  if (project.ext.isUnix == true) {
+    zip.from(metaDataScriptSh) {
+      into '/maven'
+      fileMode 0755
+    }
+  } else {
+    zip.from(metaDataScriptBatch) {
+      into '/maven'
+    }
   }
 
   zip.from (toolsUpdater) {

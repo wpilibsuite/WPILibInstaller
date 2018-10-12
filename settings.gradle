@@ -6,3 +6,4 @@ pluginManagement {
 }
 
 include 'gradleriobase'
+include 'apps:MavenMetaDataFixer'

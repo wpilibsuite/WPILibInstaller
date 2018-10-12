@@ -192,7 +192,15 @@ namespace WPILibInstaller
             {
                 entryMethod.Invoke(null, new object[] { args });
             });
-            
+        }
+
+        private async Task RunScriptExecutable(string script, params string[] args) {
+            ProcessStartInfo pstart = new ProcessStartInfo(script, string.Join(" ", args));
+            var p = Process.Start(pstart);
+            await TaskEx.Run(() =>
+            {
+                p.WaitForExit();
+            });
         }
 
         private void CreateCodeShortcuts(string frcHomePath)
@@ -476,7 +484,11 @@ namespace WPILibInstaller
                 if (wpilibCheck.Checked)
                 {
                     // Run maven fixer
+#if !MAC && !LINUX
                     await RunDotNetExecutable(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
+#else
+                    await RunScriptExecutable(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
+#endif
                 }
 
                 CreateDevPromptShortcuts(intoPath);
