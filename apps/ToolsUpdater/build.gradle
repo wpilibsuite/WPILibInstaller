@@ -1,0 +1,15 @@
+plugins {
+  id 'java'
+  id 'application'
+  id "com.github.johnrengelman.shadow"
+}
+
+mainClassName = 'Program'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'com.google.code.gson:gson:2.8.5'
+}

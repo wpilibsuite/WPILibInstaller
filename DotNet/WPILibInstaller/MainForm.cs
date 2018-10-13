@@ -385,7 +385,7 @@ namespace WPILibInstaller
                 if (toolsCheck.Checked)
                 {
                     // Run tools fixer
-                    await RunDotNetExecutable(Path.Combine(intoPath, upgradeConfig.Tools.Folder, upgradeConfig.Tools.UpdaterExe), "silent");
+                    await RunScriptExecutable(Path.Combine(intoPath, upgradeConfig.Tools.Folder, upgradeConfig.Tools.UpdaterExe), "silent");
                 }
 
                 if (cppCheck.Checked)

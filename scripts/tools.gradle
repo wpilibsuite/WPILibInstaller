@@ -39,7 +39,11 @@ ext.toolsConfig = {
   }, { config->
     def tools = [:]
     tools['Folder'] = toolsFolder
-    tools['UpdaterExe'] = 'ToolsUpdater.exe'
+    if (project.ext.isUnix == true) {
+      tools['UpdaterExe'] = 'ToolsUpdater.sh'
+    } else {
+      tools['UpdaterExe'] = 'ToolsUpdater.bat'
+    }
     config['Tools'] = tools
   })
 }
