@@ -55,6 +55,9 @@ ext.msBuildExtraSetup = { AbstractArchiveTask zip->
   zip.inputs.file toolsUpdaterBatch
   zip.inputs.file toolsUpdaterSh
 
+  zip.dependsOn project(':apps:MavenMetaDataFixer').shadowJar
+  zip.dependsOn project(':apps:ToolsUpdater').shadowJar
+
   zip.from (project(':apps:MavenMetaDataFixer').shadowJar.archivePath) {
     into '/maven'
     rename { 'MavenMetaDataFixer.jar' }
