@@ -88,10 +88,15 @@ namespace WPILibInstaller
             var definitelyUpdate = maybeUpdates.Join(versions, x => x.extension.Name, y => y.name, (newVersion, existing) => (newVersion, existing))
                                           .Where(x => x.newVersion.extension.Version.CompareTo(x.existing.version) > 0).Select(x => x.newVersion);
 
-            var installs = definitelyUpdate.Concat(newInstall).OrderBy(x => x.sortOrder).Select(x => x.extension);
+            var installs = definitelyUpdate.Concat(newInstall).OrderBy(x => x.sortOrder).Select(x => x.extension).ToArray();
+
+            performInstallButton.Text = "Installing Extensions";
 
             await TaskEx.Run(() =>
             {
+                int i = 0;
+                double end = installs.Length;
+                progressBar1.Value = 0;
                 foreach (var item in installs)
                 {
                     ProcessStartInfo startInfo = new ProcessStartInfo(codeBatFile, "--install-extension " + Path.Combine(frcHomePath, "vsCodeExtensions", item.Vsix));
@@ -102,6 +107,9 @@ namespace WPILibInstaller
                     var proc = Process.Start(startInfo);
                     proc.WaitForExit();
                     var data = proc.StandardOutput.ReadToEnd();
+                    i++;
+                    double percentage = (i / end) * 100;
+                    progressBar1.Value = (int)percentage;
                     ;
                 }
             });
@@ -112,6 +120,15 @@ namespace WPILibInstaller
             var codeBatFile = Path.Combine(frcHomePath, "vscode", "bin", "code.cmd");
 
             return File.Exists(codeBatFile);
+        }
+
+        private void setIfNotSet<T>(string key, T value, dynamic settingsJson)
+        {
+            if (!settingsJson.ContainsKey(key))
+            {
+
+                settingsJson[key] = value;
+            }
         }
 
         private void SetVsCodeSettings(string frcHomePath)
@@ -134,21 +151,13 @@ namespace WPILibInstaller
                 settingsJson = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(settingsFile));
             }
 
-            void setIfNotSet<T>(string key, T value)
-            {
-                if (!settingsJson.ContainsKey(key))
-                {
-                    settingsJson[key] = value;
-                }
-            }
-
-            setIfNotSet("java.home", Path.Combine(frcHomePath, "jdk"));
-            setIfNotSet("extensions.autoUpdate", false);
-            setIfNotSet("extensions.autoCheckUpdates", false);
-            setIfNotSet("extensions.ignoreRecommendations", true);
-            setIfNotSet("extensions.showRecommendationsOnlyOnDemand", false);
-            setIfNotSet("update.channel", "none");
-            setIfNotSet("update.showReleaseNotes", false);
+            setIfNotSet("java.home", Path.Combine(frcHomePath, "jdk"), settingsJson);
+            setIfNotSet("extensions.autoUpdate", false, settingsJson);
+            setIfNotSet("extensions.autoCheckUpdates", false, settingsJson);
+            setIfNotSet("extensions.ignoreRecommendations", true, settingsJson);
+            setIfNotSet("extensions.showRecommendationsOnlyOnDemand", false, settingsJson);
+            setIfNotSet("update.channel", "none", settingsJson);
+            setIfNotSet("update.showReleaseNotes", false, settingsJson);
 
             if (!settingsJson.ContainsKey("terminal.integrated.env.windows"))
             {
@@ -192,7 +201,15 @@ namespace WPILibInstaller
             {
                 entryMethod.Invoke(null, new object[] { args });
             });
-            
+        }
+
+        private async Task RunScriptExecutable(string script, params string[] args) {
+            ProcessStartInfo pstart = new ProcessStartInfo(script, string.Join(" ", args));
+            var p = Process.Start(pstart);
+            await TaskEx.Run(() =>
+            {
+                p.WaitForExit();
+            });
         }
 
         private void CreateCodeShortcuts(string frcHomePath)
@@ -374,10 +391,12 @@ namespace WPILibInstaller
                     await GradleSetup.SetupGradle(fullConfig, intoPath);
                 }
 
+                
+
                 if (toolsCheck.Checked)
                 {
                     // Run tools fixer
-                    await RunDotNetExecutable(Path.Combine(intoPath, upgradeConfig.Tools.Folder, upgradeConfig.Tools.UpdaterExe), "silent");
+                    await RunScriptExecutable(Path.Combine(intoPath, upgradeConfig.Tools.Folder, upgradeConfig.Tools.UpdaterExe), "silent");
                 }
 
                 if (cppCheck.Checked)
@@ -476,7 +495,7 @@ namespace WPILibInstaller
                 if (wpilibCheck.Checked)
                 {
                     // Run maven fixer
-                    await RunDotNetExecutable(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
+                    await RunScriptExecutable(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
                 }
 
                 CreateDevPromptShortcuts(intoPath);

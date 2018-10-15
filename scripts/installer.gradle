@@ -5,6 +5,9 @@ apply plugin: 'com.ullink.nuget'
 
 def slnFile = 'DotNet/WPILibInstaller.sln'
 
+evaluationDependsOn(':apps:MavenMetaDataFixer')
+evaluationDependsOn(':apps:ToolsUpdater')
+
 nugetSources {
   operation 'list'
 }
@@ -30,8 +33,6 @@ msbuild {
 }
 
 ext.installerFile = file('DotNet/WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
-def mavenUpdater = file('DotNet/MavenMetaDataFixer/bin/Release/MavenMetaDataFixer.exe')
-def toolsUpdater = file('DotNet/ToolsUpdater/bin/Release/Merged/ToolsUpdater.exe')
 
 ext.msBuildSetupMain = { AbstractArchiveTask zip->
   zip.dependsOn msbuild
@@ -40,16 +41,49 @@ ext.msBuildSetupMain = { AbstractArchiveTask zip->
   zip.from (installerFile)
 }
 
+def metaDataScriptBatch = file("$rootDir/files/MavenMetaDataFixer.bat")
+def metaDataScriptSh = file("$rootDir/files/MavenMetaDataFixer.sh")
+def toolsUpdaterBatch = file("$rootDir/files/ToolsUpdater.bat")
+def toolsUpdaterSh = file("$rootDir/files/ToolsUpdater.sh")
+
 ext.msBuildExtraSetup = { AbstractArchiveTask zip->
   zip.dependsOn msbuild
-  zip.inputs.file mavenUpdater
-  zip.inputs.file toolsUpdater
+  zip.inputs.file project(':apps:MavenMetaDataFixer').shadowJar.archivePath
+  zip.inputs.file project(':apps:ToolsUpdater').shadowJar.archivePath
+  zip.inputs.file metaDataScriptBatch
+  zip.inputs.file metaDataScriptSh
+  zip.inputs.file toolsUpdaterBatch
+  zip.inputs.file toolsUpdaterSh
 
-  zip.from (mavenUpdater) {
+  zip.from (project(':apps:MavenMetaDataFixer').shadowJar.archivePath) {
     into '/maven'
+    rename { 'MavenMetaDataFixer.jar' }
   }
 
-  zip.from (toolsUpdater) {
+  if (project.ext.isUnix == true) {
+    zip.from(metaDataScriptSh) {
+      into '/maven'
+      fileMode 0755
+    }
+  } else {
+    zip.from(metaDataScriptBatch) {
+      into '/maven'
+    }
+  }
+
+  zip.from (project(':apps:ToolsUpdater').shadowJar.archivePath) {
     into '/tools'
+    rename { 'ToolsUpdater.jar' }
+  }
+
+  if (project.ext.isUnix == true) {
+    zip.from(toolsUpdaterSh) {
+      into '/tools'
+      fileMode 0755
+    }
+  } else {
+    zip.from(toolsUpdaterBatch) {
+      into '/tools'
+    }
   }
 }

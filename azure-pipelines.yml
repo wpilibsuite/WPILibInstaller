@@ -28,7 +28,7 @@ jobs:
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'generateInstallers'
-        options: '-Pwindows32'
+        options: '-Pwindows32 -DsystemProp.org.gradle.internal.http.connectionTimeout=180000 -DsystemProp.org.gradle.internal.http.socketTimeout=180000'
 
     - task: CopyFiles@2
       inputs:
@@ -63,6 +63,7 @@ jobs:
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'generateInstallers'
+        options: '-DsystemProp.org.gradle.internal.http.connectionTimeout=180000 -DsystemProp.org.gradle.internal.http.socketTimeout=180000'
 
     - task: CopyFiles@2
       inputs:
@@ -97,7 +98,7 @@ jobs:
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'generateInstallers'
-        options: '-PmacBuild'
+        options: '-PmacBuild -DsystemProp.org.gradle.internal.http.connectionTimeout=180000 -DsystemProp.org.gradle.internal.http.socketTimeout=180000'
 
     - task: CopyFiles@2
       inputs:
@@ -132,7 +133,7 @@ jobs:
         publishJUnitResults: false
         testResultsFiles: '**/TEST-*.xml'
         tasks: 'generateInstallers'
-        options: '-PlinuxBuild'
+        options: '-PlinuxBuild -DsystemProp.org.gradle.internal.http.connectionTimeout=180000 -DsystemProp.org.gradle.internal.http.socketTimeout=180000'
 
     - task: CopyFiles@2
       inputs:

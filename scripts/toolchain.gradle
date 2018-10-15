@@ -1,4 +1,4 @@
-def gitTag = 'v2019-2'
+def gitTag = 'v2019-3'
 def baseUrl = "https://github.com/wpilibsuite/toolchain-builder/releases/download/$gitTag/"
 
 def gccVersion = '6.3.0'
