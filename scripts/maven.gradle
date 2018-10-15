@@ -56,7 +56,7 @@ def cleanoffline = tasks.register("cleanOfflineRepository", Delete) {
   delete offlineRepositoryRoot
 }
 
-updateOfflineRepository.dependsOn
+updateOfflineRepository.dependsOn cleanoffline
 updateOfflineRepository.dependsOn lazyEvaluator
 
 offlineDependencies {

@@ -67,7 +67,6 @@ tasks.register('modelEvaluationTrigger') {
 
 def getConfig = { configs, deps->
     configs.each { config->
-        println config
         if (config.canBeResolved) {
             config.resolvedConfiguration.resolvedArtifacts.each {
                 def item = [:];
@@ -134,6 +133,17 @@ ext.getGradleRioDependencies = {
 
     getConfig(configurations, deps)
     getConfig(buildscript.configurations, deps)
+
+    buildscript.configurations.each { config ->
+        config.allDependencies.each {
+            def item = [:];
+            item['groupId'] = it.group
+            item['version'] = it.version
+            item['artifactId'] = it.name
+            item['extension'] = 'pom'
+            deps << item
+        }
+    }
 
     output['deps'] = deps
 

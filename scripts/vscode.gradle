@@ -4,15 +4,15 @@ def vscodeFile = file("$buildDir/vscodeConfig.json")
 def vsCodeVersion = '1.28.0'
 
 def vscode32Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-archive/stable".toString()
-def vscode32ZipName = "VSCode-win32-ia32-${vsCodeVersion}.zip".toString()
+def vscode32ZipName = "Windows32.zip".toString()
 def vscode64Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-x64-archive/stable".toString()
-def vscode64ZipName = "VSCode-win32-x64-${vsCodeVersion}.zip".toString()
+def vscode64ZipName = "Windows64.zip".toString()
 
 def vscodeLinuxUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/linux-x64/stable".toString()
-def vscodeLinuxZipName = "code-stable-1538751479.tar.gz"
+def vscodeLinuxZipName = "Linux.tar.gz"
 
 def vscodeMacUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/darwin/stable".toString()
-def vscodeMacZipName = "VSCode-darwin-stable.zip"
+def vscodeMacZipName = "Mac.zip"
 
 def cppWindowsUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-win32.vsix'
 def cppWindowsVsix = 'Cpp.vsix'
