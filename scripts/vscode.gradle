@@ -1,7 +1,7 @@
 
 def vscodeFile = file("$buildDir/vscodeConfig.json")
 
-def vsCodeVersion = '1.28.0'
+def vsCodeVersion = '1.28.1'
 
 def vscode32Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-archive/stable".toString()
 def vscode32ZipName = "Windows32.zip".toString()
@@ -23,13 +23,13 @@ def cppMacVsix = 'CppMac.vsix'
 def cppLinuxUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.19.0/cpptools-linux.vsix'
 def cppLinuxVsix = 'CppLinux.vsix'
 
-def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-alpha-4/vscode-wpilib-2019.0.0-alpha-4.vsix'
+def wpilibExtensionUrl = 'https://github.com/wpilibsuite/vscode-wpilib/releases/download/v2019.0.0-beta0-pre3/vscode-wpilib-2019.0.0-beta0-pre3.vsix'
 def wpilibExtensionVsix = 'WPILib.vsix'
 
-def javaDebugUrl = 'https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-debug/0.12.2/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
+def javaDebugUrl = 'https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-debug/0.14.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
 def javaDebugVsix = 'JavaDebug.vsix'
 
-def javaLangUrl = 'https://redhat.gallery.vsassets.io/_apis/public/gallery/publisher/redhat/extension/java/0.30.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
+def javaLangUrl = 'https://redhat.gallery.vsassets.io/_apis/public/gallery/publisher/redhat/extension/java/0.32.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
 def javaLangVsix = "JavaLang.vsix"
 
 def javaLangFile = file("$buildDir/$javaLangVsix")
