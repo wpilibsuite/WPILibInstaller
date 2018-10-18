@@ -12,7 +12,7 @@ buildscript {
 plugins {
     id "java"
     id 'cpp'
-    id "edu.wpi.first.GradleRIO" version "2019.0.0-beta0-pre4"
+    id "edu.wpi.first.GradleRIO" version "2019.0.0-beta0-pre6"
 }
 
 wpi {
