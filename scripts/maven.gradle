@@ -30,16 +30,16 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
         }
 
         toolArtifacts.each { tool->
-          if ("$dep.groupId:$dep.artifactId" == tool && (dep.classifier == null || dep.classifier == "")) {
+          if ("$dep.groupId:$dep.artifactId" == tool) {
             if (dep.classifier == null) {
               tools "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
             } else {
-              tools "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+              if (dep.classifier != 'sources' && dep.classifier != 'javadoc') {
+                tools "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+              }
             }
           }
         }
-
-
       }
     }
   }
