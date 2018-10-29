@@ -94,7 +94,7 @@ namespace WPILibInstaller
             startInfo.UseShellExecute = true;
             startInfo.WorkingDirectory = Environment.CurrentDirectory;
             startInfo.FileName = fileToRun;
-            startInfo.Arguments = $"runFile:{argument}";
+            startInfo.Arguments = $"runFile:\"{argument}\"";
             startInfo.Verb = "runas";
             try
             {
