@@ -176,7 +176,7 @@ namespace WPILibInstaller
                 string path = terminalEnv["PATH"];
                 if (path == null)
                 {
-                    terminalEnv["PATH"] = Path.Combine(frcHomePath, "jdk", "bin") + ":${env:PATH}";
+                    terminalEnv["PATH"] = Path.Combine(frcHomePath, "jdk", "bin") + ";${env:PATH}";
                 }
                 else
                 {
@@ -391,7 +391,7 @@ namespace WPILibInstaller
                     await GradleSetup.SetupGradle(fullConfig, intoPath);
                 }
 
-                
+
 
                 if (toolsCheck.Checked)
                 {
