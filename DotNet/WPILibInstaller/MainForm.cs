@@ -262,6 +262,10 @@ namespace WPILibInstaller
 
             var path = Environment.GetEnvironmentVariable("PATH", target);
 
+            if (path == null) {
+                path = "";
+            }
+
             List<string> pathItems = path.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
             if (!pathItems.Contains(compilerPath))
@@ -279,6 +283,10 @@ namespace WPILibInstaller
             var codePath = Path.Combine(frcHomePath, upgradeConfig.PathFolder);
 
             var path = Environment.GetEnvironmentVariable("PATH", target);
+
+            if (path == null) {
+                path = "";
+            }
 
             List<string> pathItems = path.Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
