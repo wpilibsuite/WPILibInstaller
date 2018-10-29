@@ -48,7 +48,7 @@ namespace WPILibInstaller
             var codeBatFile = Path.Combine(frcHomePath, "vscode", "bin", "code.cmd");
 
             // Load existing extensions
-            var versions = await TaskEx.Run(() =>
+            var versions = await Task.Run(() =>
              {
                  ProcessStartInfo startInfo = new ProcessStartInfo(codeBatFile, "--list-extensions --show-versions");
                  startInfo.UseShellExecute = false;
@@ -92,7 +92,7 @@ namespace WPILibInstaller
 
             performInstallButton.Text = "Installing Extensions";
 
-            await TaskEx.Run(() =>
+            await Task.Run(() =>
             {
                 int i = 0;
                 double end = installs.Length;
@@ -197,7 +197,7 @@ namespace WPILibInstaller
         {
             var assembly = Assembly.LoadFile(exe);
             var entryMethod = assembly.EntryPoint;
-            await TaskEx.Run(() =>
+            await Task.Run(() =>
             {
                 entryMethod.Invoke(null, new object[] { args });
             });
@@ -206,7 +206,7 @@ namespace WPILibInstaller
         private async Task RunScriptExecutable(string script, params string[] args) {
             ProcessStartInfo pstart = new ProcessStartInfo(script, string.Join(" ", args));
             var p = Process.Start(pstart);
-            await TaskEx.Run(() =>
+            await Task.Run(() =>
             {
                 p.WaitForExit();
             });

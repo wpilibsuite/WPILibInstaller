@@ -33,7 +33,7 @@ namespace WPILibInstaller
                     File.Copy(gradleZipLoc, toFile, true);
                 }));
             }
-            await TaskEx.WhenAll(tasks);
+            await Task.WhenAll(tasks);
         }
     }
 }
