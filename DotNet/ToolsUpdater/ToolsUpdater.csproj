@@ -98,9 +98,6 @@
     <Content Include="wpilib-256.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ILMerge.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="combine.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
