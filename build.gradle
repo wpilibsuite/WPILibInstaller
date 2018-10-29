@@ -160,7 +160,9 @@ def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
     // This MUST be first
     msBuildSetupMain(it)
 
-    from (generateUpgradeResourcesTask.get().archivePath)
+    from (generateUpgradeResourcesTask.get().archivePath) {
+        rename { 'files.zip' }
+    }
 }
 
 

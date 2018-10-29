@@ -52,6 +52,13 @@ namespace WPILibInstaller
 
             // Check to see if this executable is a zip
             var thisPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            var runFileArg = args.Where(x => x.Contains("runFile:")).FirstOrDefault();
+
+            if (runFileArg != null)
+            {
+                thisPath = runFileArg.Substring(8);
+            }
+
             using (FileStream fs = new FileStream(thisPath, FileMode.Open, FileAccess.Read))
             {
                 try
@@ -70,7 +77,6 @@ namespace WPILibInstaller
                     // Not a zip file. Let it close, and find our zip file
                 }
             }
-
             Application.Run(new MainForm(null, debug, isAdmin));
         }
     }
