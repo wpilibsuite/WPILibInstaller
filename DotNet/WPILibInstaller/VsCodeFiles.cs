@@ -14,7 +14,7 @@ namespace WPILibInstaller
     public class VsCodeFiles
     {
         private VsCodeConfig config;
-        private string downloadDir = "download";
+        private string downloadDir = "downloadvscodetmp";
         public VsCodeFiles(VsCodeConfig config)
         {
             this.config = config;
@@ -82,6 +82,25 @@ namespace WPILibInstaller
                 }
                 newFile.CommitUpdate();
                 newFile.Close();
+            }
+            foreach (var (success, output) in results)
+            {
+                try
+                {
+                    File.Delete(output);
+                }
+                catch
+                {
+
+                }
+            }
+            try
+            {
+                Directory.Delete(downloadDir, true);
+            }
+            catch
+            {
+
             }
             return zipLoc;
         }

@@ -433,7 +433,14 @@ namespace WPILibInstaller
                         {
                             zfs.IsStreamOwner = false;
                             string vsName = Environment.Is64BitOperatingSystem ? vsCodeConfig.VsCode64Name : vsCodeConfig.VsCode32Name;
-                            var entry = zfs.GetEntry($"download/{vsCodeConfig.VsCode64Name}");
+                            var entry = zfs.GetEntry($"downloadvscodetmp/{vsName}");
+                            if (entry == null) {
+                                StringBuilder builder = new StringBuilder();
+                                builder.AppendLine($"Expected to find {vsName} in zip, however did not.");
+                                builder.AppendLine("Aborting. Contact WPILib for assistance.");
+                                MessageBox.Show(builder.ToString());
+                                Application.Exit();
+                            }
                             var vsStream = zfs.GetInputStream(entry);
                             ZipFile zfsi = new ZipFile(vsStream);
 
@@ -758,7 +765,7 @@ namespace WPILibInstaller
                 vscodeCheck.Checked = true;
                 vscodeText.Visible = true;
                 vsCodeSelected = true;
-                vscodeButton.Text = "Open Downloaded\nFile";
+                vscodeButton.Text = "Open Downloaded\nFile.";
             }
         }
 

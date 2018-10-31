@@ -70,10 +70,8 @@ namespace WPILibInstaller
                 var file = ofd.FileName;
                 using (ZipFile zfs = new ZipFile(file))
                 {
-                    foreach (ZipEntry entry in zfs)
-                    {
-                        
-                    }
+                    var entry = zfs.GetEntry($"downloadvscodetmp/{config.VsCode64Name}");
+                    valid = entry != null;
                 }
 
                 if (valid == true)
@@ -84,7 +82,7 @@ namespace WPILibInstaller
                 }
                 else
                 {
-                    MessageBox.Show("Inavlid Zip Selected. Maybe out of date versions.");
+                    MessageBox.Show("Inavlid Zip Selected. Maybe out of date versions.\n The file is likely named \"OfflineVsCodeFiles.zip\"");
                 }
             }
 

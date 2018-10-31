@@ -179,10 +179,10 @@
             this.vscodeText.AutoSize = true;
             this.vscodeText.Location = new System.Drawing.Point(278, 262);
             this.vscodeText.Name = "vscodeText";
-            this.vscodeText.Size = new System.Drawing.Size(278, 125);
+            this.vscodeText.Size = new System.Drawing.Size(278, 150);
             this.vscodeText.TabIndex = 19;
             this.vscodeText.Text = "Click button above to open\r\ndownloaded VS Code file.\r\nYou can copy the zip file t" +
-    "o \r\nanother system if you need.\r\nOfflineVsCodeFiles.zip";
+    "o \r\nanother system if you need.\r\nIt is called:\r\nOfflineVsCodeFiles.zip";
             // 
             // MainForm
             // 
