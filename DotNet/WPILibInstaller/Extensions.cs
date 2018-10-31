@@ -11,7 +11,7 @@ namespace WPILibInstaller
     {
         public static async Task WaitForExitAsync(this Process process)
         {
-            await TaskEx.Run(() =>
+            await Task.Run(() =>
             {
                 process.WaitForExit();
             });

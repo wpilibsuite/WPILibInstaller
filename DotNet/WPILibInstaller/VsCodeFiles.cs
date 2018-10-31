@@ -60,7 +60,7 @@ namespace WPILibInstaller
 
             Directory.CreateDirectory(downloadDir);
 
-            (bool success, string output)[] results = await TaskEx.WhenAll(
+            (bool success, string output)[] results = await Task.WhenAll(
                 GetVsCode32Zip(vs32Prog, token, downloadDir),
                 GetVsCode64Zip(vs64Prog, token, downloadDir));
 
