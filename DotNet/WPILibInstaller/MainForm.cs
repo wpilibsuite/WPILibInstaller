@@ -444,8 +444,16 @@ namespace WPILibInstaller
                             var vsStream = zfs.GetInputStream(entry);
                             ZipFile zfsi = new ZipFile(vsStream);
 
+                            performInstallButton.Text = "Installing VS Code";
+
+                            totalCount = zfs.Count;
+                            currentCount = 0;
+
                             foreach (ZipEntry vsEntry in zfsi)
                             {
+                                double percentage = (currentCount / totalCount) * 100;
+                                currentCount++;
+                                progressBar1.Value = (int)percentage;
                                 if (!vsEntry.IsFile)
                                 {
                                     continue;
