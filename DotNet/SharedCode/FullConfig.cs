@@ -19,9 +19,16 @@ namespace SharedCode
         public string Directory { get; set; }
     }
 
+    public class RedistributableConfig
+    {
+        public string File32 { get; set; }
+        public string File64 { get; set; }
+    }
+
     public class FullConfig
     {
         public GradleConfig Gradle { get; set; }
         public CppToolchainConfig CppToolchain { get; set; }
+        public RedistributableConfig Redist { get; set; }
     }
 }

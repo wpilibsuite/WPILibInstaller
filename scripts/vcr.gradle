@@ -1,0 +1,58 @@
+
+def redist32 = 'https://aka.ms/vs/15/release/vc_redist.x86.exe'
+def redist32File = 'vc_redist.x86.exe'
+def redist32FilePath = file("$buildDir/$redist32File")
+def redist64 = 'https://aka.ms/vs/15/release/vc_redist.x64.exe'
+def redist64File = 'vc_redist.x64.exe'
+def redist64FilePath = file("$buildDir/$redist64File")
+
+
+def redist32Task = tasks.register("redist32Download", Download) {
+  src redist32
+  dest redist32FilePath
+  overwrite false
+}
+
+def redist64Task = tasks.register("redist64Download", Download) {
+  src redist64
+  dest redist64FilePath
+  overwrite false
+}
+
+ext.vcrConfig = {
+  return new Tuple2({ task->
+    task.inputs.property 'vcr32', redist32File
+    task.inputs.property 'vcr64', redist64File
+  }, { config->
+    def vcr = []
+    vcr['File32'] = redist32File
+    vcr['File64'] = redist64File
+    config['Redist'] = vcr
+  })
+}
+
+
+ext.vcrZipSetup32 = { AbstractArchiveTask zip->
+  zip.dependsOn redist32Task
+
+  zip.inputs.file redist32FilePath
+  zip.from(redist32FilePath) {
+    into '/installUtils'
+  }
+}
+
+ext.vcrZipSetup64 = { AbstractArchiveTask zip->
+  zip.dependsOn redist32Task
+  zip.dependsOn redist64Task
+
+  zip.inputs.file redist32FilePath
+  zip.from(redist32FilePath) {
+    into '/installUtils'
+  }
+
+  zip.inputs.file redist64FilePath
+  zip.from(redist64FilePath) {
+    into '/installUtils'
+  }
+}
+

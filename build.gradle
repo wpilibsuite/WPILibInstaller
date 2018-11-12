@@ -78,6 +78,7 @@ apply from: 'scripts/maven.gradle'
 apply from: 'scripts/tools.gradle'
 apply from: 'scripts/vscode.gradle'
 apply from: 'scripts/vars.gradle'
+apply from: 'scripts/vcr.gradle'
 
 ext.getGsonBuilder = {
     return new GsonBuilder()
@@ -205,6 +206,9 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     def configurations = []
     configurations << gradleConfigTaskSetup()
     configurations << toolchainConfigTaskSetup()
+    if (project.ext.isUnix == false) {
+        configurations << vcrConfig()
+    }
 
     configurations.each {
         it.first(task)
@@ -249,6 +253,13 @@ def generateFullResourcesTask = tasks.register('generateFullResources', project.
 
     gradleZipTaskSetup(it)
     toolchainZipSetup(it)
+
+    if (project.ext.buildClassifier == 'Windows32') {
+        vcrZipSetup32(it)
+    } else if (project.ext.buildClassifier == 'Windows64') {
+        vcrZipSetup64(it)
+    }
+
     jdkZipSetup(it)
 }
 
