@@ -41,6 +41,7 @@
             this.wpilibCheck = new System.Windows.Forms.CheckBox();
             this.vsCodeWpiExtCheck = new System.Windows.Forms.CheckBox();
             this.vscodeText = new System.Windows.Forms.Label();
+            this.vsRedistCheck = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // performInstallButton
@@ -184,11 +185,24 @@
             this.vscodeText.Text = "Click button above to open\r\ndownloaded VS Code file.\r\nYou can copy the zip file t" +
     "o \r\nanother system if you need.\r\nIt is called:\r\nOfflineVsCodeFiles.zip";
             // 
+            // vsRedistCheck
+            // 
+            this.vsRedistCheck.AutoSize = true;
+            this.vsRedistCheck.Checked = true;
+            this.vsRedistCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.vsRedistCheck.Location = new System.Drawing.Point(21, 387);
+            this.vsRedistCheck.Name = "vsRedistCheck";
+            this.vsRedistCheck.Size = new System.Drawing.Size(188, 54);
+            this.vsRedistCheck.TabIndex = 20;
+            this.vsRedistCheck.Text = "Visual Studio \r\nRedistributable\r\n";
+            this.vsRedistCheck.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(616, 679);
+            this.Controls.Add(this.vsRedistCheck);
             this.Controls.Add(this.vscodeText);
             this.Controls.Add(this.vsCodeWpiExtCheck);
             this.Controls.Add(this.wpilibCheck);
@@ -225,6 +239,7 @@
         private System.Windows.Forms.CheckBox wpilibCheck;
         private System.Windows.Forms.CheckBox vsCodeWpiExtCheck;
         private System.Windows.Forms.Label vscodeText;
+        private System.Windows.Forms.CheckBox vsRedistCheck;
     }
 }
 

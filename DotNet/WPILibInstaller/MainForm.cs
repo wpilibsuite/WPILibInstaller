@@ -305,6 +305,7 @@ namespace WPILibInstaller
             zipStore = mainZipFile;
             debugMode = debug;
             adminMode = isAdmin;
+            vsRedistCheck.Visible = false;
             InitializeComponent();
         }
 
@@ -521,6 +522,11 @@ namespace WPILibInstaller
                     await RunScriptExecutable(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
                 }
 
+                if (vsRedistCheck.Checked)
+                {
+                    //await InstallVsRedistributable(intoPath);
+                }
+
                 CreateDevPromptShortcuts(intoPath);
 
                 isInstalling = false;
@@ -532,6 +538,24 @@ namespace WPILibInstaller
                 this.Close();
             }
         }
+
+        //private async Task InstallVsRedistributable(string intoPath)
+        //{
+        //    string arg = "/install /passive /norestart";
+
+        //    ProcessStartInfo startInfo = new ProcessStartInfo(Path.Combine(intoPath, "installUtils", fullConfig.Redist.File32), arg);
+        //    Process proc = Process.Start(startInfo);
+        //    proc.Start();
+        //    await proc.WaitForExitAsync();
+
+        //    if (upgradeConfig.InstallerType == UpgradeConfig.Windows64InstallerType)
+        //    {
+        //        startInfo = new ProcessStartInfo(Path.Combine(intoPath, "installUtils", fullConfig.Redist.File64), arg);
+        //        proc = Process.Start(startInfo);
+        //        proc.Start();
+        //        await proc.WaitForExitAsync();
+        //    }
+        //}
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {

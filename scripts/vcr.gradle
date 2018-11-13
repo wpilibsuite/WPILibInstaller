@@ -24,7 +24,7 @@ ext.vcrConfig = {
     task.inputs.property 'vcr32', redist32File
     task.inputs.property 'vcr64', redist64File
   }, { config->
-    def vcr = []
+    def vcr = [:]
     vcr['File32'] = redist32File
     vcr['File64'] = redist64File
     config['Redist'] = vcr
