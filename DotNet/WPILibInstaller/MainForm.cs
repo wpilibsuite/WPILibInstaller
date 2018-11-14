@@ -109,6 +109,8 @@ namespace WPILibInstaller
                     var data = proc.StandardOutput.ReadToEnd();
                     i++;
                     double percentage = (i / end) * 100;
+                    if (percentage > 100) percentage = 100;
+                    if (percentage < 0) percentage = 0;
                     progressBar1.Value = (int)percentage;
                     ;
                 }
@@ -347,6 +349,8 @@ namespace WPILibInstaller
                 {
                     double percentage = (currentCount / totalCount) * 100;
                     currentCount++;
+                    if (percentage > 100) percentage = 100;
+                    if (percentage < 0) percentage = 0;
                     progressBar1.Value = (int)percentage;
 
                     if (!entry.IsFile)
@@ -447,13 +451,15 @@ namespace WPILibInstaller
 
                             performInstallButton.Text = "Installing VS Code";
 
-                            totalCount = zfs.Count;
+                            totalCount = zfsi.Count;
                             currentCount = 0;
 
                             foreach (ZipEntry vsEntry in zfsi)
                             {
                                 double percentage = (currentCount / totalCount) * 100;
                                 currentCount++;
+                                if (percentage > 100) percentage = 100;
+                                if (percentage < 0) percentage = 0;
                                 progressBar1.Value = (int)percentage;
                                 if (!vsEntry.IsFile)
                                 {
