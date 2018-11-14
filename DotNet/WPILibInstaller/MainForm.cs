@@ -305,8 +305,8 @@ namespace WPILibInstaller
             zipStore = mainZipFile;
             debugMode = debug;
             adminMode = isAdmin;
-            vsRedistCheck.Visible = false;
             InitializeComponent();
+            vsRedistCheck.Visible = false;
         }
 
         CancellationTokenSource source;
