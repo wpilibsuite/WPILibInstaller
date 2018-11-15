@@ -1,6 +1,6 @@
 def toolsJson = file("$buildDir/tools.json")
 def scriptBaseFile = file("files/ScriptBase.vbs")
-def scriptBaseUnixFile = file("files/ScriptBase.sh")
+def scriptBaseUnixFile = file("files/ScriptBase.py")
 
 def toolsJsonTask = tasks.register('toolsJson', Task) {
 

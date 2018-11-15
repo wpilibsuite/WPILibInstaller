@@ -42,9 +42,9 @@ ext.msBuildSetupMain = { AbstractArchiveTask zip->
 }
 
 def metaDataScriptBatch = file("$rootDir/files/MavenMetaDataFixer.bat")
-def metaDataScriptSh = file("$rootDir/files/MavenMetaDataFixer.sh")
+def metaDataScriptSh = file("$rootDir/files/MavenMetaDataFixer.py")
 def toolsUpdaterBatch = file("$rootDir/files/ToolsUpdater.bat")
-def toolsUpdaterSh = file("$rootDir/files/ToolsUpdater.sh")
+def toolsUpdaterSh = file("$rootDir/files/ToolsUpdater.py")
 
 ext.msBuildExtraSetup = { AbstractArchiveTask zip->
   zip.dependsOn msbuild
