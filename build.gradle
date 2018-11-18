@@ -78,7 +78,6 @@ apply from: 'scripts/maven.gradle'
 apply from: 'scripts/tools.gradle'
 apply from: 'scripts/vscode.gradle'
 apply from: 'scripts/vars.gradle'
-apply from: 'scripts/vcr.gradle'
 
 ext.getGsonBuilder = {
     return new GsonBuilder()
@@ -135,69 +134,6 @@ def commonResources = { AbstractArchiveTask zip->
     varsZipSetup(zip)
 }
 
-def generateUpgradeResourcesTask = tasks.register('generateUpgradeResources', project.ext.archiveType) {
-    baseName 'WPILib_UpgradeFiles-' + buildClassifier
-    destinationDir file("$buildDir/outputs")
-    duplicatesStrategy 'exclude'
-
-    commonResources(it)
-
-    if (project.ext.isUnix) {
-        extension = 'tar.gz'
-        compression = Compression.GZIP
-    }
-}
-
-def generateUpgradeZipBaseTask = tasks.register('generateUpgradeZipBase', Zip) {
-    baseName 'WPILibInstaller_Upgrade-' + buildClassifier
-    destinationDir buildDir
-    duplicatesStrategy 'exclude'
-
-    dependsOn generateUpgradeResourcesTask
-    inputs.file generateUpgradeResourcesTask.get().archivePath
-
-    entryCompression = ZipEntryCompression.STORED
-
-    // This MUST be first
-    msBuildSetupMain(it)
-
-    from (generateUpgradeResourcesTask.get().archivePath) {
-        rename { 'files.zip' }
-    }
-}
-
-
-def upgradeInstallerName = "WPILibInstaller_Upgrade-${buildClassifier}.exe"
-def upgradeInstaller = file("$buildDir/outputs/$upgradeInstallerName")
-
-def upgradeInstallerTask = tasks.register('generateUpgradeInstaller', Task) {
-    def zipFile = generateUpgradeZipBaseTask.get().archivePath
-    inputs.file zipFile
-    outputs.file upgradeInstaller
-
-    dependsOn generateUpgradeZipBaseTask
-
-    doLast {
-        copy {
-            from zipFile
-            into "$buildDir/outputs"
-            rename { upgradeInstallerName }
-        }
-
-        installerFile.withInputStream { InputStream inputStream ->
-            RandomAccessFile foStream;
-            try {
-                foStream = new RandomAccessFile(upgradeInstaller, "rw");
-                foStream.write(inputStream.getBytes())
-            } finally {
-                if (foStream != null) {
-                    foStream.close();
-                }
-            }
-        }
-    }
-}
-
 def fullConfigFile = file("$buildDir/fullConfig.json")
 
 def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task task ->
@@ -206,9 +142,6 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     def configurations = []
     configurations << gradleConfigTaskSetup()
     configurations << toolchainConfigTaskSetup()
-    if (project.ext.isUnix == false) {
-        configurations << vcrConfig()
-    }
 
     configurations.each {
         it.first(task)
@@ -253,12 +186,6 @@ def generateFullResourcesTask = tasks.register('generateFullResources', project.
 
     gradleZipTaskSetup(it)
     toolchainZipSetup(it)
-
-    if (project.ext.buildClassifier == 'Windows32') {
-        vcrZipSetup32(it)
-    } else if (project.ext.buildClassifier == 'Windows64') {
-        vcrZipSetup64(it)
-    }
 
     jdkZipSetup(it)
 }
@@ -316,5 +243,4 @@ def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
 
 tasks.register('generateInstallers', Task) {
     dependsOn fullInstallerTask
-    dependsOn upgradeInstallerTask
 }

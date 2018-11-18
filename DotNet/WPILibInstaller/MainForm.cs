@@ -308,7 +308,6 @@ namespace WPILibInstaller
             debugMode = debug;
             adminMode = isAdmin;
             InitializeComponent();
-            vsRedistCheck.Visible = false;
         }
 
         CancellationTokenSource source;
@@ -526,11 +525,6 @@ namespace WPILibInstaller
                 {
                     // Run maven fixer
                     await RunScriptExecutable(Path.Combine(intoPath, upgradeConfig.Maven.Folder, upgradeConfig.Maven.MetaDataFixerExe), "silent");
-                }
-
-                if (vsRedistCheck.Checked)
-                {
-                    //await InstallVsRedistributable(intoPath);
                 }
 
                 CreateDevPromptShortcuts(intoPath);
