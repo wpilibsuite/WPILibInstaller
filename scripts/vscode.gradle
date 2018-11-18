@@ -32,8 +32,12 @@ def javaDebugVsix = 'JavaDebug.vsix'
 def javaLangUrl = 'https://redhat.gallery.vsassets.io/_apis/public/gallery/publisher/redhat/extension/java/0.33.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
 def javaLangVsix = "JavaLang.vsix"
 
+def javaDepUrl = 'https://vscjava.gallery.vsassets.io/_apis/public/gallery/publisher/vscjava/extension/vscode-java-dependency/0.2.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage'
+def javaDepVsix = "JavaDeps.vsix"
+
 def javaLangFile = file("$buildDir/$javaLangVsix")
 def javaDebugFile = file("$buildDir/$javaDebugVsix")
+def javaDepFile = file("$buildDir/$javaDepVsix")
 
 def cppFile
 if (project.hasProperty('linuxBuild')) {
@@ -85,6 +89,11 @@ def javaDebugExtensionDownload = tasks.register("javaDebugExtensionDownload", Do
   overwrite false
 }
 
+def javaDepExtensionDownload = tasks.register("javaDepExtensionDownload", Download) {
+  src javaDepFile
+  dest file("$buildDir/$javaDepVsix")
+  overwrite false
+}
 
 def getInformationOfVsix = { vsix, map->
   def pkg = vsix.matching { include '**/extension/package.json' }.files.asList()[0]
@@ -100,11 +109,13 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
   dependsOn cppLinuxExtensionDownload
   dependsOn javaLangExtensionDownload
   dependsOn javaDebugExtensionDownload
+  dependsOn javaDepExtensionDownload
 
   inputs.file javaLangFile
   inputs.file javaDebugFile
   inputs.file cppFile
   inputs.file wpilibFile
+  inputs.file javaDepFile
 
   doLast {
     def config = [:]
@@ -122,6 +133,10 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     javaDebugMap['vsix'] = javaDebugVsix
     getInformationOfVsix(zipTree(javaDebugFile), javaDebugMap)
 
+    def javaDepMap = [:]
+    javaDepMap['vsix'] = javaDepVsix
+    getInformationOfVsix(zipTree(javaDepFile), javaDepMap)
+
     config['VsCode32Url'] = vscode32Url
     config['VsCode32Name'] = vscode32ZipName
     config['VsCode64Url'] = vscode64Url
@@ -136,7 +151,8 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     config['thirdPartyExtensions'] = [
       cppMap,
       javaLangMap,
-      javaDebugMap
+      javaDebugMap,
+      javaDepMap
     ]
 
 
@@ -172,6 +188,9 @@ ext.vscodeZipSetup = { AbstractArchiveTask zip->
     rename {cppWindowsVsix}
   }
   zip.from (wpilibFile) {
+    into '/vsCodeExtensions'
+  }
+  zip.from (javaDepFile) {
     into '/vsCodeExtensions'
   }
 }
