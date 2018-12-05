@@ -92,6 +92,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Selector";
             this.Text = "Selector";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Selector_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

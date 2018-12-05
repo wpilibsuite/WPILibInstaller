@@ -18,6 +18,8 @@ namespace WPILibInstaller
     {
         public string ZipLocation { get; private set; }
 
+        private CancellationTokenSource source;
+
         private VsCodeConfig config;
         public Selector(VsCodeConfig config)
         {
@@ -40,7 +42,10 @@ namespace WPILibInstaller
 
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 
-            var res = await vsf.DownloadAndZipFiles(progressBar4, progressBar5, CancellationToken.None);
+            source?.Cancel();
+            source = new CancellationTokenSource();
+
+            var res = await vsf.DownloadAndZipFiles(progressBar4, progressBar5, source.Token);
 
             if (res == null)
             {
@@ -86,6 +91,11 @@ namespace WPILibInstaller
                 }
             }
 
+        }
+
+        private void Selector_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            source?.Cancel();
         }
     }
 }

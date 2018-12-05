@@ -90,7 +90,7 @@ def javaDebugExtensionDownload = tasks.register("javaDebugExtensionDownload", Do
 }
 
 def javaDepExtensionDownload = tasks.register("javaDepExtensionDownload", Download) {
-  src javaDepFile
+  src javaDepUrl
   dest file("$buildDir/$javaDepVsix")
   overwrite false
 }
