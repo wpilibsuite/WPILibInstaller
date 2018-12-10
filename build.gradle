@@ -17,8 +17,8 @@ plugins {
     id "com.ullink.msbuild" version "2.21" apply false
     id "com.ullink.nuget" version "2.16" apply false
     id "de.undercouch.download" version "3.4.3" apply false
-    id "com.github.johnrengelman.shadow" version "2.0.4" apply false
-    id 'com.gradle.build-scan' version '1.15.1'
+    id "com.github.johnrengelman.shadow" version "4.0.3" apply false
+    id 'com.gradle.build-scan' version '2.0.2'
 }
 
 buildScan {
@@ -30,7 +30,7 @@ buildScan {
 
 apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
 
-project.ext.setProperty('toolchain-missing-nofail', '')
+project.ext.setProperty('toolchain-optional-roboRio', '')
 
 if (project.hasProperty('linuxBuild')) {
     project.ext.forceNativeClassifier = 'linuxx86-64'
@@ -63,7 +63,7 @@ if (project.hasProperty('linuxBuild')) {
 }
 
 wrapper {
-    gradleVersion = '4.9'
+    gradleVersion = '5.0'
 }
 
 ext.frcYear = '2019'

@@ -6,6 +6,8 @@ def otherDeps = []
 configurations {
   offline
   tools
+  documentationJava
+  documentationCpp
 }
 
 def toolArtifacts = [
@@ -15,6 +17,11 @@ def toolArtifacts = [
   'edu.wpi.first.wpilib:RobotBuilder',
   'edu.wpi.first.wpilib:PathWeaver'
 ]
+
+dependencies {
+    documentationCpp "edu.wpi.first.wpilibc:documentation:${project(':gradleriobase').wpi.wpilibVersion}@zip"
+    documentationJava "edu.wpi.first.wpilibj:documentation:${project(':gradleriobase').wpi.wpilibVersion}@zip"
+}
 
 def lazyEvaluator = tasks.register('lazyModelEvaluation') {
 
@@ -97,4 +104,14 @@ ext.mavenZipSetup = { AbstractArchiveTask zip->
   zip.from(fileTree(offlineRepositoryRoot)) {
     into '/maven'
   }
+
+  def file = configurations.documentationCpp.resolvedConfiguration.resolvedArtifacts.first().file
+
+  zip.from(project.zipTree(configurations.documentationCpp.resolvedConfiguration.resolvedArtifacts.first().file)) {
+    into '/documentation/cpp'
+  }
+  zip.from(project.zipTree(configurations.documentationJava.resolvedConfiguration.resolvedArtifacts.first().file)) {
+    into '/documentation/java'
+  }
 }
+
