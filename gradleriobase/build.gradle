@@ -12,7 +12,7 @@ buildscript {
 plugins {
     id "java"
     id 'cpp'
-    id "edu.wpi.first.GradleRIO" version "2019.1.1-beta-2a"
+    id "edu.wpi.first.GradleRIO" version "2019.1.1-beta-3-pre7"
 }
 
 wpi {
@@ -29,18 +29,27 @@ wpi {
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
 dependencies {
-    compile wpilib()
+    compile wpi.deps.wpilib()
+    compile 'junit:junit:4.12'
 }
 
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
-            targetPlatform 'roborio'
-            targetPlatform 'desktop'
+            targetPlatform wpi.platforms.roborio
+            targetPlatform wpi.platforms.desktop
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
             useLibrary(it, "wpilib", "googletest")
+        }
+        frcUserProgramStatic(NativeExecutableSpec) {
+            targetPlatform wpi.platforms.roborio
+            targetPlatform wpi.platforms.desktop
+
+            // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
+            // and NavX.
+            useLibrary(it, "wpilib_static", "googletest")
         }
     }
 }

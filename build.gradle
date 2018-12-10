@@ -63,7 +63,7 @@ if (project.hasProperty('linuxBuild')) {
 }
 
 wrapper {
-    gradleVersion = '4.9'
+    gradleVersion = '5.0'
 }
 
 ext.frcYear = '2019'
