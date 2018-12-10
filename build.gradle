@@ -30,7 +30,7 @@ buildScan {
 
 apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
 
-project.ext.setProperty('toolchain-missing-nofail', '')
+project.ext.setProperty('-Ptoolchain-optional-roboRio', '')
 
 if (project.hasProperty('linuxBuild')) {
     project.ext.forceNativeClassifier = 'linuxx86-64'
