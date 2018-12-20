@@ -12,17 +12,7 @@ buildscript {
 plugins {
     id "java"
     id 'cpp'
-    id "edu.wpi.first.GradleRIO" version "2019.1.1-beta-4"
-}
-
-wpi {
-    maven {
-        try {
-            useFrcMavenLocalDevelopment = true
-        } catch (Exception ex) {
-
-        }
-    }
+    id "edu.wpi.first.GradleRIO"
 }
 
 

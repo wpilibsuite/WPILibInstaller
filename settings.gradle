@@ -3,6 +3,13 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
     }
+    resolutionStrategy {
+        eachPlugin {
+            if ( requested.id.id == 'edu.wpi.first.GradleRIO' ) {
+                useModule( "edu.wpi.first:GradleRIO:$gradleRioVersion" )
+            }
+        }
+    }
 }
 
 include 'gradleriobase'
