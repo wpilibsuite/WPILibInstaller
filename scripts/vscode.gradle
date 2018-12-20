@@ -48,13 +48,23 @@ if (project.hasProperty('linuxBuild')) {
   cppFile = file("$buildDir/$cppWindowsVsix")
 }
 
+def wpilibFile
+def wpilibExtensionDownload
 
-def wpilibFile = file("$buildDir/$wpilibExtensionVsix")
+if (project.hasProperty('vscodeLoc')) {
+  wpilibFile = file(vscodeLoc)
 
-def wpilibExtensionDownload = tasks.register("wpilibExtensionDownload", Download) {
-  src wpilibExtensionUrl
-  dest file("$buildDir/$wpilibExtensionVsix")
-  overwrite false
+  wpilibExtensionDownload = tasks.register('wpilibExtensionDownload') {
+
+  }
+} else {
+  wpilibFile = file("$buildDir/$wpilibExtensionVsix")
+
+  wpilibExtensionDownload = tasks.register("wpilibExtensionDownload", Download) {
+    src wpilibExtensionUrl
+    dest file("$buildDir/$wpilibExtensionVsix")
+    overwrite false
+  }
 }
 
 def cppExtensionDownload = tasks.register("cppExtensionDownload", Download) {
