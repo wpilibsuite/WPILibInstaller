@@ -30,6 +30,13 @@ buildScan {
 
 apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
 
+def pubVersion
+if (project.hasProperty("publishVersion")) {
+    pubVersion = project.publishVersion
+} else {
+    pubVersion = '1.0.0-todo'
+}
+
 project.ext.setProperty('toolchain-optional-roboRio', '')
 
 if (project.hasProperty('linuxBuild')) {
@@ -165,7 +172,7 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
 }
 
 def generateFullResourcesTask = tasks.register('generateFullResources', project.ext.archiveType) {
-    baseName 'WPILib_FullFiles-' + buildClassifier
+    baseName 'WPILib_FullFiles-' + buildClassifier + '-' + pubVersion
     destinationDir file("$buildDir/outputs")
     duplicatesStrategy 'exclude'
 
@@ -210,7 +217,7 @@ def generateFullZipBaseTask = tasks.register('generateFullZipBase', Zip) {
 }
 
 
-def fullInstallerName = "WPILibInstaller_Full-${buildClassifier}.exe"
+def fullInstallerName = "WPILibInstaller_Full-${buildClassifier}-${pubVersion}.exe"
 def fullInstaller = file("$buildDir/outputs/$fullInstallerName")
 
 def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
