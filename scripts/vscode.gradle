@@ -229,7 +229,7 @@ ext.vscodeZipSetup = { AbstractArchiveTask zip->
     }
   } else {
     // Windows
-    zip.from(project.zipTree(jdk64File)) {
+    zip.from(project.zipTree(utilityFile)) {
       into '/utility'
 
       includeEmptyDirs = false
