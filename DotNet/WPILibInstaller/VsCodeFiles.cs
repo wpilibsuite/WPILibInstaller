@@ -13,6 +13,13 @@ namespace WPILibInstaller
 {
     public class VsCodeFiles
     {
+        private static readonly string BaseFileName = "OfflineVsCodeFiles";
+
+        public static string GetFileName(string version)
+        {
+            return $"{BaseFileName}-{version}.zip";
+        }
+
         private VsCodeConfig config;
         private string downloadDir = "downloadvscodetmp";
         public VsCodeFiles(VsCodeConfig config)
@@ -55,7 +62,7 @@ namespace WPILibInstaller
         }
 
 
-        public async Task<string> DownloadAndZipFiles(ProgressBar vs32Prog, ProgressBar vs64Prog, CancellationToken token)
+        public async Task<string> DownloadAndZipFiles(ProgressBar vs32Prog, ProgressBar vs64Prog, string version, CancellationToken token)
         {
 
             Directory.CreateDirectory(downloadDir);
@@ -71,9 +78,9 @@ namespace WPILibInstaller
                 return null;
             }
 
-            string zipLoc = "OfflineVsCodeFiles.zip";
+            string zipLoc = GetFileName(version);
 
-            using (ZipFile newFile = ZipFile.Create("OfflineVsCodeFiles.zip"))
+            using (ZipFile newFile = ZipFile.Create(zipLoc))
             {
                 newFile.BeginUpdate();
                 foreach(var (success, output) in results)
