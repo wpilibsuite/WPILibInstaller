@@ -225,6 +225,7 @@ namespace WPILibInstaller
 
         private void CreateFRCShortcutsFolder()
         {
+#if !MAC && !LINUX
             object shDesktop = "StartMenu";
             WshShell shell = new WshShell();
             string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}";
@@ -236,6 +237,7 @@ namespace WPILibInstaller
             {
 
             }
+#endif
         }
 
         private void CreateCodeShortcuts(string frcHomePath)
@@ -308,7 +310,7 @@ namespace WPILibInstaller
                 shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "smartdashboard.vbs");
                 shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
                 shortcut.Save();
-                
+
             }
             {
                 object shDesktop = "StartMenu";
