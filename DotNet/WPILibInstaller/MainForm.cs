@@ -38,6 +38,15 @@ namespace WPILibInstaller
 
         private List<ExtractionIgnores> extractionControllers = new List<ExtractionIgnores>();
 
+        private void SetProgressBarValue(int value)
+        {
+            Action set = () =>
+            {
+                progressBar1.Value = value;
+            };
+            this.Invoke(set);
+        }
+
         private async Task HandleVsCodeExtensions(string frcHomePath)
         {
             if (!vsCodeWpiExtCheck.Checked)
@@ -96,7 +105,7 @@ namespace WPILibInstaller
             {
                 int i = 0;
                 double end = installs.Length;
-                progressBar1.Value = 0;
+                SetProgressBarValue(0);
                 foreach (var item in installs)
                 {
                     ProcessStartInfo startInfo = new ProcessStartInfo(codeBatFile, "--install-extension " + Path.Combine(frcHomePath, "vsCodeExtensions", item.Vsix));
@@ -111,7 +120,7 @@ namespace WPILibInstaller
                     double percentage = (i / end) * 100;
                     if (percentage > 100) percentage = 100;
                     if (percentage < 0) percentage = 0;
-                    progressBar1.Value = (int)percentage;
+                    SetProgressBarValue((int)percentage);
                     ;
                 }
             });
@@ -214,9 +223,25 @@ namespace WPILibInstaller
             });
         }
 
+        private void CreateFRCShortcutsFolder()
+        {
+            object shDesktop = "StartMenu";
+            WshShell shell = new WshShell();
+            string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}";
+            try
+            {
+                Directory.CreateDirectory(shortcutAddress);
+            }
+            catch
+            {
+
+            }
+        }
+
         private void CreateCodeShortcuts(string frcHomePath)
         {
 #if !MAC && !LINUX
+            CreateFRCShortcutsFolder();
             {
                 object shDesktop = "Desktop";
                 WshShell shell = new WshShell();
@@ -230,7 +255,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 WshShell shell = new WshShell();
-                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC VS Code {upgradeConfig.FrcYear}.lnk";
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC VS Code {upgradeConfig.FrcYear}.lnk";
                 IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
                 shortcut.Description = "Shortcut for FRC VS Code";
                 shortcut.TargetPath = Path.Combine(frcHomePath, "vscode", "Code.exe");
@@ -240,12 +265,108 @@ namespace WPILibInstaller
 #endif
         }
 
+        private void CreateToolShortcuts(string frcHomePath)
+        {
+#if !MAC && !LINUX
+            CreateFRCShortcutsFolder();
+            {
+                object shDesktop = "Desktop";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC Shuffleboard.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC Shuffleboard";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "shuffleboard.vbs");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+            {
+                object shDesktop = "Desktop";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC SmartDashboard.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC SmartDashboard";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "smartdashboard.vbs");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+            {
+                object shDesktop = "StartMenu";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC Shuffleboard.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC Shuffleboard";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "shuffleboard.vbs");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+            {
+                object shDesktop = "StartMenu";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC SmartDashboard.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC SmartDashboard";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "smartdashboard.vbs");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+                
+            }
+            {
+                object shDesktop = "StartMenu";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC OutlineViewer.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC OutlineViewer";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "outlineviewer.vbs");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+            {
+                object shDesktop = "StartMenu";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC RobotBuilder.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC RobotBuilder";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "robotbuilder.vbs");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+            {
+                object shDesktop = "StartMenu";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC PathWeaver.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut for FRC PathWeaver";
+                shortcut.TargetPath = Path.Combine(frcHomePath, "tools", "pathweaver.vbs");
+                shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
+                shortcut.Save();
+            }
+#endif
+        }
+
+        private void CreateFrcHomeShortcut(string frcHomePath)
+        {
+#if !MAC && !LINUX
+            CreateFRCShortcutsFolder();
+            {
+                object shDesktop = "StartMenu";
+                WshShell shell = new WshShell();
+                string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC Home.lnk";
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
+                shortcut.Description = "Shortcut to FRC Home Folder";
+                shortcut.TargetPath = frcHomePath;
+                shortcut.Arguments = "/Arguments:Shortcut";
+                shortcut.Save();
+            }
+#endif
+        }
+
         private void CreateDevPromptShortcuts(string frcHomePath)
         {
 #if !MAC && !LINUX
+            CreateFRCShortcutsFolder();
             object shDesktop = "StartMenu";
             WshShell shell = new WshShell();
-            string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC Developer Command Prompt {upgradeConfig.FrcYear}.lnk";
+            string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC Developer Command Prompt {upgradeConfig.FrcYear}.lnk";
             IWshShortcut shortcut = shell.CreateShortcut(shortcutAddress);
             shortcut.Description = "Shortcut for FRC Development Command Prompt";
             shortcut.TargetPath = @"%comspec%";
@@ -528,6 +649,8 @@ namespace WPILibInstaller
                 }
 
                 CreateDevPromptShortcuts(intoPath);
+                CreateFrcHomeShortcut(intoPath);
+                CreateToolShortcuts(intoPath);
 
                 isInstalling = false;
                 performInstallButton.Enabled = false;
