@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -45,7 +46,14 @@ namespace WPILibInstaller
             source?.Cancel();
             source = new CancellationTokenSource();
 
-            var res = await vsf.DownloadAndZipFiles(progressBar4, progressBar5, source.Token);
+            string res = null;
+
+            try
+            {
+                res = await vsf.DownloadAndZipFiles(progressBar4, progressBar5, source.Token);
+            } catch (HttpRequestException)
+            {
+            }
 
             if (res == null)
             {
