@@ -93,13 +93,13 @@ if (project.hasProperty('standaloneLoc')) {
   standaloneDownload = tasks.register("standaloneDownload", Download) {
 
     if (project.hasProperty('linuxBuild')) {
-      src = wpilibUtilLinuxUrl
+      src wpilibUtilLinuxUrl
     } else if (project.hasProperty('macBuild')) {
-      src = wpilibUtilMacUrl
+      src wpilibUtilMacUrl
     } else {
-      src = wpilibUtilWinUrl
+      src wpilibUtilWinUrl
     }
-    dest = utilityFile
+    dest utilityFile
     overwrite false
   }
 }
