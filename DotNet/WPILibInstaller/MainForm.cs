@@ -695,6 +695,7 @@ namespace WPILibInstaller
             vscodeButton.Enabled = false;
             vscodeCheck.Enabled = false;
             vscodeText.Visible = false;
+            vsCodeFileLabel.Visible = false;
             this.Enabled = false;
             if (zipStore == null)
             {
@@ -894,6 +895,8 @@ namespace WPILibInstaller
                 vsCodeWpiExtCheck.Enabled = true;
             }
 
+            this.vsCodeFileLabel.Text = VsCodeFiles.GetFileName(vsCodeConfig.VsCodeVersion);
+
 
 
             this.performInstallButton.Enabled = true;
@@ -921,6 +924,7 @@ namespace WPILibInstaller
                 vscodeCheck.Enabled = true;
                 vscodeCheck.Checked = true;
                 vscodeText.Visible = true;
+                vsCodeFileLabel.Visible = true;
                 vsCodeSelected = true;
                 vscodeButton.Text = "Open Downloaded\nFile.";
             }

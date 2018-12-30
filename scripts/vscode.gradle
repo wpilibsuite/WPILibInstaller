@@ -192,6 +192,7 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
     config['VsCodeMacName'] = vscodeMacZipName
     config['VsCodeLinuxUrl'] = vscodeLinuxUrl
     config['VsCodeLinuxName'] = vscodeLinuxZipName
+    config['VsCodeVersion'] = vsCodeVersion
 
     config['wpilibExtension'] = wpilibMap
 

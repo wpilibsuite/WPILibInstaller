@@ -28,6 +28,7 @@ namespace WPILibInstaller
             InitializeComponent();
             progressBar4.Visible = false;
             progressBar5.Visible = false;
+            this.selectButton.Text += $"\n({VsCodeFiles.GetFileName(config.VsCodeVersion)})";
         }
 
         private async void downloadButton_Click(object sender, EventArgs e)
@@ -50,7 +51,7 @@ namespace WPILibInstaller
 
             try
             {
-                res = await vsf.DownloadAndZipFiles(progressBar4, progressBar5, source.Token);
+                res = await vsf.DownloadAndZipFiles(progressBar4, progressBar5, config.VsCodeVersion, source.Token);
             } catch (HttpRequestException)
             {
             }

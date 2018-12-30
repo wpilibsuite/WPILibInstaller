@@ -28,6 +28,8 @@ namespace SharedCode
         public string VsCodeLinuxUrl { get; set; }
         public string VsCodeLinuxName { get; set; }
 
+        public string VsCodeVersion { get; set; }
+
         [JsonProperty("wpilibExtension")]
         public Extension WPILibExtension { get; set; }
         [JsonProperty("thirdPartyExtensions")]

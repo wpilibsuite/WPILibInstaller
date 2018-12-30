@@ -49,7 +49,7 @@
             // 
             this.downloadButton.Location = new System.Drawing.Point(17, 115);
             this.downloadButton.Name = "downloadButton";
-            this.downloadButton.Size = new System.Drawing.Size(302, 139);
+            this.downloadButton.Size = new System.Drawing.Size(350, 139);
             this.downloadButton.TabIndex = 1;
             this.downloadButton.Text = "Download";
             this.downloadButton.UseVisualStyleBackColor = true;
@@ -57,24 +57,24 @@
             // 
             // selectButton
             // 
-            this.selectButton.Location = new System.Drawing.Point(325, 115);
+            this.selectButton.Location = new System.Drawing.Point(373, 115);
             this.selectButton.Name = "selectButton";
-            this.selectButton.Size = new System.Drawing.Size(265, 138);
+            this.selectButton.Size = new System.Drawing.Size(350, 138);
             this.selectButton.TabIndex = 2;
-            this.selectButton.Text = "Select Existing\r\nDownload\r\n(OfflineVsCodeFiles.zip)\r\n";
+            this.selectButton.Text = "Select Existing\r\nDownload\r\n";
             this.selectButton.UseVisualStyleBackColor = true;
             this.selectButton.Click += new System.EventHandler(this.selectButton_Click);
             // 
             // progressBar4
             // 
-            this.progressBar4.Location = new System.Drawing.Point(325, 205);
+            this.progressBar4.Location = new System.Drawing.Point(373, 201);
             this.progressBar4.Name = "progressBar4";
             this.progressBar4.Size = new System.Drawing.Size(100, 23);
             this.progressBar4.TabIndex = 3;
             // 
             // progressBar5
             // 
-            this.progressBar5.Location = new System.Drawing.Point(325, 230);
+            this.progressBar5.Location = new System.Drawing.Point(373, 230);
             this.progressBar5.Name = "progressBar5";
             this.progressBar5.Size = new System.Drawing.Size(100, 23);
             this.progressBar5.TabIndex = 3;
@@ -83,7 +83,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(602, 289);
+            this.ClientSize = new System.Drawing.Size(736, 289);
             this.Controls.Add(this.progressBar5);
             this.Controls.Add(this.progressBar4);
             this.Controls.Add(this.selectButton);

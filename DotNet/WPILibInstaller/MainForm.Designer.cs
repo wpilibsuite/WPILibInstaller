@@ -41,6 +41,7 @@
             this.wpilibCheck = new System.Windows.Forms.CheckBox();
             this.vsCodeWpiExtCheck = new System.Windows.Forms.CheckBox();
             this.vscodeText = new System.Windows.Forms.Label();
+            this.vsCodeFileLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // performInstallButton
@@ -48,7 +49,7 @@
             this.performInstallButton.Location = new System.Drawing.Point(22, 567);
             this.performInstallButton.Margin = new System.Windows.Forms.Padding(6);
             this.performInstallButton.Name = "performInstallButton";
-            this.performInstallButton.Size = new System.Drawing.Size(548, 44);
+            this.performInstallButton.Size = new System.Drawing.Size(667, 44);
             this.performInstallButton.TabIndex = 6;
             this.performInstallButton.Text = "Execute Install";
             this.performInstallButton.UseVisualStyleBackColor = true;
@@ -93,10 +94,10 @@
             // vscodeButton
             // 
             this.vscodeButton.Enabled = false;
-            this.vscodeButton.Location = new System.Drawing.Point(278, 162);
+            this.vscodeButton.Location = new System.Drawing.Point(283, 162);
             this.vscodeButton.Margin = new System.Windows.Forms.Padding(6);
             this.vscodeButton.Name = "vscodeButton";
-            this.vscodeButton.Size = new System.Drawing.Size(304, 77);
+            this.vscodeButton.Size = new System.Drawing.Size(406, 77);
             this.vscodeButton.TabIndex = 10;
             this.vscodeButton.Text = "Select/Download VS Code";
             this.vscodeButton.UseVisualStyleBackColor = true;
@@ -107,7 +108,7 @@
             this.progressBar1.Location = new System.Drawing.Point(26, 612);
             this.progressBar1.Margin = new System.Windows.Forms.Padding(6);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(544, 44);
+            this.progressBar1.Size = new System.Drawing.Size(663, 44);
             this.progressBar1.TabIndex = 11;
             // 
             // gradleCheck
@@ -179,16 +180,26 @@
             this.vscodeText.AutoSize = true;
             this.vscodeText.Location = new System.Drawing.Point(278, 262);
             this.vscodeText.Name = "vscodeText";
-            this.vscodeText.Size = new System.Drawing.Size(278, 150);
+            this.vscodeText.Size = new System.Drawing.Size(278, 125);
             this.vscodeText.TabIndex = 19;
             this.vscodeText.Text = "Click button above to open\r\ndownloaded VS Code file.\r\nYou can copy the zip file t" +
-    "o \r\nanother system if you need.\r\nIt is called:\r\nOfflineVsCodeFiles.zip";
+    "o \r\nanother system if you need.\r\nIt is called:";
+            // 
+            // vsCodeFileLabel
+            // 
+            this.vsCodeFileLabel.AutoSize = true;
+            this.vsCodeFileLabel.Location = new System.Drawing.Point(278, 387);
+            this.vsCodeFileLabel.Name = "vsCodeFileLabel";
+            this.vsCodeFileLabel.Size = new System.Drawing.Size(230, 25);
+            this.vsCodeFileLabel.TabIndex = 20;
+            this.vsCodeFileLabel.Text = "OfflineVsCodeFiles.zip";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(616, 679);
+            this.ClientSize = new System.Drawing.Size(704, 679);
+            this.Controls.Add(this.vsCodeFileLabel);
             this.Controls.Add(this.vscodeText);
             this.Controls.Add(this.vsCodeWpiExtCheck);
             this.Controls.Add(this.wpilibCheck);
@@ -225,6 +236,7 @@
         private System.Windows.Forms.CheckBox wpilibCheck;
         private System.Windows.Forms.CheckBox vsCodeWpiExtCheck;
         private System.Windows.Forms.Label vscodeText;
+        private System.Windows.Forms.Label vsCodeFileLabel;
     }
 }
 
