@@ -38,7 +38,7 @@ public class Program {
           try {
             Files.copy(artifactPath, Paths.get(toolsPath, tool.name + ".jar"));
             Files.copy(Paths.get(toolsPath, "ScriptBase.vbs"), Paths.get(toolsPath, tool.name + ".vbs"));
-            Files.copy(Paths.get(toolsPath, "ScriptBase.sh"), Paths.get(toolsPath, tool.name + ".sh"));
+            Files.copy(Paths.get(toolsPath, "ScriptBase.py"), Paths.get(toolsPath, tool.name + ".py"));
           } catch (IOException e) {
           }
         }
