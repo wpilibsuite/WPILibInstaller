@@ -754,10 +754,10 @@ namespace WPILibInstaller
                 extractionControllers.Add(new ExtractionIgnores(wpilibCheck, upgradeConfig.Maven.Folder, false));
 
                 var osType = OSLoader.GetOsType();
-                switch (upgradeConfig.InstallerType)
+                switch (osType)
                 {
-                    case UpgradeConfig.LinuxInstallerType:
-                        if (osType != OsType.Linux64)
+                    case OsType.Linux64:
+                        if (upgradeConfig.InstallerType != UpgradeConfig.LinuxInstallerType)
                         {
                             MessageBox.Show("You need the Linux installer for this system");
                             Application.Exit();
@@ -765,8 +765,8 @@ namespace WPILibInstaller
                         }
                         isWindows = false;
                         break;
-                    case UpgradeConfig.MacInstallerType:
-                        if (osType != OsType.MacOs64)
+                    case OsType.MacOs64:
+                        if (upgradeConfig.InstallerType != UpgradeConfig.MacInstallerType)
                         {
                             MessageBox.Show("You need the Mac installer for this system");
                             Application.Exit();
@@ -774,17 +774,8 @@ namespace WPILibInstaller
                         }
                         isWindows = false;
                         break;
-                    case UpgradeConfig.Windows32InstallerType:
-                        if (osType != OsType.Windows32)
-                        {
-                            MessageBox.Show("You need the Windows32 installer for this system");
-                            Application.Exit();
-                            return;
-                        }
-                        isWindows = true;
-                        break;
-                    case UpgradeConfig.Windows64InstallerType:
-                        if (osType != OsType.Windows64)
+                    case OsType.Windows64:
+                        if (upgradeConfig.InstallerType != UpgradeConfig.Windows64InstallerType)
                         {
                             MessageBox.Show("You need the Windows64 installer for this system");
                             Application.Exit();
@@ -792,8 +783,17 @@ namespace WPILibInstaller
                         }
                         isWindows = true;
                         break;
+                    case OsType.Windows32:
+                        if (upgradeConfig.InstallerType != UpgradeConfig.Windows32InstallerType)
+                        {
+                            MessageBox.Show("You need the Windows32 installer for this system");
+                            Application.Exit();
+                            return;
+                        }
+                        isWindows = true;
+                        break;
                     default:
-                        MessageBox.Show("Unknown installer type?");
+                        MessageBox.Show("Unknown OS type?");
                         Application.Exit();
                         return;
                 }
