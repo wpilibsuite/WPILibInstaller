@@ -32,8 +32,9 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
       gradleRioDeps.deps.each { dep->
         if (dep.classifier == null) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
-        } else if (dep.classifier == 'windowsx86-64') {
-          offline "$dep.groupId:$dep.artifactId:$dep.version:$project.ext.forceNativeClassifier@$dep.extension"
+        } else if (dep.classifier.contains('windowsx86-64')) {
+          def newClassifier = dep.classifier.replace('windowsx86-64', project.ext.forceNativeClassifier)
+          offline "$dep.groupId:$dep.artifactId:$dep.version:$newClassifier@$dep.extension"
         } else {
           offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         }

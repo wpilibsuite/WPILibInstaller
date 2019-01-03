@@ -7,6 +7,7 @@ jobs:
  - job: Windows_32_Bit
    pool:
     vmImage: 'vs2017-win2016'
+   timeoutInMinutes: 0
 
    steps:
     - powershell: |
@@ -42,6 +43,7 @@ jobs:
  - job: Windows_64_Bit
    pool:
     vmImage: 'vs2017-win2016'
+   timeoutInMinutes: 0
 
    steps:
     - powershell: |
@@ -77,6 +79,7 @@ jobs:
  - job: Mac
    pool:
     vmImage: 'vs2017-win2016'
+   timeoutInMinutes: 0
 
    steps:
     - powershell: |
@@ -112,6 +115,7 @@ jobs:
  - job: Linux
    pool:
     vmImage: 'vs2017-win2016'
+   timeoutInMinutes: 0
 
    steps:
     - powershell: |
