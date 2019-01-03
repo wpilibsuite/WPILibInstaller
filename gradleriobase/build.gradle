@@ -15,15 +15,6 @@ plugins {
     id "edu.wpi.first.GradleRIO"
 }
 
-if (project.hasProperty('linuxBuild')) {
-    project.ext.forceNativeClassifier = 'linuxx86-64'
-} else if (project.hasProperty('macBuild')) {
-    project.ext.forceNativeClassifier = 'osxx86-64'
-} else if (project.hasProperty('windows32')) {
-    project.ext.forceNativeClassifier = 'windowsx86'
-} else {
-    project.ext.forceNativeClassifier = 'windowsx86-64'
-}
 
 // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
 // and NavX.
@@ -33,21 +24,10 @@ dependencies {
 }
 
 model {
-    platforms {
-        if (project.ext.forceNativeClassifier != 'windowsx86-64') {
-            "${project.ext.forceNativeClassifier}" {
-                if (project.ext.forceNativeClassifier == 'windowsx86') {
-                    architecture "x86"
-                } else {
-                    architecture "x86-64"
-                }
-            }
-        }
-    }
     components {
         frcUserProgram(NativeExecutableSpec) {
             targetPlatform wpi.platforms.roborio
-            targetPlatform ext.forceNativeClassifier
+            targetPlatform wpi.platforms.desktop
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
@@ -55,7 +35,7 @@ model {
         }
         frcUserProgramStatic(NativeExecutableSpec) {
             targetPlatform wpi.platforms.roborio
-            targetPlatform ext.forceNativeClassifier
+            targetPlatform wpi.platforms.desktop
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
