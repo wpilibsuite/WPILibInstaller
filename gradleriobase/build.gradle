@@ -27,7 +27,7 @@ model {
     components {
         frcUserProgram(NativeExecutableSpec) {
             targetPlatform wpi.platforms.roborio
-            targetPlatform ext.forceNativeClassifier
+            targetPlatform wpi.platforms.desktop
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
@@ -35,7 +35,7 @@ model {
         }
         frcUserProgramStatic(NativeExecutableSpec) {
             targetPlatform wpi.platforms.roborio
-            targetPlatform ext.forceNativeClassifier
+            targetPlatform wpi.platforms.desktop
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
