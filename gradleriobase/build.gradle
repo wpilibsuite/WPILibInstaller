@@ -33,17 +33,6 @@ dependencies {
 }
 
 model {
-    platforms {
-        if (project.ext.forceNativeClassifier != 'windowsx86-64') {
-            "${project.ext.forceNativeClassifier}" {
-                if (project.ext.forceNativeClassifier == 'windowsx86') {
-                    architecture "x86"
-                } else {
-                    architecture "x86-64"
-                }
-            }
-        }
-    }
     components {
         frcUserProgram(NativeExecutableSpec) {
             targetPlatform wpi.platforms.roborio
