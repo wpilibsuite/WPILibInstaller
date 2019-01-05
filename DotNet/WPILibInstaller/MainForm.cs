@@ -373,7 +373,7 @@ namespace WPILibInstaller
             shortcut.Description = "Shortcut for FRC Development Command Prompt";
             shortcut.TargetPath = @"%comspec%";
 
-            shortcut.Arguments = $"/k \"{Path.Combine(frcHomePath, "frccode", "frcvars.bat")}\"";
+            shortcut.Arguments = $"/k \"{Path.Combine(frcHomePath, "frccode", $"frcvars{upgradeConfig.FrcYear}.bat")}\"";
             object shDocuments = "MyDocuments";
             shortcut.WorkingDirectory = shell.SpecialFolders.Item(ref shDocuments);
             shortcut.IconLocation = Path.Combine(frcHomePath, upgradeConfig.PathFolder, "wpilib-256.ico") + ",0";
