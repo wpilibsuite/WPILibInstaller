@@ -18,9 +18,19 @@ plugins {
     id "com.ullink.nuget" version "2.16" apply false
     id "de.undercouch.download" version "3.4.3" apply false
     id "com.github.johnrengelman.shadow" version "4.0.3" apply false
-    id "edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin" version "2.4"
+    id "edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin" version "2.4" apply false
     id 'com.gradle.build-scan' version '2.0.2'
 }
+
+def azureRelease = System.getenv('BUILD_SOURCEBRANCH')
+if (azureRelease != null) {
+    if (azureRelease.startsWith('refs/tags/')) {
+        project.ext.releaseType = 'OFFICIAL'
+        println 'tagged build'
+    }
+}
+
+apply plugin: 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin'
 
 buildScan {
     termsOfServiceUrl = 'https://gradle.com/terms-of-service'
