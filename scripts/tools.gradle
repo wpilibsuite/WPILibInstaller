@@ -64,5 +64,6 @@ ext.toolsSetup = { AbstractArchiveTask zip->
 
   zip.from (scriptBaseUnixFile) {
     into '/tools'
+    fileMode 0755
   }
 }
