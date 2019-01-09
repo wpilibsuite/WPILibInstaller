@@ -231,7 +231,7 @@ ext.vscodeZipSetup = { AbstractArchiveTask zip->
   } else if (project.hasProperty('macBuild')) {
     // Mac
     // Cannot extract, otherwise mac borks
-    from (utilityFile) {
+    zip.from (utilityFile) {
       into '/utility'
     }
   } else {
