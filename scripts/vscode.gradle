@@ -222,11 +222,17 @@ ext.vscodeZipSetup = { AbstractArchiveTask zip->
 
   zip.inputs.file vscodeFile
 
-  if (project.hasProperty('linuxBuild') || project.hasProperty('macBuild')) {
-    // Unix
+  if (project.hasProperty('linuxBuild')) {
+    // Linux
     zip.from(project.tarTree(project.resources.gzip(utilityFile))) {
       into '/utility'
       includeEmptyDirs = false
+    }
+  } else if (project.hasProperty('macBuild')) {
+    // Mac
+    // Cannot extract, otherwise mac borks
+    zip.from (utilityFile) {
+      into '/utility'
     }
   } else {
     // Windows
