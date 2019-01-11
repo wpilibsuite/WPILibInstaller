@@ -6,7 +6,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if ( requested.id.id == 'edu.wpi.first.GradleRIO' ) {
-                useModule( "edu.wpi.first:GradleRIO:$gradleRioVersion" )
+                useModule( "edu.wpi.first.GradleRIO:edu.wpi.first.GradleRIO.gradle.plugin:$gradleRioVersion" )
             }
         }
     }
