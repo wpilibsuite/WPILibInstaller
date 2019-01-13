@@ -209,6 +209,7 @@ def generateFullResourcesTask = tasks.register('generateFullResources', project.
     if (project.ext.isUnix) {
         extension = 'tar.gz'
         compression = Compression.GZIP
+        into ("frc${project.ext.frcYear}")
     }
 
     dependsOn fullConfigFileTask
@@ -278,5 +279,9 @@ def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
 }
 
 tasks.register('generateInstallers', Task) {
-    dependsOn fullInstallerTask
+    if (project.ext.isUnix) {
+        dependsOn generateFullResourcesTask
+    } else {
+        dependsOn fullInstallerTask
+    }
 }
