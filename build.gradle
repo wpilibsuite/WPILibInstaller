@@ -202,7 +202,12 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
 
 def generateFullResourcesTask = tasks.register('generateFullResources', project.ext.archiveType) {
     baseName 'WPILib_FullFiles-' + buildClassifier + '-' + pubVersion
-    destinationDir file("$buildDir/outputs")
+
+    if (project.ext.isUnix) {
+        destinationDir file("$buildDir/outputs")
+    } else {
+        destinationDir file("$buildDir/tmpOutputs")
+    }
     duplicatesStrategy 'exclude'
 
 
@@ -247,7 +252,7 @@ def generateFullZipBaseTask = tasks.register('generateFullZipBase', Zip) {
 
 
 def fullInstallerName = "WPILibInstaller_Full-${buildClassifier}-${pubVersion}.exe"
-def fullInstaller = file("$buildDir/outputs/$fullInstallerName")
+def fullInstaller = file("$buildDir/tmpOutputs/$fullInstallerName")
 
 def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
     def zipFile = generateFullZipBaseTask.get().archivePath
@@ -259,7 +264,7 @@ def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
     doLast {
         copy {
             from zipFile
-            into "$buildDir/outputs"
+            into "$buildDir/tmpOutputs"
             rename { fullInstallerName }
         }
 
@@ -277,6 +282,21 @@ def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
     }
 }
 
-tasks.register('generateInstallers', Task) {
+def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
+    baseName = "WPILibInstaller_Full-${buildClassifier}-${pubVersion}"
+    destinationDir file("$buildDir/outputs")
     dependsOn fullInstallerTask
+
+    from (fullInstaller) {
+        into '/'
+    }
+
+}
+
+tasks.register('generateInstallers', Task) {
+    if (project.ext.isUnix) {
+        dependsOn generateFullResourcesTask
+    } else {
+        dependsOn zipWindowsInstaller
+    }
 }
