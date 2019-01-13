@@ -294,13 +294,9 @@ def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
 }
 
 tasks.register('generateInstallers', Task) {
-<<<<<<< HEAD
-    dependsOn fullInstallerTask
-=======
     if (project.ext.isUnix) {
         dependsOn generateFullResourcesTask
     } else {
         dependsOn zipWindowsInstaller
     }
->>>>>>> b18d1e3... Zip windows installer for easier installation
 }
