@@ -66,7 +66,7 @@ namespace WPILibInstaller
                  startInfo.RedirectStandardOutput = true;
                  var proc = Process.Start(startInfo);
                  proc.WaitForExit();
-                 List<(string name, string version)> lines = new List<(string name, string version)>();
+                 List<(string name, Version version)> lines = new List<(string name, Version version)>();
                  while (true)
                  {
                      string line = proc.StandardOutput.ReadLine();
@@ -78,24 +78,24 @@ namespace WPILibInstaller
                      if (line.Contains("@"))
                      {
                          var split = line.Split('@');
-                         lines.Add((split[0], split[1]));
+                         lines.Add((split[0], new Version(split[1])));
                      }
                  }
              });
 
-            List<(Extension extension, int sortOrder)> availableToInstall = new List<(Extension extension, int sortOrder)>();
+            List<(Extension extension, Version version, int sortOrder)> availableToInstall = new List<(Extension extension, Version version, int sortOrder)>();
 
-            availableToInstall.Add((vsCodeConfig.WPILibExtension, int.MaxValue));
+            availableToInstall.Add((vsCodeConfig.WPILibExtension, new Version(vsCodeConfig.WPILibExtension.Version), int.MaxValue));
             for (int i = 0; i < vsCodeConfig.ThirdPartyExtensions.Length; i++)
             {
-                availableToInstall.Add((vsCodeConfig.ThirdPartyExtensions[i], i));
+                availableToInstall.Add((vsCodeConfig.ThirdPartyExtensions[i], new Version(vsCodeConfig.ThirdPartyExtensions[i].Version), i));
             }
 
             var maybeUpdates = availableToInstall.Where(x => versions.Select(y => y.name).Contains((x.extension.Name))).ToList();
             var newInstall = availableToInstall.Except(maybeUpdates).ToList();
 
             var definitelyUpdate = maybeUpdates.Join(versions, x => x.extension.Name, y => y.name, (newVersion, existing) => (newVersion, existing))
-                                          .Where(x => x.newVersion.extension.Version.CompareTo(x.existing.version) > 0).Select(x => x.newVersion);
+                                          .Where(x => x.newVersion.version > x.existing.version).Select(x => x.newVersion);
 
             var installs = definitelyUpdate.Concat(newInstall).OrderBy(x => x.sortOrder).Select(x => x.extension).ToArray();
 
