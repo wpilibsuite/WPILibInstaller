@@ -140,6 +140,7 @@
       <DependentUpon>Selector.cs</DependentUpon>
     </Compile>
     <Compile Include="Uname.cs" />
+    <Compile Include="Version.cs" />
     <Compile Include="VSCodeExtensions.cs" />
     <Compile Include="VsCodeFiles.cs" />
     <Compile Include="ZipTools.cs" />

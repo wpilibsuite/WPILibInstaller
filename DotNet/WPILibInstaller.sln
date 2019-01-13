@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolsUpdater", "ToolsUpdate
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedCode", "SharedCode\SharedCode.csproj", "{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPILibInstaller.Test", "WPILibInstaller.Test\WPILibInstaller.Test.csproj", "{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Release|Linux.Build.0 = Release|Any CPU
 		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Release|Mac.ActiveCfg = Release|Any CPU
 		{1E86F096-9B7D-44EA-ACDB-6F2A3FC10154}.Release|Mac.Build.0 = Release|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Debug|Linux.ActiveCfg = Debug|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Debug|Linux.Build.0 = Debug|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Debug|Mac.ActiveCfg = Debug|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Debug|Mac.Build.0 = Debug|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Release|Linux.ActiveCfg = Release|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Release|Linux.Build.0 = Release|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Release|Mac.ActiveCfg = Release|Any CPU
+		{C8E738F0-3A36-47B0-BB94-D4A021A45EB2}.Release|Mac.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

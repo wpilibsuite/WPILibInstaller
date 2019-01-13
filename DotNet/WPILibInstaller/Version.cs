@@ -8,9 +8,9 @@ namespace WPILibInstaller
 {
     public class Version
     {
-        public int Major { get; set; } = 0;
-        public int Minor { get; set; } = 0;
-        public int Patch { get; set; } = 0;
+        public int Major { get; set; } = -1;
+        public int Minor { get; set; } = -1;
+        public int Patch { get; set; } = -1;
         public string Else { get; set; } = null;
         public string FullVersion { get; set; } = null;
 
