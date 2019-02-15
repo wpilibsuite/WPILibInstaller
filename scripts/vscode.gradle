@@ -3,7 +3,7 @@ def vscodeFile = file("$buildDir/vscodeConfig.json")
 
 def vsCodeVersion = '1.30.1'
 
-def wpilibVersion = '2019.2.1'
+def wpilibVersion = '2019.3.1'
 
 def vscode32Url = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/win32-archive/stable".toString()
 def vscode32ZipName = "Windows32.zip".toString()
@@ -16,13 +16,13 @@ def vscodeLinuxZipName = "Linux.tar.gz"
 def vscodeMacUrl = "https://vscode-update.azurewebsites.net/${vsCodeVersion}/darwin/stable".toString()
 def vscodeMacZipName = "Mac.zip"
 
-def cppWindowsUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.20.1/cpptools-win32.vsix'
+def cppWindowsUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.21.0/cpptools-win32.vsix'
 def cppWindowsVsix = 'Cpp.vsix'
 
-def cppMacUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.20.1/cpptools-osx.vsix'
+def cppMacUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.21.0/cpptools-osx.vsix'
 def cppMacVsix = 'CppMac.vsix'
 
-def cppLinuxUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.20.1/cpptools-linux.vsix'
+def cppLinuxUrl = 'https://github.com/Microsoft/vscode-cpptools/releases/download/0.21.0/cpptools-linux.vsix'
 def cppLinuxVsix = 'CppLinux.vsix'
 
 def wpilibExtensionUrl = "https://github.com/wpilibsuite/vscode-wpilib/releases/download/v${wpilibVersion}/vscode-wpilib-${wpilibVersion}.vsix"
