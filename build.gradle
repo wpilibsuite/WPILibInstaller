@@ -1,8 +1,7 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.Gson
 import org.gradle.wrapper.*
-
-
+import java.security.MessageDigest
 
 buildscript {
     dependencies {
@@ -18,19 +17,15 @@ plugins {
     id "com.ullink.nuget" version "2.16" apply false
     id "de.undercouch.download" version "3.4.3" apply false
     id "com.github.johnrengelman.shadow" version "4.0.3" apply false
-    id "edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin" version "2.4" apply false
     id 'com.gradle.build-scan' version '2.0.2'
 }
 
 def azureRelease = System.getenv('BUILD_SOURCEBRANCH')
 if (azureRelease != null) {
     if (azureRelease.startsWith('refs/tags/')) {
-        project.ext.releaseType = 'OFFICIAL'
         println 'tagged build'
     }
 }
-
-apply plugin: 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin'
 
 buildScan {
     termsOfServiceUrl = 'https://gradle.com/terms-of-service'
@@ -41,30 +36,18 @@ buildScan {
 
 apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
 
-WPILibVersion {
-    addMavenLocal = false
-    addMavenRemote = false
-    addMavenPublishing = false
-}
-
-// Ensure that the WPILibVersioningPlugin is setup by setting the release type, if releaseType wasn't
-// already specified on the command line
-if (!hasProperty('releaseType')) {
-    WPILibVersion {
-        releaseType = 'dev'
-    }
-}
-
 ext.pubVersion = ''
 if (project.hasProperty("publishVersion")) {
     pubVersion = project.publishVersion
 } else {
-    pubVersion = WPILibVersion.version
+    pubVersion = gradleRioVersion
 }
 
 if (pubVersion == '') {
     pubVersion = '0.0.1-unknown'
 }
+
+println pubVersion
 
 project.ext.setProperty('toolchain-optional-roboRio', '')
 
@@ -290,7 +273,6 @@ def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
     from (fullInstaller) {
         into '/'
     }
-
 }
 
 tasks.register('generateInstallers', Task) {
