@@ -1,6 +1,7 @@
 import com.google.gson.GsonBuilder
 import com.google.gson.Gson
 import org.gradle.wrapper.*
+import java.security.MessageDigest
 
 buildscript {
     dependencies {
