@@ -188,12 +188,6 @@ def generateFullResourcesTask = tasks.register('generateFullResources', project.
 
     if (project.ext.isUnix) {
         destinationDir file("$buildDir/outputs")
-        def hashFile = file("$buildDir/outputs/WPILib_FullFiles-${buildClassifier}-${pubVersion}.md5")
-        outputs.file hashFile
-
-        doLast {
-            hashFile.text = MessageDigest.getInstance("MD5").digest(archivePath.bytes).encodeHex().toString()
-        }
     } else {
         destinationDir file("$buildDir/tmpOutputs")
     }
@@ -274,18 +268,11 @@ def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
 def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
     baseName = "WPILibInstaller_Full-${buildClassifier}-${pubVersion}"
     destinationDir file("$buildDir/outputs")
-    def hashFile = file("$buildDir/outputs/WPILibInstaller_Full-${buildClassifier}-${pubVersion}.md5")
-    outputs.file hashFile
     dependsOn fullInstallerTask
 
     from (fullInstaller) {
         into '/'
     }
-
-    doLast {
-        hashFile.text = MessageDigest.getInstance("MD5").digest(archivePath.bytes).encodeHex().toString()
-    }
-
 }
 
 tasks.register('generateInstallers', Task) {
