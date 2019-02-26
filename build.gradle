@@ -192,7 +192,7 @@ def generateFullResourcesTask = tasks.register('generateFullResources', project.
         outputs.file hashFile
 
         doLast {
-            hashFile.text = MessageDigest.getInstance("MD5").digest(archiveFile.get()).encodeHex().toString()
+            hashFile.text = MessageDigest.getInstance("MD5").digest(archivePath.bytes).encodeHex().toString()
         }
     } else {
         destinationDir file("$buildDir/tmpOutputs")
@@ -283,7 +283,7 @@ def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
     }
 
     doLast {
-        hashFile.text = MessageDigest.getInstance("MD5").digest(archiveFile.get()).encodeHex().toString()
+        hashFile.text = MessageDigest.getInstance("MD5").digest(archivePath.bytes).encodeHex().toString()
     }
 
 }
