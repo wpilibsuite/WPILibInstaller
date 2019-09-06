@@ -13,11 +13,11 @@ buildscript {
 plugins {
     id 'java'
     id 'cpp'
-    id "com.ullink.msbuild" version "2.21" apply false
-    id "com.ullink.nuget" version "2.16" apply false
-    id "de.undercouch.download" version "3.4.3" apply false
-    id "com.github.johnrengelman.shadow" version "4.0.3" apply false
-    id 'com.gradle.build-scan' version '2.0.2'
+    id "com.ullink.msbuild" version "3.6" apply false
+    id "com.ullink.nuget" version "2.18" apply false
+    id "de.undercouch.download" version "4.0.0" apply false
+    id "com.github.johnrengelman.shadow" version "5.1.0" apply false
+    id 'com.gradle.build-scan' version '2.4.1'
 }
 
 def azureRelease = System.getenv('BUILD_SOURCEBRANCH')
@@ -82,7 +82,7 @@ if (project.hasProperty('linuxBuild')) {
 }
 
 wrapper {
-    gradleVersion = '5.0'
+    gradleVersion = '5.4.1'
 }
 
 ext.frcYear = '2019'

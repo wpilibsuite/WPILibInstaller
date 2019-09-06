@@ -8,6 +8,7 @@ import org.apache.maven.model.resolution.InvalidRepositoryException
 import org.apache.maven.model.resolution.ModelResolver
 import org.apache.maven.model.resolution.UnresolvableModelException
 import org.gradle.api.artifacts.result.UnresolvedArtifactResult
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.Project
 import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
 import org.gradle.api.internal.artifacts.DefaultModuleVersionIdentifier
@@ -18,7 +19,7 @@ class PomDependencyModelResolver implements ModelResolver {
 
   private Project project
   private Map<String, FileModelSource> pomCache = [:]
-  private Map<DefaultModuleComponentIdentifier, File> componentCache = [:]
+  private Map<ModuleComponentIdentifier, File> componentCache = [:]
 
   public PomDependencyModelResolver(Project project) {
     this.project = project
