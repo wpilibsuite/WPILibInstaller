@@ -875,12 +875,12 @@ namespace WPILibInstaller
             if (isWindows)
             {
                 var publicFolder = Environment.GetEnvironmentVariable("PUBLIC");
-                frcHome = Path.Combine(publicFolder, $"frc{upgradeConfig.FrcYear}");
+                frcHome = Path.Combine(publicFolder, "wpilib", upgradeConfig.FrcYear);
             }
             else
             {
                 var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                frcHome = Path.Combine(userFolder, $"frc{upgradeConfig.FrcYear}");
+                frcHome = Path.Combine(userFolder, "wpilib", upgradeConfig.FrcYear);
             }
 
             VSCodeInstall vsi = new VSCodeInstall(Path.Combine(frcHome, "vscode"));
