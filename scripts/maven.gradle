@@ -35,7 +35,7 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
         } else if (dep.classifier.contains('windowsx86-64')) {
           def newClassifier = dep.classifier.replace('windowsx86-64', project.ext.forceNativeClassifier)
           offline "$dep.groupId:$dep.artifactId:$dep.version:$newClassifier@$dep.extension"
-        } else {
+        } else if (!dep.classifier.contains('xenial') && !dep.classifier.contains('bionic') && !dep.classifier.contains('raspbian')) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         }
 
