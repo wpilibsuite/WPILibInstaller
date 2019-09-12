@@ -56,9 +56,13 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
 }
 repositories {
     project(':gradleriobase').getGradleRioUrls().each { gUrl->
-        maven {
-          url = gUrl
-        }
+      maven {
+        url = gUrl
+      }
+    }
+    maven {
+      name 'artifactory'
+      url 'https://frcmaven.wpi.edu/artifactory/plugins'
     }
 }
 
@@ -76,6 +80,10 @@ offlineDependencies {
       maven {
         url = gUrl
       }
+    }
+    maven {
+      name 'artifactory'
+      url 'https://frcmaven.wpi.edu/artifactory/plugins'
     }
   }
 
