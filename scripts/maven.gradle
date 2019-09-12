@@ -33,7 +33,12 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
         if (dep.classifier == null) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
         } else if (dep.classifier.startsWith(project.ext.forceNativeClassifier)) {
-          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+          // Special case win 32
+          if (project.ext.forceNativeClassifier == 'windowsx86') {
+            offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86@$dep.extension"
+          } else {
+            offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+          }
         } else if (dep.classifier.contains('athena')) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         } else if (dep.classifier.contains('headers')) {
