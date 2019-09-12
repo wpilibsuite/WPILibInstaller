@@ -32,11 +32,16 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
       gradleRioDeps.deps.each { dep->
         if (dep.classifier == null) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:@$dep.extension"
-        } else if (dep.classifier.contains(project.ext.forceNativeClassifier)) {
+        } else if (dep.classifier.startsWith(project.ext.forceNativeClassifier)) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         } else if (dep.classifier.contains('athena')) {
           offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+        } else if (dep.classifier.contains('headers')) {
+          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
+        } else if (dep.classifier.contains('sources')) {
+          offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
         }
+
 
         toolArtifacts.each { tool->
           if ("$dep.groupId:$dep.artifactId" == tool) {
