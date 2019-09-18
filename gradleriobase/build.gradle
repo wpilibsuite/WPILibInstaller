@@ -31,7 +31,8 @@ model {
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
-            useLibrary(it, "wpilib", "googletest")
+            wpi.deps.wpilib(it)
+            wpi.deps.googleTest(it)
         }
         frcUserProgramStatic(NativeExecutableSpec) {
             targetPlatform wpi.platforms.roborio
@@ -39,7 +40,8 @@ model {
 
             // Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
             // and NavX.
-            useLibrary(it, "wpilib_static", "googletest")
+            wpi.deps.wpilibStatic(it)
+            wpi.deps.googleTest(it)
         }
     }
 }
