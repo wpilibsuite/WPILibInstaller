@@ -35,7 +35,8 @@ def lazyEvaluator = tasks.register('lazyModelEvaluation') {
         } else if (dep.classifier.startsWith(project.ext.forceNativeClassifier)) {
           // Special case win 32
           if (project.ext.forceNativeClassifier == 'windowsx86') {
-            offline "$dep.groupId:$dep.artifactId:$dep.version:windowsx86@$dep.extension"
+            def cls = dep.classifier.replace('windowsx86-64', 'windowsx86')
+            offline "$dep.groupId:$dep.artifactId:$dep.version:$cls@$dep.extension"
           } else {
             offline "$dep.groupId:$dep.artifactId:$dep.version:$dep.classifier@$dep.extension"
           }
