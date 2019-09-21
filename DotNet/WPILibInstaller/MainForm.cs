@@ -652,7 +652,10 @@ namespace WPILibInstaller
 
                 CreateDevPromptShortcuts(intoPath);
                 CreateFrcHomeShortcut(intoPath);
-                CreateToolShortcuts(intoPath);
+
+                if (toolsCheck.Checked) {
+                    CreateToolShortcuts(intoPath);
+                }
 
                 isInstalling = false;
                 performInstallButton.Enabled = false;
