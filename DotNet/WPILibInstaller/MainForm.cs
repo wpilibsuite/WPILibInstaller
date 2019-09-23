@@ -228,7 +228,7 @@ namespace WPILibInstaller
 #if !MAC && !LINUX
             object shDesktop = "StartMenu";
             if (adminMode) {
-                shDesktop = "AllUsersStartMenu"
+                shDesktop = "AllUsersStartMenu";
             }
             WshShell shell = new WshShell();
             string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}";
@@ -250,7 +250,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "Desktop";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC VS Code {upgradeConfig.FrcYear}.lnk";
@@ -263,7 +263,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC VS Code {upgradeConfig.FrcYear}.lnk";
@@ -283,7 +283,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "Desktop";
                 if (adminMode) {
-                    shDesktop = "AllUsersDesktop"
+                    shDesktop = "AllUsersDesktop";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC Shuffleboard.lnk";
@@ -296,7 +296,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "Desktop";
                 if (adminMode) {
-                    shDesktop = "AllUsersDesktop"
+                    shDesktop = "AllUsersDesktop";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC SmartDashboard.lnk";
@@ -309,7 +309,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC Shuffleboard.lnk";
@@ -322,7 +322,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC SmartDashboard.lnk";
@@ -336,7 +336,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC OutlineViewer.lnk";
@@ -349,7 +349,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC RobotBuilder.lnk";
@@ -362,7 +362,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC PathWeaver.lnk";
@@ -382,7 +382,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "StartMenu";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu"
+                    shDesktop = "AllUsersStartMenu";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC Home.lnk";
@@ -401,7 +401,7 @@ namespace WPILibInstaller
             CreateFRCShortcutsFolder();
             object shDesktop = "StartMenu";
             if (adminMode) {
-                shDesktop = "AllUsersStartMenu"
+                shDesktop = "AllUsersStartMenu";
             }
             WshShell shell = new WshShell();
             string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC {upgradeConfig.FrcYear}\\FRC Developer Command Prompt {upgradeConfig.FrcYear}.lnk";
