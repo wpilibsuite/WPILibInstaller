@@ -2,6 +2,7 @@ evaluationDependsOn(':gradleriobase')
 
 def otherDeps = []
 
+apply plugin: 'de.undercouch.download'
 
 configurations {
   offline
@@ -119,6 +120,14 @@ ext.mavenConfigSetup = {
   })
 }
 
+def downloadReadTheDocs = tasks.register('downloadReadTheDocs', Download) {
+  src 'https://buildmedia.readthedocs.org/media/htmlzip/frc-docs/latest/frc-docs.zip'
+  dest buildDir
+  overwrite false
+}
+
+def rtdFile = file("$buildDir/frc-docs.zip")
+
 ext.mavenZipSetup = { AbstractArchiveTask zip->
   zip.dependsOn updateOfflineRepository
   zip.inputs.dir offlineRepositoryRoot
@@ -133,6 +142,10 @@ ext.mavenZipSetup = { AbstractArchiveTask zip->
   }
   zip.from(project.zipTree(configurations.documentationJava.resolvedConfiguration.resolvedArtifacts.first().file)) {
     into '/documentation/java'
+  }
+
+  zip.from(rtdFile) {
+    into '/documentation/rtd'
   }
 }
 
