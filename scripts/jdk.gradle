@@ -79,7 +79,7 @@ ext.jdkZipSetup32 = { AbstractArchiveTask zip->
   zip.from(project.zipTree(jdk32File)) {
 
     eachFile { f->
-      f.path = f.path.replace('jdk-11.0.4/', 'jdk/')
+      f.path = f.path.replace('jdk-11.0.4+11/', 'jdk/')
     }
 
     x86DllFiles.each {
@@ -116,7 +116,7 @@ ext.jdkZipSetup64 = { AbstractArchiveTask zip->
   zip.from(project.zipTree(jdk64File)) {
 
     eachFile { f->
-      f.path = f.path.replace('jdk-11.0.4/', 'jdk/')
+      f.path = f.path.replace('jdk-11.0.4+11/', 'jdk/')
     }
 
     x64DllFiles.each {
