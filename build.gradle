@@ -85,7 +85,7 @@ wrapper {
     gradleVersion = '5.4.1'
 }
 
-ext.frcYear = '2019'
+ext.frcYear = '2020'
 
 apply from: 'scripts/gradlew.gradle'
 apply from: 'scripts/installer.gradle'
