@@ -99,6 +99,7 @@ offlineDependencies {
   }
 
   configurations 'offline'
+  configurations 'tools'
 
   includeSources = true
   includeJavadocs = true
