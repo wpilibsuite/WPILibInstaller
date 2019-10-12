@@ -250,7 +250,7 @@ namespace WPILibInstaller
             {
                 object shDesktop = "Desktop";
                 if (adminMode) {
-                    shDesktop = "AllUsersStartMenu";
+                    shDesktop = "AllUsersDesktop";
                 }
                 WshShell shell = new WshShell();
                 string shortcutAddress = shell.SpecialFolders.Item(ref shDesktop) + $"\\FRC VS Code {upgradeConfig.FrcYear}.lnk";
