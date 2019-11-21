@@ -6,7 +6,7 @@ import java.security.MessageDigest
 buildscript {
     dependencies {
         classpath files('gradle/wrapper/gradle-wrapper.jar')
-        classpath 'com.google.code.gson:gson:2.2.4'
+        classpath 'com.google.code.gson:gson:2.8.6'
     }
 }
 
@@ -15,9 +15,8 @@ plugins {
     id 'cpp'
     id "com.ullink.msbuild" version "3.6" apply false
     id "com.ullink.nuget" version "2.18" apply false
-    id "de.undercouch.download" version "4.0.0" apply false
-    id "com.github.johnrengelman.shadow" version "5.1.0" apply false
-    id 'com.gradle.build-scan' version '2.4.1'
+    id "de.undercouch.download" version "4.0.1" apply false
+    id "com.github.johnrengelman.shadow" version "5.2.0" apply false
 }
 
 def azureRelease = System.getenv('BUILD_SOURCEBRANCH')
@@ -25,13 +24,6 @@ if (azureRelease != null) {
     if (azureRelease.startsWith('refs/tags/')) {
         println 'tagged build'
     }
-}
-
-buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
-
-    publishAlways()
 }
 
 apply plugin: io.pry.gradle.offline_dependencies.OfflineDependenciesPlugin
@@ -82,7 +74,7 @@ if (project.hasProperty('linuxBuild')) {
 }
 
 wrapper {
-    gradleVersion = '5.4.1'
+    gradleVersion = '6.0.1'
 }
 
 ext.frcYear = '2020'
