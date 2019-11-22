@@ -129,11 +129,34 @@ def downloadReadTheDocs = tasks.register('downloadReadTheDocs', Download) {
 
 def rtdFile = file("$buildDir/frc-docs.zip")
 
+def downloadNewCommands = tasks.register('downloadNewCommands', Download) {
+  src 'https://raw.githubusercontent.com/wpilibsuite/allwpilib/master/wpilibNewCommands/WPILibNewCommands.json'
+  dest buildDir
+  overwrite false
+}
+
+def downloadOldCommands = tasks.register('downloadOldCommands', Download) {
+  src 'https://raw.githubusercontent.com/wpilibsuite/allwpilib/master/wpilibOldCommands/WPILibOldCommands.json'
+  dest buildDir
+  overwrite false
+}
+
 ext.mavenZipSetup = { AbstractArchiveTask zip->
   zip.dependsOn updateOfflineRepository
   zip.inputs.dir offlineRepositoryRoot
   zip.from(fileTree(offlineRepositoryRoot)) {
     into '/maven'
+  }
+
+  zip.dependsOn downloadNewCommands
+  zip.dependsOn downloadOldCommands
+
+  zip.from("$buildDir/WPILibNewCommands.json") {
+    into '/vendordeps'
+  }
+
+  zip.from("$buildDir/WPILibOldCommands.json") {
+    into '/vendordeps'
   }
 
   def file = configurations.documentationCpp.resolvedConfiguration.resolvedArtifacts.first().file
