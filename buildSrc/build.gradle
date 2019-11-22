@@ -8,5 +8,5 @@ ext {
 }
 
 dependencies {
-  compile "org.apache.maven:maven-model-builder:$mavenVersion"
+  api "org.apache.maven:maven-model-builder:$mavenVersion"
 }
