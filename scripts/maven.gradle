@@ -150,6 +150,7 @@ ext.mavenZipSetup = { AbstractArchiveTask zip->
 
   zip.dependsOn downloadNewCommands
   zip.dependsOn downloadOldCommands
+  zip.dependsOn downloadReadTheDocs
 
   zip.from("$buildDir/WPILibNewCommands.json") {
     into '/vendordeps'
