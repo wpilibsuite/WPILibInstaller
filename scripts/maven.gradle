@@ -169,7 +169,7 @@ ext.mavenZipSetup = { AbstractArchiveTask zip->
     into '/documentation/java'
   }
 
-  zip.from(rtdFile) {
+  zip.from(project.zipTree(rtdFile)) {
     into '/documentation/rtd'
   }
 }
