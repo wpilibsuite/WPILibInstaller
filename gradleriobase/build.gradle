@@ -33,6 +33,10 @@ dependencies {
 
 
     implementation 'junit:junit:4.12'
+
+    // commands
+    implementation "edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:${wpi.wpilibVersion}"
+    implementation "edu.wpi.first.wpilibOldCommands:wpilibOldCommands-java:${wpi.wpilibVersion}"
 }
 
 model {
@@ -45,6 +49,9 @@ model {
             // and NavX.
             wpi.deps.wpilib(it)
             wpi.deps.googleTest(it)
+
+            wpi.useLibrary(it, 'wpilib_new_commands_shared')
+            wpi.useLibrary(it, 'wpilib_old_commands_shared')
         }
         frcUserProgramStatic(NativeExecutableSpec) {
             targetPlatform wpi.platforms.roborio
