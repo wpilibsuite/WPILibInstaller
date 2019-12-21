@@ -948,7 +948,8 @@ namespace WPILibInstaller
         {
             if (vsCodeSelected)
             {
-                Process.Start("explorer.exe", "/select \"" + VsCodeZipFile + "\"");
+                var explorerCommand = "/select,\"" + VsCodeZipFile + "\"";
+                Process.Start("explorer.exe", explorerCommand);
                 return;
             }
             Selector selector = new Selector(vsCodeConfig);
