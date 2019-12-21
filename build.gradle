@@ -207,7 +207,7 @@ def generateFullResourcesTask = tasks.register('generateFullResources', project.
 }
 
 def generateFullZipBaseTask = tasks.register('generateFullZipBase', Zip) {
-    baseName 'WPILibSuite_' + buildClassifier
+    baseName 'WPILibInstaller_' + buildClassifier
     destinationDir buildDir
     duplicatesStrategy 'exclude'
 
@@ -226,7 +226,7 @@ def generateFullZipBaseTask = tasks.register('generateFullZipBase', Zip) {
 }
 
 
-def fullInstallerName = "WPILibSuite_${buildClassifier}-${pubVersion}.exe"
+def fullInstallerName = "WPILibInstaller${buildClassifier}-${pubVersion}.exe"
 def fullInstaller = file("$buildDir/tmpOutputs/$fullInstallerName")
 
 def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
@@ -258,7 +258,7 @@ def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
 }
 
 def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
-    baseName = "WPILibSuite_${buildClassifier}-${pubVersion}"
+    baseName = "WPILibInstaller_${buildClassifier}-${pubVersion}"
     destinationDir file("$buildDir/outputs")
     dependsOn fullInstallerTask
 
