@@ -32,7 +32,7 @@ msbuild {
   parameters.configuration = 'Release'
 }
 
-ext.installerFile = file('DotNet/WPILibInstaller/bin/Release/Merged/WPILibSuite.exe')
+ext.installerFile = file('DotNet/WPILibInstaller/bin/Release/Merged/WPILibInstaller.exe')
 
 ext.msBuildSetupMain = { AbstractArchiveTask zip->
   zip.dependsOn msbuild

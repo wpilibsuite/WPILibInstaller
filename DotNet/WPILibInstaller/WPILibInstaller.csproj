@@ -7,7 +7,7 @@
     <ProjectGuid>{393350C6-4346-41E6-8AE5-939574E45578}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>WPILibInstaller</RootNamespace>
-    <AssemblyName>WPILibSuite</AssemblyName>
+    <AssemblyName>WPILibInstaller</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
