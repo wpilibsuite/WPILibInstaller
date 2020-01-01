@@ -226,7 +226,7 @@ def generateFullZipBaseTask = tasks.register('generateFullZipBase', Zip) {
 }
 
 
-def fullInstallerName = "WPILibInstaller${buildClassifier}-${pubVersion}.exe"
+def fullInstallerName = "WPILibInstaller_${buildClassifier}-${pubVersion}.exe"
 def fullInstaller = file("$buildDir/tmpOutputs/$fullInstallerName")
 
 def fullInstallerTask = tasks.register('generateFullInstaller', Task) {
