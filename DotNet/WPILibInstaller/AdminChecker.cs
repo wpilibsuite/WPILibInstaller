@@ -62,7 +62,7 @@ namespace WPILibInstaller
                     using (ZipFile zfs = new ZipFile(fs))
                     {
                         zfs.IsStreamOwner = false;
-                        ZipEntry filesEntry = zfs.GetEntry("WPIlibInstaller.exe");
+                        ZipEntry filesEntry = zfs.GetEntry("WPILibSuite.exe");
                         // Extract just the size of the entry.
                         extractSize = filesEntry.Size;
                     }
