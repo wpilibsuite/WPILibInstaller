@@ -175,6 +175,33 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     }
 }
 
+def generateConfigFiles = tasks.register('generateCommonResources', Zip) {
+    baseName = 'WPILib_' + buildClassifier + '-' + pubVersion + '-resources'
+
+    if (project.ext.isUnix) {
+        destinationDir file("$buildDir/outputs")
+    } else {
+        destinationDir file("$buildDir/tmpOutputs")
+    }
+    duplicatesStrategy 'exclude'
+
+    dependsOn fullConfigFileTask
+    inputs.file fullConfigFile
+
+    it.from (fullConfigFile)
+
+    def zip = it
+
+    zip.dependsOn upgradeConfigFileTask
+    zip.inputs.file upgradeConfigFile
+
+    zip.from (upgradeConfigFile)
+
+    jdkConfigFileSetup(zip)
+
+    vscodeConfigZipSetup(zip)
+}
+
 def generateFullResourcesTask = tasks.register('generateFullResources', project.ext.archiveType) {
     baseName 'WPILib_' + buildClassifier + '-' + pubVersion
 

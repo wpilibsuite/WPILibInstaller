@@ -69,6 +69,15 @@ def jdkConfigFileTask = tasks.register("jdkConfigFile") {
   }
 }
 
+ext.jdkConfigFileSetup = { AbstractArchiveTask zip->
+  zip.dependsOn jdkConfigFileTask
+  zip.inputs.file jdkConfigFile
+
+  zip.from(jdkConfigFile) {
+    rename {'jdkConfig.json'}
+  }
+}
+
 ext.jdkZipSetup32 = { AbstractArchiveTask zip->
   zip.dependsOn download32BitJdk
   zip.dependsOn jdkConfigFileTask

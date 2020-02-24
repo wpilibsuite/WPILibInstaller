@@ -215,6 +215,13 @@ def vscodeTask = tasks.register('vscodeConfig', Task) {
   }
 }
 
+ext.vscodeConfigZipSetup = { AbstractArchiveTask zip->
+  zip.dependsOn vscodeTask
+  zip.inputs.file vscodeFile
+
+  zip.from (vscodeFile)
+}
+
 ext.vscodeZipSetup = { AbstractArchiveTask zip->
   zip.dependsOn vscodeTask
   zip.dependsOn wpilibExtensionDownload
