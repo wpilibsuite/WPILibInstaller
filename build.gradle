@@ -178,11 +178,8 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
 def generateConfigFiles = tasks.register('generateCommonResources', Zip) {
     baseName = 'WPILib_' + buildClassifier + '-' + pubVersion + '-resources'
 
-    if (project.ext.isUnix) {
-        destinationDir file("$buildDir/outputs")
-    } else {
-        destinationDir file("$buildDir/tmpOutputs")
-    }
+    destinationDir file("$buildDir/outputs")
+
     duplicatesStrategy 'exclude'
 
     dependsOn fullConfigFileTask
@@ -205,11 +202,8 @@ def generateConfigFiles = tasks.register('generateCommonResources', Zip) {
 def generateFullResourcesTask = tasks.register('generateFullResources', project.ext.archiveType) {
     baseName 'WPILib_' + buildClassifier + '-' + pubVersion
 
-    if (project.ext.isUnix) {
-        destinationDir file("$buildDir/outputs")
-    } else {
-        destinationDir file("$buildDir/tmpOutputs")
-    }
+    destinationDir file("$buildDir/outputs")
+
     duplicatesStrategy 'exclude'
 
 
@@ -295,10 +289,6 @@ def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
 }
 
 tasks.register('generateInstallers', Task) {
-    if (project.ext.isUnix) {
-        dependsOn generateFullResourcesTask
-    } else {
-        dependsOn generateConfigFiles
-        dependsOn generateFullResourcesTask
-    }
+    dependsOn generateConfigFiles
+    dependsOn generateFullResourcesTask
 }
