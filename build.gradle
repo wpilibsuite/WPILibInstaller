@@ -298,6 +298,7 @@ tasks.register('generateInstallers', Task) {
     if (project.ext.isUnix) {
         dependsOn generateFullResourcesTask
     } else {
-        dependsOn zipWindowsInstaller
+        dependsOn generateConfigFiles
+        dependsOn generateFullResourcesTask
     }
 }
