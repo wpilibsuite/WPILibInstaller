@@ -137,7 +137,7 @@ def commonResources = { AbstractArchiveTask zip->
         into '/installUtils'
     }
 
-    //msBuildExtraSetup(zip)
+    msBuildExtraSetup(zip)
 
     toolsSetup(zip)
     mavenZipSetup(zip)

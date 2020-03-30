@@ -47,7 +47,7 @@ def toolsUpdaterBatch = file("$rootDir/files/ToolsUpdater.bat")
 def toolsUpdaterSh = file("$rootDir/files/ToolsUpdater.py")
 
 ext.msBuildExtraSetup = { AbstractArchiveTask zip->
-  zip.dependsOn msbuild
+  //zip.dependsOn msbuild
   zip.inputs.file project(':apps:MavenMetaDataFixer').shadowJar.archivePath
   zip.inputs.file project(':apps:ToolsUpdater').shadowJar.archivePath
   zip.inputs.file metaDataScriptBatch
