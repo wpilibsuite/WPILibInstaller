@@ -175,14 +175,37 @@ def fullConfigFileTask = tasks.register('generateFullConfigFile', Task) { Task t
     }
 }
 
+def generateConfigFiles = tasks.register('generateCommonResources', Zip) {
+    baseName = 'WPILib_' + buildClassifier + '-' + pubVersion + '-resources'
+
+    destinationDir file("$buildDir/outputs")
+    println destinationDir
+
+    duplicatesStrategy 'exclude'
+
+    dependsOn fullConfigFileTask
+    inputs.file fullConfigFile
+
+    it.from (fullConfigFile)
+
+    def zip = it
+
+    zip.dependsOn upgradeConfigFileTask
+    zip.inputs.file upgradeConfigFile
+
+    zip.from (upgradeConfigFile)
+
+    jdkConfigFileSetup(zip)
+
+    vscodeConfigZipSetup(zip)
+}
+
 def generateFullResourcesTask = tasks.register('generateFullResources', project.ext.archiveType) {
     baseName 'WPILib_' + buildClassifier + '-' + pubVersion
 
-    if (project.ext.isUnix) {
-        destinationDir file("$buildDir/outputs")
-    } else {
-        destinationDir file("$buildDir/tmpOutputs")
-    }
+    destinationDir file("$buildDir/outputs")
+    println destinationDir
+
     duplicatesStrategy 'exclude'
 
 
@@ -218,7 +241,7 @@ def generateFullZipBaseTask = tasks.register('generateFullZipBase', Zip) {
 
 
     // This MUST be first
-    msBuildSetupMain(it)
+    //msBuildSetupMain(it)
 
     from (generateFullResourcesTask.get().archivePath) {
         rename { 'files.zip' }
@@ -268,9 +291,6 @@ def zipWindowsInstaller = tasks.register('zipWindowsInstaller', Zip) {
 }
 
 tasks.register('generateInstallers', Task) {
-    if (project.ext.isUnix) {
-        dependsOn generateFullResourcesTask
-    } else {
-        dependsOn zipWindowsInstaller
-    }
+    dependsOn generateConfigFiles
+    dependsOn generateFullResourcesTask
 }
